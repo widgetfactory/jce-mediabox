@@ -1,12 +1,11 @@
-/*!
+/**
  * JCEMediaBox 		@@version@@
- *
- * @version 		$Id: jcemediabox.js 1032 2011-04-21 18:37:54Z happynoodleboy $
  * @package 		JCEMediaBox
  * @url				http://www.joomlacontenteditor.net
- * @copyright 		Copyright (C) 2006-2010 Ryan Demmer. All rights reserved.
+ * @copyright 		@@copyright@@
  * @copyright		Copyright 2009, Moxiecode Systems AB
- * @license 		http://www.gnu.org/copyleft/gpl.html GNU/GPL 2.0 see licences.txt
+ * @license 		@@licence@@
+ * @date			@@date@@
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -14,10 +13,7 @@
  *
  */
 (function(window) {
-    // Use the correct document accordingly with window argument (sandbox)
-	var document = window.document, navigator = window.navigator, location = window.location, DOMContentLoaded;
-
-    var JCEMediaBox = {
+    window.JCEMediaBox = {
         /**
          * Global Options Object
          */
@@ -26,8 +22,8 @@
                 width: '',
                 height: '',
                 legacy: 0,
-                lightbox: 0,
-                shadowbox: 0,
+                lightbox : 0,
+                shadowbox : 0,
                 overlay: 1,
                 overlayopacity: 0.8,
                 overlaycolor: '#000000',
@@ -38,7 +34,7 @@
                 hideobjects: 1,
                 scrolling: 'fixed',
                 //protect				: 1,
-                close: 2,
+                close : 2,
                 labels: {
                     'close': 'Close',
                     'next': 'Next',
@@ -65,14 +61,14 @@
             imgpath: 'plugins/system/jcemediabox/img'
         },
         init: function(options) {
-            JCEMediaBox.extend(JCEMediaBox.options, options);
+            this.extend(this.options, options);
             // Clear IE6 background cache
-            if (JCEMediaBox.isIE6) {
+            if (this.isIE6)
                 try {
-                    document.execCommand('BackgroundImageCache', false, true);
-                } catch (e) {}
-           	}
-            JCEMediaBox.ready();
+                    document.execCommand("BackgroundImageCache", false, true);
+                } catch (e) {
+                };
+            this.ready();
         },
 
         /**
@@ -81,57 +77,50 @@
          * Copyright (c) 2009 John Resig
          */
         ready: function() {
-            // The DOM ready check for Internet Explorer
-			function doScrollCheck() {
-				if (JCEMediaBox.domLoaded) {
-					return;
-				}
-
-				try {
-					// If IE is used, use the trick by Diego Perini
-					// http://javascript.nwbox.com/IEContentLoaded/
-					document.documentElement.doScroll('left');
-				} catch (e) {
-					setTimeout(doScrollCheck, 1);
-					return;
-				}
-
-				// and execute any waiting functions
-				JCEMediaBox._init();
-			}
-
             // Mozilla, Opera and webkit nightlies currently support this event
             if (document.addEventListener) {
                 // Use the handy event callback
-                document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
-
-                // A fallback to window.onload, that will always work
-				window.addEventListener('load', JCEMediaBox._init, false);
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.removeEventListener("DOMContentLoaded", arguments.callee, false);
+                    return JCEMediaBox._init();
+                }, false);
 
                 // If IE event model is used
             } else if (document.attachEvent) {
                 // ensure firing before onload,
                 // maybe late but safe also for iframes
-                document.attachEvent('onreadystatechange', DOMContentLoaded);
+                document.attachEvent("onreadystatechange", function() {
+                    if (document.readyState === "complete") {
+                        document.detachEvent("onreadystatechange", arguments.callee);
+                        return JCEMediaBox._init();
+                    }
+                });
 
-                // A fallback to window.onload, that will always work
-				window.attachEvent('onload', JCEMediaBox._init);
+                // If IE and not an iframe
+                // continually check to see if the document is ready
+                if (document.documentElement.doScroll && window == window.top) {
+                    (function() {
+                        if (JCEMediaBox.domLoaded)
+                            return;
 
-				// If IE and not a frame
-				// continually check to see if the document is ready
-				var toplevel = false;
+                        try {
+                            // If IE is used, use the trick by Diego Perini
+                            // http://javascript.nwbox.com/IEContentLoaded/
+                            document.documentElement.doScroll("left");
+                        } catch (error) {
+                            setTimeout(arguments.callee, 0);
+                            return;
+                        }
 
-				try {
-					toplevel = window.frameElement == null;
-				} catch (e) {}
+                        // and execute any waiting functions
+                        return JCEMediaBox._init();
+                    })();
 
-				if (document.documentElement.doScroll && toplevel) {
-					doScrollCheck();
-				}
+                }
             }
 
             // A fallback to window.onload, that will always work
-            JCEMediaBox.Event.add(window, 'load', function() {
+            JCEMediaBox.Event.add(window, "load", function() {
                 return JCEMediaBox._init();
             });
 
@@ -140,10 +129,10 @@
         /**
          * Get the Site Base URL
          * @method getSite
-         * @return {String} Site Base URL.
+         * @return {String} Site Base URL
          */
         getSite: function() {
-            var base = JCEMediaBox.options.base;
+            var base = this.options.base;
 
             if (base) {
                 // Get document location
@@ -173,13 +162,12 @@
          * Initialize JCEMediaBox
          */
         _init: function() {
-            if (JCEMediaBox.domLoaded) {
+            if (this.domLoaded)
                 return;
-            }
 
-            JCEMediaBox.domLoaded = true;
+            this.domLoaded = true;
 
-            var t = JCEMediaBox, d = document, na = navigator, ua = na.userAgent;
+            var t = this, d = document, na = navigator, ua = na.userAgent;
             /**
              * Constant that is true if the browser is Opera.
              *
@@ -187,7 +175,7 @@
              * @type Boolean
              * @final
              */
-            t.isOpera = window.opera && window.opera.buildNumber;
+            t.isOpera = window.opera && opera.buildNumber;
 
             /**
              * Constant that is true if the browser is WebKit (Safari/Chrome).
@@ -239,16 +227,14 @@
              * @property site
              * @type String
              */
-            JCEMediaBox.site = JCEMediaBox.getSite();
-
+            this.site = this.getSite();
             // Can't get reliable site URL
-            if (!JCEMediaBox.site) {
+            if (!this.site)
                 return false;
-            }
 
             // Initialize Popup / Tooltip creation
-            JCEMediaBox.Popup.init();
-            JCEMediaBox.ToolTip.init();
+            this.Popup.init();
+            this.ToolTip.init();
         },
 
         /**
@@ -265,26 +251,23 @@
         each: function(o, cb, s) {
             var n, l;
 
-            if (!o) {
+            if (!o)
                 return 0;
-            }
 
             s = s || o;
 
             if (o.length !== undefined) {
                 // Indexed arrays, needed for Safari
                 for (n = 0, l = o.length; n < l; n++) {
-                    if (cb.call(s, o[n], n, o) === false) {
+                    if (cb.call(s, o[n], n, o) === false)
                         return 0;
-                    }
                 }
             } else {
                 // Hashtables
                 for (n in o) {
                     if (o.hasOwnProperty(n)) {
-                        if (cb.call(s, o[n], n, o) === false) {
+                        if (cb.call(s, o[n], n, o) === false)
                             return 0;
-                        }
                     }
                 }
             }
@@ -302,15 +285,14 @@
          * @copyright	Copyright 2009, Moxiecode Systems AB
          */
         extend: function(o, e) {
-            var i, l, a = arguments;
+            var t = JCEMediaBox, i, l, a = arguments;
 
             for (i = 1, l = a.length; i < l; i++) {
                 e = a[i];
 
-                JCEMediaBox.each(e, function(v, n) {
-                    if (v !== undefined) {
+                t.each(e, function(v, n) {
+                    if (v !== undefined)
                         o[n] = v;
-                    }
                 });
 
             }
@@ -336,20 +318,19 @@
         DOM: {
             /**
              * Get an Element by ID
-             * @param {Object} s ID.
+             * @param {Object} s ID
              */
             get: function(s) {
-                if (typeof(s) == 'string') {
+                if (typeof(s) == 'string')
                     return document.getElementById(s);
-                }
 
                 return s;
             },
 
             /**
              * Return elements matching a simple selector, eg: a, a[id], a.classname
-             * @param {Object} o Selector.
-             * @param {Object} p Parent Element.
+             * @param {Object} o Selector
+             * @param {Object} p Parent Element
              */
             select: function(o, p) {
                 var t = this, r = [], s, parts, at, tag, cl, each = JCEMediaBox.each;
@@ -366,17 +347,16 @@
 
                 /**
                  * Internal inArray function
-                 * @param {Object} a Array to check.
-                 * @param {Object} s Key to check for.
+                 * @param {Object} a Array to check
+                 * @param {Object} s Key to check for
                  */
                 function inArray(a, v) {
                     var i, l;
 
                     if (a) {
                         for (i = 0, l = a.length; i < l; i++) {
-                            if (a[i] === v) {
+                            if (a[i] === v)
                                 return true;
-                            }
                         }
                     }
 
@@ -433,8 +413,8 @@
 
             /**
              * Check if an element has a specific class
-             * @param {Object} el Element.
-             * @param {Object} c Class.
+             * @param {Object} el Element
+             * @param {Object} c Class
              */
             hasClass: function(el, c) {
                 return new RegExp(c).test(el.className);
@@ -442,8 +422,8 @@
 
             /**
              * Add a class to an element
-             * @param {Object} el Element.
-             * @param {Object} c Class.
+             * @param {Object} el Element
+             * @param {Object} c Class
              */
             addClass: function(el, c) {
                 if (!this.hasClass(el, c)) {
@@ -453,13 +433,13 @@
 
             /**
              * Remove a class from an element
-             * @param {Object} el Element.
-             * @param {Object} c Class to remove.
+             * @param {Object} el Element
+             * @param {Object} c Class to remove
              */
             removeClass: function(el, c) {
                 if (this.hasClass(el, c)) {
                     var s = el.className;
-                    var re = new RegExp('(^|\\s+)' + c + '(\\s+|$)', 'g');
+                    var re = new RegExp("(^|\\s+)" + c + "(\\s+|$)", "g");
                     var v = s.replace(re, ' ');
                     v = v.replace(/^\s|\s$/g, '');
                     el.className = v;
@@ -468,7 +448,7 @@
 
             /**
              * Show an element
-             * @param {Object} el Element to show.
+             * @param {Object} el Element to show
              */
             show: function(el) {
                 el.style.display = 'block';
@@ -476,7 +456,7 @@
 
             /**
              * Hide and element
-             * @param {Object} el Element to hide.
+             * @param {Object} el Element to hide
              */
             hide: function(el) {
                 el.style.display = 'none';
@@ -484,8 +464,8 @@
 
             /**
              * Remove an element or attribute
-             * @param {Object} el Element.
-             * @param {String} attrib Attribute.
+             * @param {Object} el Element
+             * @param {String} attrib Attribute
              */
             remove: function(el, attrib) {
                 if (attrib) {
@@ -498,9 +478,9 @@
 
             /**
              * Set or retrieve a style
-             * @param {Object} el Target Element.
-             * @param {Object} s Style to set / get.
-             * @param {Object} v Value to set.
+             * @param {Object} el Target Element
+             * @param {Object} s Style to set / get
+             * @param {Object} v Value to set
              */
             style: function(n, na, v) {
                 var isIE = JCEMediaBox.isIE, r, s;
@@ -515,16 +495,14 @@
                 // Get value
                 if (typeof v == 'undefined') {
 
-                    if (na == 'float') {
+                    if (na == 'float')
                         na = isIE ? 'styleFloat' : 'cssFloat';
-                    }
 
                     r = s[na];
 
                     if (document.defaultView && !r) {
-                        if (/float/i.test(na)) {
+                        if (/float/i.test(na))
                             na = 'float';
-                        }
 
                         // Remove camelcase
                         na = na.replace(/[A-Z]/g, function(a) {
@@ -537,9 +515,8 @@
                         }
                     }
 
-                    if (n.currentStyle && !r) {
+                    if (n.currentStyle && !r)
                         r = n.currentStyle[na];
-                    }
 
                     return r;
 
@@ -550,11 +527,10 @@
                             v = parseFloat(v);
                             // IE specific opacity
                             if (isIE) {
-                                s.filter = v === '' ? '' : 'alpha(opacity=' + (v * 100) + ')';
+                                s.filter = v === '' ? '' : "alpha(opacity=" + (v * 100) + ")";
 
-                                if (!n.currentStyle || !n.currentStyle.hasLayout) {
+                                if (!n.currentStyle || !n.currentStyle.hasLayout)
                                     s.display = 'inline-block';
-                                }
                             }
                             s[na] = v;
                             break;
@@ -574,12 +550,13 @@
 
             /**
              * Set styles
-             * @param {Object} el Target Element.
-             * @param {Object} props Object of style key/values.
+             * @param {Object} el Target Element
+             * @param {Object} props Object of style key/values
              */
             styles: function(el, props) {
+                var t = this;
                 JCEMediaBox.each(props, function(v, s) {
-                    return JCEMediaBox.DOM.style(el, s, v);
+                    return t.style(el, s, v);
                 });
 
             },
@@ -614,7 +591,7 @@
                 switch (s) {
                     case 'style':
                         if (typeof v == 'object') {
-                            JCEMediaBox.DOM.styles(el, v);
+                            this.styles(el, v);
                         } else {
                             el.style.cssText = v;
                         }
@@ -630,26 +607,27 @@
 
             /**
              * Set Attributes on an Element
-             * @param {Object} el Target Element.
-             * @param {Object} attribs Attributes Object.
+             * @param {Object} el Target Element
+             * @param {Object} attribs Attributes Object
              */
             attributes: function(el, attribs) {
+                var t = this;
                 JCEMediaBox.each(attribs, function(v, s) {
-                    JCEMediaBox.DOM.attribute(el, s, v);
+                    t.attribute(el, s, v);
                 });
 
             },
 
             /**
              * Create an Element
-             * @param {Object} el Element to create.
-             * @param {Object} attribs Attributes.
-             * @param {Object} styles Styles.
-             * @param {Object} html HTML.
+             * @param {Object} el Element to create
+             * @param {Object} attribs Attributes
+             * @param {Object} styles Styles
+             * @param {Object} html HTML
              */
             create: function(el, attribs, html) {
                 var o = document.createElement(el);
-                JCEMediaBox.DOM.attributes(o, attribs);
+                this.attributes(o, attribs);
                 if (typeof html != 'undefined') {
                     o.innerHTML = html;
                 }
@@ -659,15 +637,15 @@
 
             /**
              * Add an element to another
-             * @param {Object} n Element to add to.
-             * @param {Object} o Element to add. Will be created if string.
-             * @param {Object} a Optional attributes.
-             * @param {Object} h Optional HTML.
+             * @param {Object} n Element to add to
+             * @param {Object} o Element to add. Will be created if string
+             * @param {Object} a Optional attributes
+             * @param {Object} h Optional HTML
              */
             add: function(n, o, a, h) {
                 if (typeof o == 'string') {
                     a = a || {};
-                    o = JCEMediaBox.DOM.create(o, a, h);
+                    o = this.create(o, a, h);
                 }
                 n.appendChild(o);
 
@@ -676,9 +654,9 @@
 
             /**
              * Add an element before the passed in element
-             * @param {Object} n Element to insert into.
-             * @param {Object} o Element to insert.
-             * @param {Object} c Element to insert before.
+             * @param {Object} n Element to insert into
+             * @param {Object} o Element to insert
+             * @param {Object} c Element to insert before
              */
             addBefore: function(n, o, c) {
                 if (typeof c == 'undefined') {
@@ -689,7 +667,7 @@
 
             /**
              * IE6 PNG Fix
-             * @param {Object} el Element to fix.
+             * @param {Object} el Element to fix
              */
             png: function(el) {
                 var s;
@@ -697,15 +675,15 @@
                 if (el.nodeName == 'IMG') {
                     s = el.src;
                     if (/\.png$/i.test(s)) {
-                        JCEMediaBox.DOM.attribute(el, 'src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif');
-                        JCEMediaBox.DOM.style(el, 'filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
+                        this.attribute(el, 'src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif');
+                        this.style(el, 'filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
                     }
                     // Background-image styles
                 } else {
                     s = this.style(el, 'background-image');
                     if (/\.png/i.test(s)) {
                         var bg = /url\("(.*)"\)/.exec(s)[1];
-                        JCEMediaBox.DOM.styles(el, {
+                        this.styles(el, {
                             'background-image': 'none',
                             'filter': "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + bg + "', sizingMethod='image')"
                         });
@@ -721,21 +699,20 @@
             events: [],
             /**
              * Add an Event handler
-             * @param {Object} o Target Element.
-             * @param {Object} n Event name.
-             * @param {Object} f Callback function.
-             * @param {Object} s Scope.
+             * @param {Object} o Target Element
+             * @param {Object} n Event name
+             * @param {Object} f Callback function
+             * @param {Object} s Scope
              * @copyright	Copyright 2009, Moxiecode Systems AB
              */
             add: function(o, n, f, s) {
                 var t = this;
 
                 // Setup event callback
-                var cb = function(e) {
+                cb = function(e) {
                     // Is all events disabled
-                    if (t.disabled) {
+                    if (t.disabled)
                         return;
-                    }
 
                     e = e || window.event;
 
@@ -767,9 +744,8 @@
                         }
                     }
 
-                    if (!s) {
+                    if (!s)
                         return f(e);
-                    }
 
                     return f.call(s, e);
                 };
@@ -802,7 +778,7 @@
              *
              * @method remove
              * @param {String/Element/Array} o Element ID string or HTML element or an array of elements or ids to remove handler from.
-             * @param {String} n Event handler name like for example: "click".
+             * @param {String} n Event handler name like for example: "click"
              * @param {function} f Function to remove.
              * @return {bool/Array} Bool state if true if the handler was removed or an array with states if multiple elements where passed in.
              * @copyright	Copyright 2009, Moxiecode Systems AB
@@ -832,13 +808,12 @@
             _remove: function(o, n, f) {
                 if (o) {
                     try {
-                        if (o.detachEvent) {
+                        if (o.detachEvent)
                             o.detachEvent('on' + n, f);
-                        } else if (o.removeEventListener) {
+                        else if (o.removeEventListener)
                             o.removeEventListener(n, f, false);
-                        } else {
+                        else
                             o['on' + n] = null;
-                        }
                     } catch (ex) {
                         // Might fail with permission denined on IE so we just ignore that
                     }
@@ -854,9 +829,8 @@
              * @copyright Copyright 2009, Moxiecode Systems AB
              */
             cancel: function(e) {
-                if (!e) {
+                if (!e)
                     return false;
-                }
 
                 this.stop(e);
 
@@ -872,11 +846,10 @@
              * @copyright	Copyright 2009, Moxiecode Systems AB
              */
             stop: function(e) {
-                if (e.stopPropagation) {
+                if (e.stopPropagation)
                     e.stopPropagation();
-                } else {
+                else
                     e.cancelBubble = true;
-                }
 
                 return false;
             },
@@ -890,11 +863,10 @@
              * @copyright	Copyright 2009, Moxiecode Systems AB
              */
             prevent: function(e) {
-                if (e.preventDefault) {
+                if (e.preventDefault)
                     e.preventDefault();
-                } else {
+                else
                     e.returnValue = false;
-                }
 
                 return false;
             },
@@ -936,37 +908,33 @@
                 };
 
                 if (!t.unloads) {
-
                     function unload() {
-                        var li = t.unloads, o, n, w;
+                        var li = t.unloads, o, n;
 
                         if (li) {
                             // Call unload handlers
                             for (n in li) {
                                 o = li[n];
 
-                                if (o && o.func) {
+                                if (o && o.func)
                                     o.func.call(o.scope, 1); // Send in one arg to distinct unload and user destroy
-                                }
                             }
 
                             // Detach unload function
                             if (window.detachEvent) {
                                 window.detachEvent('onbeforeunload', fakeUnload);
                                 window.detachEvent('onunload', unload);
-                            } else if (window.removeEventListener) {
+                            } else if (window.removeEventListener)
                                 window.removeEventListener('unload', unload, false);
-                            }
 
                             // Destroy references
                             t.unloads = o = li = w = unload = 0;
 
                             // Run garbarge collector on IE
-                            if (window.CollectGarbage) {
+                            if (window.CollectGarbage)
                                 CollectGarbage();
-                            }
                         }
-                    }
+                    };
 
                     function fakeUnload() {
                         var d = document;
@@ -978,42 +946,38 @@
                                 d.detachEvent('onstop', stop);
 
                                 // Call unload handler
-                                if (unload) {
+                                if (unload)
                                     unload();
-                                }
 
                                 d = 0;
-                            }
+                            };
 
                             // Fire unload when the currently loading page is stopped
-                            if (d) {
+                            if (d)
                                 d.attachEvent('onstop', stop);
-                            }
 
                             // Remove onstop listener after a while to prevent the unload function
                             // to execute if the user presses cancel in an onbeforeunload
                             // confirm dialog and then presses the browser stop button
-                            window.setTimeout(function() {
-                                if (d) {
+                            window.setTimeout( function() {
+                                if (d)
                                     d.detachEvent('onstop', stop);
-                                }
                             }, 0);
 
                         }
-                    }
+                    };
 
                     // Attach unload handler
                     if (window.attachEvent) {
                         window.attachEvent('onunload', unload);
                         window.attachEvent('onbeforeunload', fakeUnload);
-                    } else if (window.addEventListener) {
+                    } else if (window.addEventListener)
                         window.addEventListener('unload', unload, false);
-					}
+
                     // Setup initial unload handler array
                     t.unloads = [f];
-                } else {
+                } else
                     t.unloads.push(f);
-                }
 
                 return f;
             },
@@ -1123,7 +1087,7 @@
 
             /**
              * Get the outerwidth of an element
-             * @param {Object} n Element.
+             * @param {Object} n Element
              */
             outerWidth: function(n) {
                 var v = 0, x = 0;
@@ -1143,7 +1107,7 @@
 
             /**
              * Get the outerheight of an Element
-             * @param {Object} n Element.
+             * @param {Object} n Element
              */
             outerHeight: function(n) {
                 var v = 0, x = 0;
@@ -1208,8 +1172,8 @@
             async: true,
             headers: {
                 //'User-Agent' 		: 'XMLHTTP/1.0',
-                'X-Requested-With' : 'XMLHttpRequest',
-                'Accept' : 'text/javascript, text/html, application/xml, text/xml, */*'
+                'X-Requested-With' 	: 'XMLHttpRequest',
+                'Accept' 			: 'text/javascript, text/html, application/xml, text/xml, */*'
             },
             data: null,
             encoding: 'UTF-8',
@@ -1240,7 +1204,7 @@
                 }
 
                 return x;
-            }
+            };
 
             this.transport = window.XMLHttpRequest ? new XMLHttpRequest() : get('Microsoft.XMLHTTP') || get('Msxml2.XMLHTTP');
         },
@@ -1273,9 +1237,9 @@
 
         /**
          * Send request
-         * @param {Object} url URL.
-         * @param {Object} options Request options.
-         * @param {Object} s Scope.
+         * @param {Object} url URL
+         * @param {Object} options Request options
+         * @param {Object} s Scope
          */
         send: function(url) {
             var t = this, extend = JCEMediaBox.extend;
@@ -1311,7 +1275,7 @@
                 try {
                     this.transport.setRequestHeader(type, this.options.headers[type]);
                 } catch (e) {
-                }
+                };
             }
             // send request
             this.transport.send(this.options.data);
@@ -1319,10 +1283,10 @@
 
     },    /**
      * Core Fx Functions
-     * @param {Object} el Element to animate.
-     * @param {Object} props A set of styles to animate.
-     * @param {String} speed Speed of animation in milliseconds.
-     * @param {Object} cb Optional Callback when the animation finishes.
+     * @param {Object} el Element to animate
+     * @param {Object} props A set of styles to animate
+     * @param {String} speed Speed of animation in milliseconds
+     * @param {Object} cb Optional Callback when the animation finishes
      */
     JCEMediaBox.fx = function(el, options) {
         this.element = el;
@@ -1349,7 +1313,7 @@
                 this.clearTimer();
                 this.now = this.to;
 
-                setTimeout(function() {
+                setTimeout( function() {
                     t.callback.call(t.element, t);
                 }, 10);
 
@@ -1376,17 +1340,16 @@
 
         start: function(from, to) {
             var t = this;
-            if (!this.wait) {
+            if (!this.wait)
                 this.clearTimer();
-			}
-            if (this.timer) {
+
+            if (this.timer)
                 return;
-            }
 
             this.from = from;
             this.to = to;
             this.time = new Date().getTime();
-            this.timer = setInterval(function() {
+            this.timer = setInterval( function() {
                 return t.step();
             }, Math.round(1000 / this.fps));
 
@@ -1394,9 +1357,8 @@
         },
 
         custom: function(o) {
-            if (this.timer && this.wait) {
+            if (this.timer && this.wait)
                 return;
-            }
             var from = {};
             var to = {};
             for (property in o) {
@@ -1434,7 +1396,7 @@
          * @param {Object} options
          */
         init: function() {
-            var self = this;
+            var t = this;
 
             // Load tooltip theme
             var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
@@ -1447,9 +1409,9 @@
                     if (re.test(text)) {
                         text = re.exec(text)[1];
                     }
-                    self.tooltiptheme = text;
+                    t.tooltiptheme = text;
 
-                    self.create();
+                    t.create();
                 }
 
             }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');
@@ -1457,16 +1419,16 @@
 
         /**
          * Create tooltips in the cuurent document or node
-         * @param o Option parent node, defaults to document.
+         * @param o Option parent node, defaults to document
          */
-        create: function(o) {
-            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+        create : function(o) {
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
 
             /**
              * Private internal function to exclude children of element in event
-             * @param {Object} el 	Element with event.
-             * @param {Object} e 	Event object.
-             * @param {Object} fn 	Callback function.
+             * @param {Object} el 	Element with event
+             * @param {Object} e 	Event object
+             * @param {Object} fn 	Callback function
              */
             function _withinElement(el, e, fn) {
                 // Get target
@@ -1501,20 +1463,20 @@
 
                 Event.add(n, 'mouseover', function(e) {
                     _withinElement(el, e, function() {
-                        return self.start(el);
+                        return t.start(el);
                     });
 
                 });
 
                 Event.add(n, 'mouseout', function(e) {
                     _withinElement(el, e, function() {
-                        return self.end(el);
+                        return t.end(el);
                     });
 
                 });
 
                 Event.add(n, 'mousemove', function(e) {
-                    return self.locate(e);
+                    return t.locate(e);
                 });
 
             });
@@ -1541,14 +1503,13 @@
 
         /**
          * Show the tooltip and build the tooltip text
-         * @param {Object} e  Event.
-         * @param {Object} el Target Element.
+         * @param {Object} e  Event
+         * @param {Object} el Target Element
          */
         start: function(el) {
-            var self = this, DOM = JCEMediaBox.DOM;
-            if (!this.tooltiptheme) {
+            var t = this, DOM = JCEMediaBox.DOM;
+            if (!this.tooltiptheme)
                 return false;
-            }
             // Create tooltip if it doesn't exist
             this.build();
 
@@ -1584,9 +1545,9 @@
                 tn.innerHTML = h;
             }
             // Set visible
-            DOM.style(self.toolTip, 'visibility', 'visible');
+            DOM.style(t.toolTip, 'visibility', 'visible');
             // Fade in tooltip
-            JCEMediaBox.FX.animate(self.toolTip, {
+            JCEMediaBox.FX.animate(t.toolTip, {
                 'opacity': JCEMediaBox.options.tooltip.opacity
             }, JCEMediaBox.options.tooltip.speed);
         },
@@ -1594,13 +1555,12 @@
         /**
          * Fade Out and hide the tooltip
          * Restore the original element title
-         * @param {Object} el Element.
+         * @param {Object} el Element
          */
         end: function(el) {
-            var self = this, DOM = JCEMediaBox.DOM;
-            if (!this.tooltiptheme) {
+            var t = this, DOM = JCEMediaBox.DOM;
+            if (!this.tooltiptheme)
                 return false;
-            }
 
             // Fade out tooltip and hide
 
@@ -1612,12 +1572,11 @@
 
         /**
          * Position the tooltip
-         * @param {Object} e Event trigger.
+         * @param {Object} e Event trigger
          */
         locate: function(e) {
-            if (!this.tooltiptheme) {
+            if (!this.tooltiptheme)
                 return false;
-            }
 
             this.build();
 
@@ -1654,7 +1613,6 @@
                     pos.x = (page.x - tip.x) - o.x;
                     pos.y = (page.y + Math.round((tip.y / 2))) - (ah + o.y);
                     break;
-                default:
                 case 'br':
                     pos.x = page.x + o.x;
                     pos.y = page.y + o.y;
@@ -1693,8 +1651,8 @@
         },
         /**
          * Extend the addons object with a new addon
-         * @param {String} n Addon name.
-         * @param {Object} o Addon object.
+         * @param {String} n Addon name
+         * @param {Object} o Addon object
          */
         setAddons: function(n, o) {
             JCEMediaBox.extend(this.addons[n], o);
@@ -1702,7 +1660,7 @@
 
         /**
          * Return an addon object by name or all addons
-         * @param {String} n Addon name.
+         * @param {String} n Addon name
          */
         getAddons: function(n) {
             if (n) {
@@ -1717,9 +1675,11 @@
          * @param {Object} n
          */
         getAddon: function(v, n) {
-            var self = this, cp = false, r, each = JCEMediaBox.each;
+            var t = this, cp = false, r, each = JCEMediaBox.each;
 
-            each(this.getAddons(n), function(o, s) {
+            addons = this.getAddons(n);
+
+            each(this.addons, function(o, s) {
                 each(o, function(fn) {
                     r = fn.call(this, v);
                     if (typeof r != 'undefined') {
@@ -1735,7 +1695,7 @@
         /**
          * Clean an event removing anonymous function etc.
          * @param {String} s Event content
-         * Copyright 2009, Moxiecode Systems AB.
+         * Copyright 2009, Moxiecode Systems AB
          */
         cleanEvent: function(s) {
             return s.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
@@ -1743,14 +1703,14 @@
 
         /**
          * Create an object from a well formed JSON string
-         * @param {String} data JSON String.
+         * @param {String} data JSON String
          * @return {Object}
          * Logic borrowed from JQuery
          * http://jquery.com/
-         * Copyright 2010, John Resig.
+         * Copyright 2010, John Resig
          */
-        parseJSON: function(data) {
-            if (typeof data !== 'string' || !data) {
+        parseJSON : function(data) {
+            if ( typeof data !== "string" || !data ) {
                 return null;
             }
 
@@ -1760,14 +1720,14 @@
             .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 // Try to use the native JSON parser first
                 return window.JSON && window.JSON.parse ?
-                window.JSON.parse(data) :
-                (new Function('return ' + data))();
+                window.JSON.parse( data ) :
+                (new Function("return " + data))();
             }
         },
 
         /**
          * Get a popup parameter object
-         * @param {String} s Parameter string.
+         * @param {String} s Parameter string
          */
         params: function(s) {
             var a = [], x = [];
@@ -1826,30 +1786,27 @@
          * @return {String} Cookie data string.
          */
         getCookie: function(n) {
-            var c = document.cookie, e, p = n + '=', b;
+            var c = document.cookie, e, p = n + "=", b;
 
             // Strict mode
-            if (!c) {
+            if (!c)
                 return;
-			}
 
-            b = c.indexOf('; ' + p);
+            b = c.indexOf("; " + p);
 
             if (b == -1) {
                 b = c.indexOf(p);
 
-                if (b != 0) {
+                if (b != 0)
                     return null;
-                }
             } else {
                 b += 2;
             }
 
-            e = c.indexOf(';', b);
+            e = c.indexOf(";", b);
 
-            if (e == -1) {
+            if (e == -1)
                 e = c.length;
-			}
 
             return unescape(c.substring(b + p.length, e));
         },
@@ -1867,25 +1824,25 @@
          * @param {String} s Is the cookie secure or not.
          */
         setCookie: function(n, v, e, p, d, s) {
-            document.cookie = n + '=' + escape(v) +
-            ((e) ? '; expires=' + e.toGMTString() : '') +
-            ((p) ? '; path=' + escape(p) : '') +
-            ((d) ? '; domain=' + d : '') +
-            ((s) ? '; secure' : '');
+            document.cookie = n + "=" + escape(v) +
+            ((e) ? "; expires=" + e.toGMTString() : "") +
+            ((p) ? "; path=" + escape(p) : "") +
+            ((d) ? "; domain=" + d : "") +
+            ((s) ? "; secure" : "");
         },
 
         /**
          * Convert legacy popups to new format
          */
         convertLegacy: function() {
-            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[href]'), function(el) {
                 // Only JCE Popup links
                 if (/com_jce/.test(el.href)) {
                     var p, s, r = [];
                     var oc = DOM.attribute('onclick');
                     s = oc.replace(/&amp;/g, '&').replace(/&#39;/g, "'").split("'");
-                    p = self.params(s[0]);
+                    p = t.params(s[0]);
 
                     img = p['img'] || '';
                     title = p['title'] || '';
@@ -1895,7 +1852,7 @@
                             if (img.charAt(0) == '/') {
                                 img = img.substr(1);
                             }
-                            img = self.site.replace(/http:\/\/([^\/]+)/, '') + img;
+                            img = t.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
                         DOM.attributes(el, {
                             'href': img,
@@ -1914,12 +1871,12 @@
          * Convert lightbox popups to MediaBox
          */
         convertLightbox: function() {
-            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[rel*=lightbox]'), function(el) {
                 DOM.addClass(el, 'jcepopup');
                 r = el.rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
                     if (b) {
-                        return 'group[' + b + ']';
+                        return 'group['+ b +']';
                     }
                     return '';
                 });
@@ -1933,14 +1890,14 @@
          * Convert shadowbox popups to MediaBox
          */
         convertShadowbox: function() {
-            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[rel*=shadowbox]'), function(el) {
                 DOM.addClass(el, 'jcepopup');
                 r = el.rel.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
                     var attribs = '', group = '';
                     // group
                     if (b) {
-                        group = 'group[' + b + ']';
+                        group = 'group['+ b +']';
                     }
                     // attributes
                     if (/;=/.test(a)) {
@@ -1962,9 +1919,10 @@
 
         /**
          * Translate popup labels
-         * @param {String} s Theme HTML.
+         * @param {String} s Theme HTML
          */
         translate: function(s) {
+            var t = this;
             if (!s) {
                 s = this.popup.theme;
             }
@@ -1981,9 +1939,9 @@
          */
         styles: function(o) {
             var v, s, x = [];
-            if (!o) {
+            if (!o)
                 return {};
-			}
+
             JCEMediaBox.each(o.split(';'), function(s, i) {
                 s = s.replace(/(.*):(.*)/, function(a, b, c) {
                     return '"' + b + '":"' + c + '"';
@@ -2064,9 +2022,9 @@
                     cb = '';
                     mt = 'application/pdf';
                     break;
+                default:
                 case 'flash':
                 case 'application/x-shockwave-flash':
-                default:
                     ci = 'd27cdb6e-ae6d-11cf-96b8-444553540000';
                     cb = 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,124,0';
                     mt = 'application/x-shockwave-flash';
@@ -2095,7 +2053,7 @@
          * Get the width of the container frame
          */
         frameWidth: function() {
-            var w = 0, el = this.frame;
+            var t = this, w = 0, el = this.frame;
 
             JCEMediaBox.each(['left', 'right'], function(s) {
                 w = w + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
@@ -2108,7 +2066,7 @@
          * Get the height of the container frame
          */
         frameHeight: function() {
-            var h = 0, el = this.frame, DIM = JCEMediaBox.Dimensions;
+            var t = this, h = 0, el = this.frame, DIM = JCEMediaBox.Dimensions;
 
             JCEMediaBox.each(['top', 'bottom'], function(s) {
                 h = h + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
@@ -2130,9 +2088,9 @@
          * Get the height of the usable window less info divs
          */
         height: function() {
-            var h = 0, self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
+            var h = 0, t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
             each(['top', 'bottom'], function(s) {
-                var el = self['info-' + s];
+                var el = t['info-' + s];
                 if (el) {
                     h = h + parseInt(DIM.outerHeight(el));
                 }
@@ -2150,10 +2108,10 @@
 
         /**
          * Create a popup zoom icon
-         * @param {Object} el Popup link element.
+         * @param {Object} el Popup link element
          */
         zoom: function(el) {
-            var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each, s, m, x, y;
+            var t = this, DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each, s, m, x, y;
             var child = el.firstChild;
             // Create basic zoom element
             var zoom = DOM.create('span');
@@ -2206,9 +2164,9 @@
                     });
                 }
 
-                var w = child.getAttribute('width');
-                var h = child.getAttribute('height');
-                var ws = DOM.style(child, 'width');
+                var w 	= child.getAttribute('width');
+                var h 	= child.getAttribute('height');
+                var ws 	= DOM.style(child, 'width');
 
                 // get 'real' width and height
                 var rh = child.height, rw = child.width;
@@ -2231,18 +2189,18 @@
 
                 // Add style alignment
                 extend(styles, {
-                    'float'	: DOM.style(child, 'float'),
+                    'float'		: DOM.style(child, 'float'),
                     'text-align': child.style.textAlign,
-                    'width' : w
+                    'width' 	: w
                 });
 
                 /**
                  * Private Internal function
                  * Build and place the icon
-                 * @param {Object} el The Parent Link Element.
-                 * @param {Object} zoom The Zoom Element.
-                 * @param {Object} zoom The Child Element (Image).
-                 * @param {Object} styles Computed Styles object.
+                 * @param {Object} el The Parent Link Element
+                 * @param {Object} zoom The Zoom Element
+                 * @param {Object} zoom The Child Element (Image)
+                 * @param {Object} styles Computed Styles object
                  */
                 function _buildIcon(el, zoom, child, styles) {
                     // Clone image as span element
@@ -2304,17 +2262,17 @@
          * Process autopopups
          */
         auto: function() {
-            var self = this;
+            var t = this;
             JCEMediaBox.each(this.popups, function(el, i) {
                 if (el.auto) {
                     if (el.auto == 'single') {
-                        var cookie = self.getCookie('jcemediabox_autopopup_' + el.id);
+                        var cookie = t.getCookie('jcemediabox_autopopup_' + el.id);
                         if (!cookie) {
-                            self.setCookie('jcemediabox_autopopup_' + el.id, 1);
-                            self.start(el);
+                            t.setCookie('jcemediabox_autopopup_' + el.id, 1);
+                            t.start(el);
                         }
                     } else if (el.auto == 'multiple') {
-                        self.start(el);
+                        t.start(el);
                     }
                 }
             });
@@ -2323,7 +2281,7 @@
 
         /**
          * Initilise popup and create global jcepopup variable
-         * @param {Object} elements Optional array of popup elements.
+         * @param {Object} elements Optional array of popup elements
          */
         init: function() {
             window.jcepopup = this;
@@ -2332,24 +2290,24 @@
 
         /**
          * Get popup objects
-         * @param {String} s Optional selector.
-         * @param {Object} p Optional parent element popups contained within.
+         * @param {String} s Optional selector
+         * @param {Object} p Optional parent element popups contained within
          */
-        getPopups: function(s, p) {
+        getPopups : function(s, p) {
             var selector = 'a.jcebox, a.jcelightbox, a.jcepopup, area.jcebox, area.jcelightbox, area.jcepopup';
             return JCEMediaBox.DOM.select(s || selector, p);
         },
 
-        getData: function(n) {
+        getData : function(n) {
             var DOM = JCEMediaBox.DOM, o = {}, data;
 			var re = /\w+\[[^\]]+\]/;
-
+			
             data = DOM.attribute(n, 'data-mediabox') || DOM.attribute(n, 'data-json');
 
             // try title or rel attributes
             if (!data) {
-                var title = DOM.attribute(n, 'title');
-                var rel = DOM.attribute(n, 'rel');
+                var title 	= DOM.attribute(n, 'title');
+                var rel 	= DOM.attribute(n, 'rel');
 
                 if (re.test(title)) {
                     // convert to object
@@ -2368,7 +2326,7 @@
                         args.push(b);
                         return '';
                     });
-
+                    
                     o = this.params(args);
 
                     // restore rel attribute
@@ -2383,15 +2341,15 @@
 
                 return this.params(data);
             }
-
+            
             return o;
         },
 
         /**
          * Process a popup link and return properties object
-         * @param {Object} el Popup link element.
+         * @param {Object} el Popup link element
          */
-        process: function(el) {
+        process : function(el) {
             var DOM = JCEMediaBox.DOM, data, o = {}, group, auto;
 
             // Simplify class identifier for css
@@ -2410,8 +2368,8 @@
             }
 
             // Fix title and rel and move parameters
-            var title = el.title || '';
-            var rel = el.rel || '';
+            var title 	= el.title 	|| '';
+            var rel 	= el.rel 	|| '';
 
             var src = el.href;
 
@@ -2423,14 +2381,14 @@
             });
 
             data = this.getData(el) || {};
-
+            
             // Process rel attribute
             if (!/\w+\[[^\]]+\]/.test(rel)) {
-                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
-                var lb = '(lightbox(\[(.*?)\])?)';
-                var lt = '(lyte(box|frame|show)(\[(.*?)\])?)';
+                var rx 	= 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
+                var lb 	= '(lightbox(\[(.*?)\])?)';
+                var lt 	= '(lyte(box|frame|show)(\[(.*?)\])?)';
 
-                group = JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
+                group 	= JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
             }
 
             // Get AREA parameters from URL if not set
@@ -2448,7 +2406,7 @@
                     auto = /(multiple)/.test(el.className) ? 'multiple' : 'single';
                 }
             }
-
+            
             // get group from data object
             group = group || data.group || '';
 
@@ -2472,29 +2430,29 @@
         /**
          * Create a popup from identifiable link or area elements
          * Load the popup theme
-         * @param {Object} elements Optional array of popup elements.
+         * @param {Object} elements Optional array of popup elements
          */
         create: function(elements) {
-            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, pageload, auto = false;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, pageload, auto = false;
 
             // set pageload marker
             if (!elements) {
-                pageload = true;
+                pageload 	= true;
                 this.popups = [];
 
                 // Converts a legacy (window) popup into an inline popup
                 if (JCEMediaBox.options.popup.legacy == 1) {
-                    self.convertLegacy();
+                    t.convertLegacy();
                 }
 
                 // Converts a lightbox popup into mediabox popup
                 if (JCEMediaBox.options.popup.lightbox == 1) {
-                    self.convertLightbox();
+                    t.convertLightbox();
                 }
 
                 // Converts a shadowbox popup into mediabox popup
                 if (JCEMediaBox.options.popup.shadowbox == 1) {
-                    self.convertShadowbox();
+                    t.convertShadowbox();
                 }
             }
 
@@ -2503,19 +2461,19 @@
 
             // Iterate through all found or specified popup links
             each(elements, function(el, i) {
-                var o = self.process(el);
+                var o = t.process(el);
 
-                self.popups.push(o);
+                t.popups.push(o);
 
                 // new index if not a pageload
                 if (!pageload) {
-                    i = self.popups.length - 1;
+                    i = t.popups.length - 1;
                 }
 
                 // Add click event to link
                 Event.add(el, 'click', function(e) {
                     Event.cancel(e);
-                    return self.start(o, i);
+                    return t.start(o, i);
                 });
 
             });
@@ -2534,10 +2492,10 @@
                         if (re.test(text)) {
                             text = re.exec(text)[1];
                         }
-                        self.popuptheme = text;
+                        t.popuptheme = text;
                         // Process auto popups
                         if (!auto) {
-                            self.auto();
+                            t.auto();
                             auto = true;
                         }
                     }
@@ -2548,11 +2506,11 @@
 
         /**
          * Public popup method
-         * @param {String / Object} data Popup URL string or data object.
-         * @param {String} title Popup Title.
-         * @param {String} group Popup Group.
-         * @param {String} type Popup Type, eg: image, flash, ajax.
-         * @param {Object} params Popup Parameters Object.
+         * @param {String / Object} data Popup URL string or data object
+         * @param {String} title Popup Title
+         * @param {String} group Popup Group
+         * @param {String} type Popup Type, eg: image, flash, ajax
+         * @param {Object} params Popup Parameters Object
          */
         open: function(data, title, group, type, params) {
             if (typeof data == 'string') {
@@ -2570,11 +2528,11 @@
 
         /**
          * Start a popup
-         * @param {Object} o The popup link object.
-         * @param {Object} i The popup index.
+         * @param {Object} o The popup link object
+         * @param {Object} i The popup index
          */
         start: function(p, i) {
-            var n = 0, x = 0, items = [], each = JCEMediaBox.each;
+            var t = this, n = 0, x = 0, items = [], each = JCEMediaBox.each;
 
             // build popup window
             if (this.build()) {
@@ -2604,7 +2562,7 @@
          * Build Popup structure
          */
         build: function() {
-            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
 
             if (!this.page) {
                 // Create main page object
@@ -2651,15 +2609,15 @@
                 // Create all Popup structure objects
                 each(DOM.select('*[id]', this.frame), function(el) {
                     var s = el.id.replace('jcemediabox-popup-', '');
-                    self[s] = el;
+                    t[s] = el;
                     DOM.hide(el);
                 });
 
                 // Add close function to frame on click
                 if (JCEMediaBox.options.popup.close == 2) {
                     Event.add(this.frame, 'click', function(e) {
-                        if (e.target && e.target == self.frame) {
-                            self.close();
+                        if (e.target && e.target == t.frame) {
+                            t.close();
                         }
                     });
 
@@ -2668,28 +2626,28 @@
                 // Setup Close link event
                 if (this.closelink) {
                     Event.add(this.closelink, 'click', function() {
-                        return self.close();
+                        return t.close();
                     });
 
                 }
                 // Setup Cancel link event
                 if (this.cancellink) {
                     Event.add(this.cancellink, 'click', function() {
-                        return self.close();
+                        return t.close();
                     });
 
                 }
                 // Setup Next link event
                 if (this.next) {
                     Event.add(this.next, 'click', function() {
-                        return self.nextItem();
+                        return t.nextItem();
                     });
 
                 }
                 // Setup Previous link event
                 if (this.prev) {
                     Event.add(this.prev, 'click', function() {
-                        return self.previousItem();
+                        return t.previousItem();
                     });
 
                 }
@@ -2699,7 +2657,7 @@
 
                 if (this.print) {
                     Event.add(this.print, 'click', function() {
-                        return self.printPage();
+                        return t.printPage();
                     });
 
                 }
@@ -2721,11 +2679,11 @@
 
         /**
          * Show the popup window
-         * @param {Array} items Array of popup objects.
-         * @param {Int} n Index of current popup.
+         * @param {Array} items Array of popup objects
+         * @param {Int} n Index of current popup
          */
         show: function(items, n) {
-            var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
+            var t = this, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
             this.items = items;
             this.bind(true);
 
@@ -2755,12 +2713,12 @@
 
         /**
          * Create event / key bindings
-         * @param {Boolean} open Whether popup is opened or closed.
+         * @param {Boolean} open Whether popup is opened or closed
          */
 
         // TODO - Resize popup when browser window resizes
         bind: function(open) {
-            var self = this, isIE6 = JCEMediaBox.isIE6, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var t = this, isIE6 = JCEMediaBox.isIE6, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
 
             if (isIE6) {
                 each(DOM.select('select'), function(el) {
@@ -2773,9 +2731,8 @@
             }
             if (JCEMediaBox.options.popup.hideobjects) {
                 each(DOM.select('object, embed'), function(el) {
-                    if (el.id == 'jcemediabox-popup-object') {
+                    if (el.id == 'jcemediabox-popup-object')
                         return;
-                    }
                     if (open) {
                         el.tmpStyle = el.style.visibility || '';
                     }
@@ -2786,16 +2743,16 @@
             var scroll = JCEMediaBox.options.popup.scrollpopup;
             if (open) {
                 Event.add(document, 'keydown', function(e) {
-                    self.listener(e);
+                    t.listener(e);
                 });
 
                 if (isIE6) {
                     Event.add(window, 'scroll', function(e) {
-                        DOM.style(self.overlay, 'height', JCEMediaBox.Dimensions.getScrollHeight());
+                        DOM.style(t.overlay, 'height', JCEMediaBox.Dimensions.getScrollHeight());
                     });
 
                     Event.add(window, 'scroll', function(e) {
-                        DOM.style(self.overlay, 'width', JCEMediaBox.Dimensions.getScrollWidth());
+                        DOM.style(t.overlay, 'width', JCEMediaBox.Dimensions.getScrollWidth());
                     });
 
                 }
@@ -2810,7 +2767,7 @@
 
         /**
          * Keyboard listener
-         * @param {Object} e Event.
+         * @param {Object} e Event
          */
         listener: function(e) {
             switch (e.keyCode) {
@@ -2828,15 +2785,15 @@
 
         /**
          * Process a popup in the group queue
-         * @param {Object} n Queue position.
+         * @param {Object} n Queue position
          */
         queue: function(n) {
-            var self = this, s = JCEMediaBox.options.popup.fadespeed, ss = JCEMediaBox.options.popup.scalespeed;
+            var t = this, s = JCEMediaBox.options.popup.fadespeed, ss = JCEMediaBox.options.popup.scalespeed;
             // Optional element
             var changed = false;
 
             JCEMediaBox.each(['top', 'bottom'], function(s) {
-                var el = self['info-' + s];
+                var el = t['info-' + s];
                 if (el) {
                     var v = JCEMediaBox.Dimensions.outerHeight(el);
                     var style = {};
@@ -2844,10 +2801,10 @@
                     JCEMediaBox.FX.animate(el, style, ss, function() {
                         if (!changed) {
                             changed = true;
-                            JCEMediaBox.FX.animate(self.content, {
+                            JCEMediaBox.FX.animate(t.content, {
                                 'opacity': 0
                             }, JCEMediaBox.options.popup.fadespeed, function() {
-                                return self.change(n);
+                                return t.change(n);
                             });
 
                         }
@@ -2862,9 +2819,8 @@
          * Process the next popup in the group
          */
         nextItem: function() {
-            if (this.items.length == 1) {
+            if (this.items.length == 1)
                 return false;
-            }
             var n = this.index + 1;
 
             if (n < 0 || n >= this.items.length) {
@@ -2877,9 +2833,8 @@
          * Process the previous popup in the group
          */
         previousItem: function() {
-            if (this.items.length == 1) {
+            if (this.items.length == 1)
                 return false;
-            }
             var n = this.index - 1;
 
             if (n < 0 || n >= this.items.length) {
@@ -2941,7 +2896,7 @@
 
             }
             // Optional Element
-            var self = this, html = '', len = this.items.length;
+            var t = this, html = '', len = this.items.length;
 
             if (this.numbers && len > 1) {
                 var html = this.numbers.tmpHTML || '{$numbers}';
@@ -2959,10 +2914,10 @@
                         // add click event
                         Event.add(link, 'click', function(e) {
                             var x = parseInt(e.target.innerHTML) - 1;
-                            if (self.index == x) {
+                            if (t.index == x) {
                                 return false;
                             }
-                            return self.queue(x);
+                            return t.queue(x);
                         });
 
                     }
@@ -2978,7 +2933,7 @@
             }
 
             each(['top', 'bottom'], function(v, i) {
-                var el = self['info-' + v];
+                var el = t['info-' + v];
                 if (el) {
                     DOM.show(el);
                     each(DOM.select('*[id]', el), function(s) {
@@ -3012,10 +2967,10 @@
 
         /**
          * Change the popup
-         * @param {Integer} n Popup number.
+         * @param {Integer} n Popup number
          */
         change: function(n) {
-            var self = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE;
+            var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE;
 
             var p = {}, s, o, w, h;
             if (n < 0 || n >= this.items.length) {
@@ -3049,12 +3004,12 @@
             extend(p, o.params);
 
             extend(this.active, {
-                'src'	: p.src || o.src,
-                'title'	: o.title,
+                'src'		: p.src || o.src,
+                'title'		: o.title,
                 'caption'	: p.caption || '',
-                'type'	: p.type || this.getType(o),
+                'type'		: p.type || this.getType(o),
                 'params'	: p || {},
-                'width'	: p.width || JCEMediaBox.options.popup.width || 0,
+                'width'		: p.width || JCEMediaBox.options.popup.width || 0,
                 'height'	: p.height || JCEMediaBox.options.popup.height || 0
             });
 
@@ -3069,7 +3024,7 @@
 
                     this.img = new Image();
                     this.img.onload = function() {
-                        return self.setup();
+                        return t.setup();
                     };
 
                     this.img.src = this.active.src;
@@ -3141,7 +3096,7 @@
                         for (n in p) {
                             if (p[n] !== '') {
                                 if (/(id|name|width|height|style)$/.test(n)) {
-                                    self.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                                 }
                             }
                         }
@@ -3150,7 +3105,7 @@
                         // Create param elements
                         for (n in p) {
                             if (p[n] !== '' && !/(id|name|width|height|style|type)/.test(n)) {
-                                self.object += '<param name="' + n + '" value="' + decodeURIComponent(p[n]) + '" />';
+                                t.object += '<param name="' + n + '" value="' + decodeURIComponent(p[n]) + '" />';
                             }
                         }
                         // Add closing object element
@@ -3160,7 +3115,7 @@
                         this.object = '<embed type="' + mt.mediatype + '"';
                         for (n in p) {
                             if (p[n] !== '') {
-                                self.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                             }
                         }
                         this.object += '></embed>';
@@ -3218,26 +3173,26 @@
                                 html = re.exec(data)[1];
                             }
 
-                            self.ajax.innerHTML = html;
+                            t.ajax.innerHTML = html;
 
-                            if (self.loader) {
-                                DOM.show(self.loader);
+                            if (t.loader) {
+                                DOM.show(t.loader);
                             }
 
                             // process any popups in loaded content
-                            self.create(self.getPopups('', self.content));
+                            t.create(t.getPopups('', t.content));
 
                             // process any tooltips in loaded content
-                            JCEMediaBox.ToolTip.create(self.content);
+                            JCEMediaBox.ToolTip.create(t.content);
 
-                            each(DOM.select('a, area', self.content), function(el) {
+                            each(DOM.select('a, area', t.content), function(el) {
                                 JCEMediaBox.Event.add(el, 'click', function(e) {
                                     if (el.href && el.href.indexOf('#') == -1) {
                                         if (/jce(popup|box|lightbox)/.test(el.className)) {
                                             Event.cancel(e);
-                                            self.close(true);
+                                            t.close(true);
                                         } else {
-                                            self.close();
+                                            t.close();
                                             if (isIE) {
                                                 if (/http(s)?:\/\//.test(el.href)) {
                                                     document.location.href = el.href;
@@ -3250,7 +3205,7 @@
                             });
 
                             // setup
-                            return self.setup();
+                            return t.setup();
                         }
 
                     }).send(this.active.src);
@@ -3335,8 +3290,8 @@
 
             // Resize to fit screen
             if (JCEMediaBox.options.popup.resize == 1 || JCEMediaBox.options.popup.scrolling == 'fixed') {
-                x = this.width();
-                y = this.height();
+                var x = this.width();
+                var y = this.height();
 
                 var dim = this.resize(w, h, x, y);
 
@@ -3422,8 +3377,8 @@
                         allowTransparency: true,
                         scrolling: t.active.params.scrolling || 'auto',
                         'style': {
-                            width: '100%',
-                            height: '100%'
+                            width	: '100%',
+                            height	: '100%'
                         }
                     });
                     // Set src
@@ -3444,7 +3399,7 @@
                             DOM.show(el);
                         });
 
-                        h = DIM.outerHeight(itop);
+                        var h = DIM.outerHeight(itop);
                         DOM.styles(itop, {
                             'z-index': -1,
                             'top': h,
@@ -3561,32 +3516,9 @@
         }
 
     };
-
-    /** Cleanup functions for the document ready method
-      * Based on JQuery 'DOMContentLoaded' function - http://jquery.com/
-      * Copyright (c) 2009 John Resig
-      */
-	if (document.addEventListener) {
-		DOMContentLoaded = function() {
-			document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);
-			JCEMediaBox._init();
-		};
-
-	} else if (document.attachEvent) {
-		DOMContentLoaded = function() {
-			// Make sure body exists, at least, in case IE gets a little overzealous
-			if (document.readyState === 'complete') {
-				document.detachEvent('onreadystatechange', DOMContentLoaded);
-				JCEMediaBox._init();
-			}
-		};
-	}
-
-    // Expose JCEMediaBox to the global object
-	window.JCEMediaBox = JCEMediaBox;
 })(window);
 
 // Cleanup events
-JCEMediaBox.Event.addUnload(function() {
+JCEMediaBox.Event.addUnload( function() {
     JCEMediaBox.Event.destroy();
 });

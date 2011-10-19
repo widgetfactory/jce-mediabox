@@ -63,6 +63,26 @@
 	overflow: hidden;
 }
 #jcemediabox-popup-content {}
+
+#jcemediabox-popup-content.broken-image {
+	background : url('../img/broken-image.png') no-repeat center;
+}
+#jcemediabox-popup-content.broken-media {
+	background : url('../img/broken-media.png') no-repeat center;
+}
+#jcemediabox-popup-content.broken-page {
+	background : url('../img/broken-page.png') no-repeat center;
+}
+#jcemediabox-popup-content p.media-support {
+	font-size : 20px;
+	color : #888;
+	font-weight : bold;
+	text-align: center;	
+	height: 100%;
+	position : relative;
+	top : 50%;
+	margin-top : -10px;
+}
 #jcemediabox-popup-img, #jcemediabox-popup-object, #jcemediabox-popup-iframe {
 	text-align: center;
 }

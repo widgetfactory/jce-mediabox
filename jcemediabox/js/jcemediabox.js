@@ -13,6 +13,63 @@
  *
  */
 (function(window) {
+    
+    // html5 element support
+    var support = {};
+    
+    /*
+     * From Modernizr v2.0.6
+ 	 * http://www.modernizr.com
+     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
+     */
+    support.video = (function() {
+    	var el = document.createElement('video');
+    	var bool = false;
+    	// IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
+        try {
+            if (bool = !!el.canPlayType ) {
+                bool      = new Boolean(bool);
+                bool.ogg  = el.canPlayType('video/ogg; codecs="theora"');
+
+                // Workaround required for IE9, which doesn't report video support without audio codec specified.
+                //   bug 599718 @ msft connect
+                var h264 = 'video/mp4; codecs="avc1.42E01E';
+                bool.h264 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
+
+                bool.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
+            }
+            
+        } catch(e) { }
+    	
+    	return bool;
+    })();
+    
+    /*
+     * From Modernizr v2.0.6
+ 	 * http://www.modernizr.com
+     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
+     */
+    support.audio = (function() {
+    	var el = document.createElement('audio');
+    	
+    	try { 
+            if (bool = !!el.canPlayType ) {
+                bool      = new Boolean(bool);
+                bool.ogg  = el.canPlayType('audio/ogg; codecs="vorbis"');
+                bool.mp3  = el.canPlayType('audio/mpeg;');
+
+                // Mimetypes accepted:
+                //   https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
+                //   http://bit.ly/iphoneoscodecs
+                bool.wav  = el.canPlayType('audio/wav; codecs="1"');
+                bool.m4a  = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
+                bool.webm = el.canPlayType('audio/webm; codecs="vp8, vorbis"');
+            }
+        } catch(e) { }
+    	
+    	return bool;
+    })();
+    
     window.JCEMediaBox = {
         /**
          * Global Options Object
@@ -167,7 +224,7 @@
 
             this.domLoaded = true;
 
-            var t = this, d = document, na = navigator, ua = na.userAgent;
+            var t = this, na = navigator, ua = na.userAgent;
             /**
              * Constant that is true if the browser is Opera.
              *
@@ -784,7 +841,7 @@
              * @copyright	Copyright 2009, Moxiecode Systems AB
              */
             remove: function(o, n, f) {
-                var t = this, a = t.events, s = false, r;
+                var t = this, a = t.events, s = false;
 
                 JCEMediaBox.each(a, function(e, i) {
                     if (e.obj == o && e.name == n && (!f || (e.func == f || e.cfunc == f))) {
@@ -1044,7 +1101,7 @@
              * Get the page scrollbar width
              */
             getScrollbarWidth: function() {
-                var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+                var DOM = JCEMediaBox.DOM;
 
                 if (this.scrollbarWidth) {
                     return this.scrollbarWidth;
@@ -1218,7 +1275,6 @@
             }
 
             this.running = false;
-            var status = 0;
 
             if ((this.transport.status >= 200) && (this.transport.status < 300)) {
                 var s = this.transport.responseText;
@@ -1522,8 +1578,6 @@
                 title = JCEMediaBox.trim(parts[0]);
                 text = JCEMediaBox.trim(parts[1]);
             }
-            // Inherit parent classes
-            var cls = el.className.replace(/(jce_?)tooltip/gi, '');
 
             var h = '';
             // Set tooltip title html
@@ -1558,13 +1612,12 @@
          * @param {Object} el Element
          */
         end: function(el) {
-            var t = this, DOM = JCEMediaBox.DOM;
             if (!this.tooltiptheme)
                 return false;
 
             // Fade out tooltip and hide
 
-            DOM.styles(this.toolTip, {
+            JCEMediaBox.DOM.styles(this.toolTip, {
                 'visibility': 'hidden',
                 'opacity': 0
             });
@@ -1645,9 +1698,10 @@
          * List of default addon media types
          */
         addons: {
-            'flash': {},
-            'image': {},
-            'html': {}
+            'flash'	: {},
+            'image'	: {},
+            'iframe': {},
+            'html'	: {}
         },
         /**
          * Extend the addons object with a new addon
@@ -1675,7 +1729,7 @@
          * @param {Object} n
          */
         getAddon: function(v, n) {
-            var t = this, cp = false, r, each = JCEMediaBox.each;
+            var cp = false, r, each = JCEMediaBox.each;
 
             addons = this.getAddons(n);
 
@@ -1737,14 +1791,16 @@
                 if (new RegExp('^{[\w\W]+}$').test(s)) {
                     return this.parseJSON(s);
                 }
+                
                 // JCE MediaBox parameter format eg: title[title]
-                if (new RegExp('([\\w]+\[[^\]]+\])*?').test(s)) {
+                if (new RegExp('([\\w]+\[[^\]]+\])').test(s)) {                    
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
                         return '"' + b + '":"' + c + '"' + (d ? ',' : '');
                     });
 
                     return this.parseJSON('{' + s + '}');
                 }
+                
                 // if url
                 if (s.indexOf('&') != -1) {
                     x = s.split(/&(amp;)?/g);
@@ -1835,29 +1891,30 @@
          * Convert legacy popups to new format
          */
         convertLegacy: function() {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[href]'), function(el) {
+            	
                 // Only JCE Popup links
                 if (/com_jce/.test(el.href)) {
-                    var p, s, r = [];
-                    var oc = DOM.attribute('onclick');
-                    s = oc.replace(/&amp;/g, '&').replace(/&#39;/g, "'").split("'");
-                    p = t.params(s[0]);
+                    var p, s;
+                    var oc = DOM.attribute(el, 'onclick');
+                    s = oc.replace(/&#39;/g, "'").split("'");                    
+                    p = self.params(s[1]);
 
-                    img = p['img'] || '';
-                    title = p['title'] || '';
+                    var img 	= p.img 	|| '';
+                    var title 	= p.title 	|| '';
 
                     if (img) {
                         if (!/http:\/\//.test(img)) {
                             if (img.charAt(0) == '/') {
                                 img = img.substr(1);
                             }
-                            img = t.site.replace(/http:\/\/([^\/]+)/, '') + img;
+                            img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
                         DOM.attributes(el, {
-                            'href': img,
-                            'title': title.replace(/_/, ' '),
-                            'onclick': ''
+                            'href'		: img,
+                            'title'		: title.replace(/_/, ' '),
+                            'onclick'	: ''
                         });
 
                         DOM.addClass(el, 'jcepopup');
@@ -1871,7 +1928,7 @@
          * Convert lightbox popups to MediaBox
          */
         convertLightbox: function() {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[rel*=lightbox]'), function(el) {
                 DOM.addClass(el, 'jcepopup');
                 r = el.rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
@@ -1890,7 +1947,7 @@
          * Convert shadowbox popups to MediaBox
          */
         convertShadowbox: function() {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[rel*=shadowbox]'), function(el) {
                 DOM.addClass(el, 'jcepopup');
                 r = el.rel.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
@@ -1922,7 +1979,6 @@
          * @param {String} s Theme HTML
          */
         translate: function(s) {
-            var t = this;
             if (!s) {
                 s = this.popup.theme;
             }
@@ -1938,7 +1994,7 @@
          * @param {Object} o
          */
         styles: function(o) {
-            var v, s, x = [];
+            var x = [];
             if (!o)
                 return {};
 
@@ -1958,7 +2014,7 @@
          * @param {Object} el
          */
         getType: function(el) {
-            var o = {}, type;
+            var o = {}, type = '';
 
             // Media types
             if (/(director|windowsmedia|mplayer|quicktime|real|divx|flash|pdf)/.test(el.type)) {
@@ -2053,7 +2109,7 @@
          * Get the width of the container frame
          */
         frameWidth: function() {
-            var t = this, w = 0, el = this.frame;
+            var w = 0, el = this.frame;
 
             JCEMediaBox.each(['left', 'right'], function(s) {
                 w = w + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
@@ -2066,7 +2122,7 @@
          * Get the height of the container frame
          */
         frameHeight: function() {
-            var t = this, h = 0, el = this.frame, DIM = JCEMediaBox.Dimensions;
+            var h = 0, el = this.frame, DIM = JCEMediaBox.Dimensions;
 
             JCEMediaBox.each(['top', 'bottom'], function(s) {
                 h = h + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
@@ -2088,7 +2144,7 @@
          * Get the height of the usable window less info divs
          */
         height: function() {
-            var h = 0, t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
+            var h = 0, t = this, each = JCEMediaBox.each, DIM = JCEMediaBox.Dimensions;
             each(['top', 'bottom'], function(s) {
                 var el = t['info-' + s];
                 if (el) {
@@ -2111,7 +2167,7 @@
          * @param {Object} el Popup link element
          */
         zoom: function(el) {
-            var t = this, DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each, s, m, x, y;
+            var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var child = el.firstChild;
             // Create basic zoom element
             var zoom = DOM.create('span');
@@ -2350,7 +2406,7 @@
          * @param {Object} el Popup link element
          */
         process : function(el) {
-            var DOM = JCEMediaBox.DOM, data, o = {}, group, auto;
+            var DOM = JCEMediaBox.DOM, data, o = {}, group = '', auto = false;
 
             // Simplify class identifier for css
             if (/(jcelightbox|jcebox)/.test(el.className)) {
@@ -2433,7 +2489,7 @@
          * @param {Object} elements Optional array of popup elements
          */
         create: function(elements) {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, pageload, auto = false;
+            var t = this, each = JCEMediaBox.each, Event = JCEMediaBox.Event, pageload = false, auto = false;
 
             // set pageload marker
             if (!elements) {
@@ -2532,7 +2588,7 @@
          * @param {Object} i The popup index
          */
         start: function(p, i) {
-            var t = this, n = 0, x = 0, items = [], each = JCEMediaBox.each;
+            var n = 0, items = [], each = JCEMediaBox.each;
 
             // build popup window
             if (this.build()) {
@@ -2683,7 +2739,7 @@
          * @param {Int} n Index of current popup
          */
         show: function(items, n) {
-            var t = this, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
+            var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
             this.items = items;
             this.bind(true);
 
@@ -2788,7 +2844,7 @@
          * @param {Object} n Queue position
          */
         queue: function(n) {
-            var t = this, s = JCEMediaBox.options.popup.fadespeed, ss = JCEMediaBox.options.popup.scalespeed;
+            var t = this;
             // Optional element
             var changed = false;
 
@@ -2798,7 +2854,7 @@
                     var v = JCEMediaBox.Dimensions.outerHeight(el);
                     var style = {};
                     style['top'] = (s == 'top') ? v : -v;
-                    JCEMediaBox.FX.animate(el, style, ss, function() {
+                    JCEMediaBox.FX.animate(el, style, JCEMediaBox.options.popup.scalespeed, function() {
                         if (!changed) {
                             changed = true;
                             JCEMediaBox.FX.animate(t.content, {
@@ -2896,7 +2952,7 @@
 
             }
             // Optional Element
-            var t = this, html = '', len = this.items.length;
+            var t = this, len = this.items.length;
 
             if (this.numbers && len > 1) {
                 var html = this.numbers.tmpHTML || '{$numbers}';
@@ -2972,7 +3028,7 @@
         change: function(n) {
             var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE;
 
-            var p = {}, s, o, w, h;
+            var p = {}, o, w, h;
             if (n < 0 || n >= this.items.length) {
                 return false;
             }
@@ -3025,6 +3081,11 @@
                     this.img = new Image();
                     this.img.onload = function() {
                         return t.setup();
+                    };
+                    
+                    this.img.onerror = function() {
+                    	t.img.error = true;
+                    	return t.setup();
                     };
 
                     this.img.src = this.active.src;
@@ -3126,6 +3187,86 @@
 
                     this.setup();
                     break;
+                case 'video/mp4':
+               	case 'audio/mp3':
+               	case 'video/webm':
+               	case 'audio/webm':
+                	var type = this.active.type;               	
+                	var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
+					var tag = /video/.test(type) ? 'video' : 'audio';
+
+                	if (hasSupport) {
+                		this.object = '<' + tag;
+                		
+                		for (n in p) {
+                            if (p[n] !== '') {
+                                if (/(loop|autoplay|controls|preload)$/.test(n)) {
+                                    t.object += ' ' + n + '="' + n + '"';
+                                }
+                                
+                                if (/(id|width|height|style|poster|audio)$/.test(n)) {
+                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                }
+                            }
+                        }
+                        
+                        this.object += '>';
+                        
+                       	this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
+                       	
+                       	this.object += '</' + tag + '>';
+                		
+                	} else { 
+                		if (type == 'video/mp4' || type == 'audio/mp3') {
+                			this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+                		
+	                		var src = this.active.src;
+	                        
+	                        if (!/:\/\//.test(src)) {
+	                        	src = JCEMediaBox.site + src;
+	                        }
+	                        
+	                        var map = {
+	                        	'loop' 		: 'loop',
+	                        	'autoplay' 	: 'autoPlay',
+	                        	'controls' 	: 'controlBarAutoHide'
+	                        };
+	                        
+	                        var flashvars = ['src=' + src];
+	                		
+	                		for (n in p) {
+	                            if (p[n] !== '') {                                
+	                                if (/(loop|autoplay|controls|preload)$/.test(n)) {
+	                                    if (map[n]) {
+	                                    	var v = (n == 'controls') ? !p[n] : !!p[n];
+	                                    	flashvars.push(map[n] + '=' + v);
+	                                    }
+	                                }
+	                                
+	                                if (/(id|width|height|style)$/.test(n)) {
+	                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+	                                }
+	                            }
+	                        }
+	                        
+	                        this.object += '>';
+	
+	                       	this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+	                       	this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+	                       	this.object += '<param name="allowfullscreen" value="true" />';
+	                       	this.object += '<param name="wmode" value="transparent" />';
+	                       	
+	                       	this.object += '</object>';
+                		} else {
+                			DOM.addClass(this.content, 'broken-media');
+                		}
+                	}
+                	
+                	// set global media type
+                    this.active.type = 'media';
+
+                    this.setup();
+                	break;
                 case 'ajax':
                 case 'text/html':
                 case 'text/xml':
@@ -3165,22 +3306,30 @@
                         DOM.style(this.ajax, 'padding-right', JCEMediaBox.Dimensions.getScrollbarWidth());
                     }
                     this.active.src = this.active.src.replace(/\&type=(ajax|text\/html|text\/xml)/, '');
-                    // Get data
-                    new JCEMediaBox.XHR({
-                        success: function(text, xml) {
-                            var data = text, html = data, re = /<body[^>]*>([\s\S]*?)<\/body>/;
-                            if (re.test(data)) {
-                                html = re.exec(data)[1];
-                            }
 
-                            t.ajax.innerHTML = html;
+                    // show loader
+                    if (this.loader) {
+                    	DOM.show(this.loader);
+                    }
+                    
+                    // create an iframe to load internal content in rather than using ajax so that javascript in the article is processed
+                    var iframe = DOM.add(document.body, 'iframe', {
+                    	src 	: this.active.src,
+                    	style 	: 'display:none;'
+                    });
+                    
+                    // transfer data and delete iframe when loaded
+                    iframe.onload = function() {
+                    	// transfer data
+                    	t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
+                    	
+                    	window.setTimeout(function() {
+                    		// remove iframe
+                    		DOM.remove(iframe);
+                    	}, 10);
 
-                            if (t.loader) {
-                                DOM.show(t.loader);
-                            }
-
-                            // process any popups in loaded content
-                            t.create(t.getPopups('', t.content));
+                    	// process any popups in loaded content
+                        t.create(t.getPopups('', t.content));
 
                             // process any tooltips in loaded content
                             JCEMediaBox.ToolTip.create(t.content);
@@ -3206,9 +3355,13 @@
 
                             // setup
                             return t.setup();
-                        }
+                    };
+                    
+                    iframe.onerror = function() {
+                    	DOM.addClass(this.content, 'broken-page');
+                    	return t.setup();
+                    };
 
-                    }).send(this.active.src);
                     break;
                 case 'iframe':
                 default:
@@ -3227,6 +3380,7 @@
 
                     this.active.type = 'iframe';
                     this.setup();
+
                     break;
             }
             return false;
@@ -3268,13 +3422,18 @@
          * Pre-animation setup. Resize images, set width / height
          */
         setup: function() {
-            var t = this, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, w, h;
+            var t = this, DOM = JCEMediaBox.DOM, w, h;
 
             w = this.active.width;
             h = this.active.height;
 
             // Get image dimensions and resize if necessary
             if (this.active.type == 'image') {
+                if (t.img.error) {
+                	w = 300;
+                	h = 300;
+                }
+                
                 var x = this.img.width;
                 var y = this.img.height;
 
@@ -3307,7 +3466,11 @@
             DOM.hide(this.content);
 
             if (this.active.type == 'image') {
-                this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+            	if (this.img.error) {
+            		DOM.addClass(this.content, 'broken-image');
+            	} else {
+            		this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+            	}
 
                 // fix resized images in IE
                 if (JCEMediaBox.isIE) {
@@ -3355,23 +3518,10 @@
                 'top': top,
                 'width': cw
             }, ss, function() {
-                // Hide loader
-                if (t.loader) {
-                    DOM.hide(t.loader);
-                }
-                // If media
-                if (t.active.type == 'media' && t.object) {
-                    t.content.innerHTML = t.object;
-                }
-                DOM.show(t.content);
-                if (t.active.type == 'ajax') {
-                    DOM.show(t.ajax);
-                }
-                t.content.focus();
-                // Iframe
+            	// Iframe
                 if (t.active.type == 'iframe') {
                     // Create IFrame
-                    t.iframe = DOM.add(t.content, 'iframe', {
+                    var iframe = DOM.add(t.content, 'iframe', {
                         id: 'jcemediabox-popup-iframe',
                         frameBorder: 0,
                         allowTransparency: true,
@@ -3381,9 +3531,37 @@
                             height	: '100%'
                         }
                     });
+                    
+                    iframe.onload = function() {
+                    	// Hide loader
+                        if (t.loader) {
+                            DOM.hide(t.loader);
+                        }
+                    };
+                    
                     // Set src
-                    t.iframe.setAttribute('src', t.active.src);
+                    iframe.setAttribute('src', t.active.src);
+                    
+                    t.iframe = iframe;
+                } else {
+                	// Hide loader
+                    if (t.loader) {
+                        DOM.hide(t.loader);
+                    }
+                    
+                    // If media
+                    if (t.active.type == 'media' && t.object) {
+                        t.content.innerHTML = t.object;
+                    }
+                    
+                    if (t.active.type == 'ajax') {
+                        DOM.show(t.ajax);
+                    }
                 }
+ 
+                DOM.show(t.content);
+                t.content.focus();
+                
                 /**
                  * Private internal function
                  * Show info areas of popup

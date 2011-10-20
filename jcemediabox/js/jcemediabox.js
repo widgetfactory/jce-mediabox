@@ -34,7 +34,7 @@
                 // Workaround required for IE9, which doesn't report video support without audio codec specified.
                 //   bug 599718 @ msft connect
                 var h264 = 'video/mp4; codecs="avc1.42E01E';
-                bool.h264 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
+                bool.mp4 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
 
                 bool.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
             }
@@ -3057,6 +3057,10 @@
 
             // Get parameters from addon
             extend(p, this.getAddon(o.src, o.type));
+            
+            // delete alternate src
+            delete o.params.src;
+            
             // Get set parameters
             extend(p, o.params);
 
@@ -3195,7 +3199,7 @@
                 	var type = this.active.type;               	
                 	var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
 					var tag = /video/.test(type) ? 'video' : 'audio';
-
+					
                 	if (hasSupport) {
                 		this.object = '<' + tag;
                 		

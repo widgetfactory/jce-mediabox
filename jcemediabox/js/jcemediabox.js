@@ -632,7 +632,8 @@
                     v = el.getAttribute(s);
                     // Remove anonymous function from events
                     if (/^on/.test(s)) {
-                        v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
+                        v = v.toString();
+                    	v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
                     }
                     // Fix Hspace
                     if (s == 'hspace' && v == -1) {
@@ -3319,7 +3320,8 @@
                     });
                     
                     // transfer data and delete iframe when loaded
-                    iframe.onload = function() {
+                    Event.add(iframe, 'load', function() {
+                    //iframe.onload = function() {
                     	// transfer data
                     	t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
                     	
@@ -3355,7 +3357,7 @@
 
                             // setup
                             return t.setup();
-                    };
+                    });
                     
                     iframe.onerror = function() {
                     	DOM.addClass(this.content, 'broken-page');
@@ -3489,7 +3491,7 @@
          * Animate the Popup
          */
         animate: function() {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, FX = JCEMediaBox.FX, DIM = JCEMediaBox.Dimensions;
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, FX = JCEMediaBox.FX, DIM = JCEMediaBox.Dimensions, Event = JCEMediaBox.Event;
             var ss = JCEMediaBox.options.popup.scalespeed, fs = JCEMediaBox.options.popup.fadespeed;
 
             var cw = DIM.outerWidth(this.content);
@@ -3522,22 +3524,24 @@
                 if (t.active.type == 'iframe') {
                     // Create IFrame
                     var iframe = DOM.add(t.content, 'iframe', {
-                        id: 'jcemediabox-popup-iframe',
-                        frameBorder: 0,
-                        allowTransparency: true,
-                        scrolling: t.active.params.scrolling || 'auto',
-                        'style': {
+                        id					: 'jcemediabox-popup-iframe',
+                        frameborder			: 0,
+                        allowTransparency	: true,
+                        scrolling			: t.active.params.scrolling || 'auto',
+                        'style'				: {
                             width	: '100%',
                             height	: '100%'
-                        }
+                        },
+                        seamless 			: "seamless"
                     });
                     
-                    iframe.onload = function() {
+                    Event.add(iframe, 'load', function() {
+                    //iframe.onload = function() {
                     	// Hide loader
                         if (t.loader) {
                             DOM.hide(t.loader);
                         }
-                    };
+                    });
                     
                     // Set src
                     iframe.setAttribute('src', t.active.src);

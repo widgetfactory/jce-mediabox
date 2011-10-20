@@ -117,6 +117,7 @@
 		<folder>jcemediabox/img</folder>
 		<folder>jcemediabox/js</folder>
 		<folder>jcemediabox/themes</folder>
+		<folder>jcemediabox/mediaplayer</folder>
 	</files>
 	
 	<languages folder="administrator/language/en-GB">

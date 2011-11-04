@@ -40,8 +40,6 @@ class plgSystemJCEMediabox extends JPlugin
 	function plgSystemJCEMediabox(&$subject, $config)  
 	{
 		parent::__construct($subject, $config);
-		
-		define('JPATH_PLUGIN', JPATH_PLUGINS.DS.'system'.DS.'jcemediabox');
 	}
 	
 	function getPath() 

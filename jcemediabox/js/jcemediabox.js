@@ -2677,7 +2677,6 @@
                             t.close();
                         }
                     });
-
                 }
 
                 // Setup Close link event
@@ -3079,6 +3078,10 @@
 
             switch (this.active.type) {
                 case 'image':
+                case 'image/jpeg':
+                case 'image/png':
+                case 'image/gif':
+                case 'image/bmp':
                     if (this.print && this.options.print) {
                         this.print.style.visibility = 'visible';
                     }
@@ -3703,7 +3706,6 @@
 
     };
 })(window);
-
 // Cleanup events
 JCEMediaBox.Event.addUnload( function() {
     JCEMediaBox.Event.destroy();

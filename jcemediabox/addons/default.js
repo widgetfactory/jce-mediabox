@@ -127,17 +127,15 @@
 		
 		vimeo: function(v) {
 			if (/vimeo\.com\/(video\/)?([0-9]+)/.test(v)) {
-				
 				return {
 					width	: 400,
 					height	: 225,
 					type	: 'iframe',
-					'src'	: v.replace(/([^\.]+)\.vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c) {
-						if (/player/.test(b)) {
+					'src'	: v.replace(/vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c) {						
+						if (/player/.test(a)) {
 							return a;
 						}
-						
-						return 'player.vimeo.com/video/' + d;
+						return 'player.vimeo.com/video/' + c;
 					})
 				};
 			}

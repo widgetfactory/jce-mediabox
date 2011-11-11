@@ -131,11 +131,11 @@
 					width	: 400,
 					height	: 225,
 					type	: 'iframe',
-					'src'	: v.replace(/vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c) {						
-						if (/player/.test(a)) {
+					'src'	: v.replace(/(player\.)?vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c, d) {						
+						if (b) {						
 							return a;
 						}
-						return 'player.vimeo.com/video/' + c;
+						return 'player.vimeo.com/video/' + d;
 					})
 				};
 			}

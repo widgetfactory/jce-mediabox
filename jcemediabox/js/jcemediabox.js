@@ -1794,7 +1794,7 @@
                 }
                 
                 // JCE MediaBox parameter format eg: title[title]
-                if (new RegExp('([\\w]+\[[^\]]+\])').test(s)) {                    
+                if (/\w\[[^\]]+\]/.test(s)) {                	                	
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
                         return '"' + b + '":"' + c + '"' + (d ? ',' : '');
                     });
@@ -2262,8 +2262,9 @@
                 function _buildIcon(el, zoom, child, styles) {
                     // Clone image as span element
                     var span = DOM.add(el, 'span', {
-                        'class': 'jcemediabox-zoom-span',
-                        'style': child.style.cssText
+                        'class'	: 'jcemediabox-zoom-span',
+                        'style'	: child.style.cssText,
+                        'title' : child.title || child.alt || ''	 
                     });
 
                     // Set styles
@@ -3026,7 +3027,7 @@
          * @param {Integer} n Popup number
          */
         change: function(n) {
-            var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE;
+            var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE, DIM = JCEMediaBox.Dimensions;
 
             var p = {}, o, w, h;
             if (n < 0 || n >= this.items.length) {
@@ -3062,6 +3063,17 @@
             
             // Get set parameters
             extend(p, o.params);
+            
+            var width 	= p.width 	|| JCEMediaBox.options.popup.width 	|| 0;
+            var height	= p.height 	|| JCEMediaBox.options.popup.height || 0;
+            
+            if (/%/.test(width)) {
+            	width = DIM.getWidth() * parseInt(width) / 100;
+            }
+            
+            if (/%/.test(height)) {
+            	height = DIM.getHeight() * parseInt(height) / 100;
+            }
 
             extend(this.active, {
                 'src'		: p.src || o.src,
@@ -3069,8 +3081,8 @@
                 'caption'	: p.caption || '',
                 'type'		: p.type || this.getType(o),
                 'params'	: p || {},
-                'width'		: p.width || JCEMediaBox.options.popup.width || 0,
-                'height'	: p.height || JCEMediaBox.options.popup.height || 0
+                'width'		: width,
+                'height'	: height
             });
 
             // Setup info
@@ -3143,8 +3155,8 @@
                     delete p.group;
 
                     // Set width/height
-                    p.width = this.active.width = p.width || w;
-                    p.height = this.active.height = p.height || h;
+                    p.width = this.active.width || this.width();
+                    p.height = this.active.height || this.height();
 
                     var flash = /flash/i.test(this.active.type);
 
@@ -3282,8 +3294,8 @@
                         this.print.style.visibility = 'visible';
                     }
 
-                    this.active.width = this.active.width || this.width();
-                    this.active.height = this.active.height || this.height();
+                    this.active.width 	= this.active.width 	|| this.width();
+                    this.active.height 	= this.active.height 	|| this.height();
 
                     if (this.islocal(this.active.src)) {
                         if (!/tmpl=component/i.test(this.active.src)) {

@@ -1,14 +1,17 @@
 /**
- * @version		$Id: jcemediabox.css 996 2011-03-08 17:13:58Z happynoodleboy $
  * @package		JCE MediaBox
- * @copyright	Copyright (C) 2009 - 2010 Ryan Demmer. All rights reserved.
- * @license		GNU/GPL
+ * @copyright	Copyright (C) 2009 - 2011 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL 2 or later
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
+@media print {
+  	a.jcepopup span.jcemediabox-zoom-image {
+		background: none !important;	
+	}
+}
 #jcemediabox-popup-page, #jcemediabox-popup-overlay, #jcemediabox-popup-body, #jcemediabox-popup-loader, #jcemediabox-popup-container, 
 #jcemediabox-popup-content, #jcemediabox-popup-content, #jcemediabox-popup-object, #jcemediabox-popup-iframe, #jcemediabox-popup-img {
 	left: 0;
@@ -94,6 +97,9 @@
 	width: auto;
 	height: 100%;
 	background-color: #ffffff;
+}
+a.jcepopup[type="image"], a.jcepopup[href$=".jpg"], a.jcepopup[href$=".png"], a.jcepopup[href$=".gif"], a.jcepopup[href$=".tiff"], a.jcepopup[href$=".bmp"] {
+	line-height : 0;
 }
 a.jcepopup span.jcemediabox-zoom-span {
 	margin: 0;

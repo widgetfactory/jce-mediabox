@@ -122,7 +122,7 @@ class plgSystemJCEMediabox extends JPlugin
 		jimport('joomla.environment.browser');
 		jimport('joomla.filesystem.file');
 		
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$theme = $vars['theme'] == 'custom' ? $vars['themecustom'] : $vars['theme'];
 		
 		$version = $this->getVersion();
@@ -187,7 +187,7 @@ class plgSystemJCEMediabox extends JPlugin
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 		
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		
 		$path 	= $this->getPath().DS.'addons';
 		$filter = array('default-src.js');
@@ -200,10 +200,12 @@ class plgSystemJCEMediabox extends JPlugin
 		
 		$scripts = array();
 		
-		foreach ($files as $file) {
-			$scripts[] = 'addons/'.$file;
+		if (is_array($files) && count($files)) {
+			foreach ($files as $file) {
+				$scripts[] = 'addons/'.$file;
+			}
 		}
-		
+
 		return $scripts;
  	}
 	/**
@@ -212,13 +214,13 @@ class plgSystemJCEMediabox extends JPlugin
 	 */
 	function onAfterDispatch()
 	{
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		
 		if ($app->isAdmin()) {
 			return;
 		}
 		
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$docType = $document->getType();
 
 		// only in html pages
@@ -235,7 +237,7 @@ class plgSystemJCEMediabox extends JPlugin
 
 		$dev = true;
 		
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		
 		// Causes issue in Safari??
 		$pop 	= JRequest::getVar('pop', 0, 'int');

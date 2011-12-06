@@ -3207,6 +3207,59 @@
 
                     this.setup();
                     break;
+                case 'video/x-flv':
+                	this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+            		
+            		var src = this.active.src;
+                    
+                    if (!/:\/\//.test(src)) {
+                    	src = JCEMediaBox.site + src;
+                    }
+                    
+                    var map = {
+                    	'loop' 		: 'loop',
+                    	'autoplay' 	: 'autoPlay',
+                    	'controls' 	: 'controlBarAutoHide'
+                    };
+                    
+                    var v, flashvars = ['src=' + src], params = {wmode : 'opaque', allowfullscreen : true};
+            		
+            		for (n in p) {
+                        if (p[n] !== '') {                                
+                            if (/(id|width|height|style)$/.test(n)) {
+                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                            } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
+                            	params[n] = p[n];
+                            } else {
+                            	if (/(loop|autoplay|controls)$/.test(n)) {
+                                    if (map[n]) {
+                                    	v = (n == 'controls') ? !p[n] : !!p[n];
+                                    	n = map[n];
+                                    }
+                                } else {
+                                	v = p[n];
+                                }
+                            	
+                            	flashvars.push(n + '=' + v);
+                            }
+                        }
+                    }
+                    
+                    this.object += '>';
+
+                   	this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+                   	this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+                   	for (n in params) {
+                   		this.object += '<param name="' + n + '" value="' + params[n] + '" />';
+                   	}
+                   	
+                   	this.object += '</object>';
+                   	
+                   	// set global media type
+                    this.active.type = 'media';
+
+                    this.setup();
+                	break;
                 case 'video/mp4':
                	case 'audio/mp3':
                	case 'video/webm':

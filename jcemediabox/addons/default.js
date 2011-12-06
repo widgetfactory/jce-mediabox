@@ -37,6 +37,18 @@
 		},
 		
 		/**
+		 * Standard Flash object
+		 * @param {String} v URL
+		 */
+		flv : function(v) {
+			if (/\.flv\b/.test(v)) {
+				return {
+					type: 'video/x-flv'
+				};
+			}
+		},
+		
+		/**
 		 * Metacafe - http://www.metacafe.com
 		 * @param {String} v URL
 		 */

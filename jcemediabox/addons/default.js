@@ -125,13 +125,34 @@
 					height	: 350,
 					type	: 'iframe',
 					'src'	: v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
-						d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
+						var query = '';
+						
+						if (/watch\?/.test(d)) {
+							// remove watch?
+							d = d.replace(/watch\?/, '');
+							// get query arguments
+							var args = JCEMediaBox.Popup.params(d);
+							// set video id
+							query += args.v;					
+							delete args.v;
+							
+							for (k in args) {
+								query += (((/\?/.test(query)) ? '&' : '?') + k + '=' + args[k]);
+							}
+
+						} else {
+							query = d.replace(/embed\//, '');
+						}
 
 						if (b && !c) {
 							c = '.com';
 						}
+						
+						if (!/wmode/.test(query)) {
+							query += /\?/.test(query) ? '&wmode=opaque' : '?wmode=opaque'; 
+						}
 
-						return 'youtube' + c + '/embed/' + d + (/\?/.test(d) ? '&' : '?') + 'wmode=opaque';
+						return 'youtube' + c + '/embed/' + query;
 					})
 				};
 			}

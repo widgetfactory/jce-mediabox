@@ -89,6 +89,12 @@
 #jcemediabox-popup-img, #jcemediabox-popup-object, #jcemediabox-popup-iframe {
 	text-align: center;
 }
+
+#jcemediabox-popup-page.idevice #jcemediabox-popup-content {
+	overflow: scroll;
+	-webkit-overflow-scrolling: touch;
+}
+
 #jcemediabox-popup-ajax {
 	overflow: auto;
 	border: 0;

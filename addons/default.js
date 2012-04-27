@@ -153,7 +153,8 @@
                         }
 
                         return 'youtube' + c + '/embed/' + query;
-                    })
+                    // add www (required by iOS ??)
+                    }).replace(/\/\/youtube/i, '//www.youtube')
                 };
             }
         },

@@ -23,9 +23,9 @@
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.video = (function() {
-    	var el = document.createElement('video');
-    	var bool = false;
-    	// IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
+        var el = document.createElement('video');
+        var bool = false;
+        // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
         try {
             if (bool = !!el.canPlayType ) {
                 bool      = new Boolean(bool);
@@ -41,7 +41,7 @@
             
         } catch(e) { }
     	
-    	return bool;
+        return bool;
     })();
     
     /*
@@ -50,9 +50,9 @@
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.audio = (function() {
-    	var el = document.createElement('audio');
+        var el = document.createElement('audio');
     	
-    	try { 
+        try { 
             if (bool = !!el.canPlayType ) {
                 bool      = new Boolean(bool);
                 bool.ogg  = el.canPlayType('audio/ogg; codecs="vorbis"');
@@ -67,7 +67,7 @@
             }
         } catch(e) { }
     	
-    	return bool;
+        return bool;
     })();
     
     window.JCEMediaBox = {
@@ -142,7 +142,7 @@
                     return JCEMediaBox._init();
                 }, false);
 
-                // If IE event model is used
+            // If IE event model is used
             } else if (document.attachEvent) {
                 // ensure firing before onload,
                 // maybe late but safe also for iframes
@@ -203,7 +203,7 @@
                 // Get url part before base
                 if (url.indexOf(base) != -1) {
                     url = url.substr(0, url.indexOf(base));
-                    // Get url part before first slash
+                // Get url part before first slash
                 } else {
                     url = url.substr(0, url.indexOf('/')) || url;
                 }
@@ -633,7 +633,7 @@
                     // Remove anonymous function from events
                     if (/^on/.test(s)) {
                         v = v.toString();
-                    	v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
+                        v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
                     }
                     // Fix Hspace
                     if (s == 'hspace' && v == -1) {
@@ -736,7 +736,7 @@
                         this.attribute(el, 'src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif');
                         this.style(el, 'filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
                     }
-                    // Background-image styles
+                // Background-image styles
                 } else {
                     s = this.style(el, 'background-image');
                     if (/\.png/i.test(s)) {
@@ -873,7 +873,7 @@
                         else
                             o['on' + n] = null;
                     } catch (ex) {
-                        // Might fail with permission denined on IE so we just ignore that
+                    // Might fail with permission denined on IE so we just ignore that
                     }
                 }
             },
@@ -1308,13 +1308,24 @@
             this.setTransport();
             // store request method as uppercase (GET|POST)
             var method = this.options.data ? 'POST' : 'GET';
+            
+            // set encoding
+            var encoding = (this.options.encoding) ? '; charset=' + this.options.encoding.toUpperCase() : '';
+            
+            // Set standard GET header
+            var contentType = {
+                'Content-type': 'text/html' + encoding
+                };
+
             // Set URL Encoded / POST header options
             if (this.options.data) {
-                var encoding = (this.options.encoding) ? '; charset=' + this.options.encoding : '';
-                extend(this.options.headers, {
-                    'Content-type': 'application/x-www-form-urlencoded' + encoding.toUpperCase()
-                });
+                contentType = {
+                    'Content-type': 'application/x-www-form-urlencoded' + encoding
+                    };
             }
+            
+            extend(this.options.headers, contentType);
+            
             // Open transport
             this.transport.open(method, url, this.options.async);
             // Set readystatechange function
@@ -1770,9 +1781,9 @@
             }
 
             if (/^[\],:{}\s]*$/
-            .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-            .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-            .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+                .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 // Try to use the native JSON parser first
                 return window.JSON && window.JSON.parse ?
                 window.JSON.parse( data ) :
@@ -1894,7 +1905,7 @@
         convertLegacy: function() {
             var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
             each(DOM.select('a[href]'), function(el) {
-            	
+
                 // Only JCE Popup links
                 if (/com_jce/.test(el.href)) {
                     var p, s;
@@ -1912,6 +1923,7 @@
                             }
                             img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
+                        
                         DOM.attributes(el, {
                             'href'		: img,
                             'title'		: title.replace(/_/, ' '),
@@ -2237,7 +2249,7 @@
                     // pixel value
                     if (/([0-9]+)(px)?$/.test(ws)) {
                         w = parseFloat(ws);
-                        // other value
+                    // other value
                     } else {
                         w = child.width;
                     }
@@ -2358,7 +2370,7 @@
 
         getData : function(n) {
             var DOM = JCEMediaBox.DOM, o = {}, data;
-			var re = /\w+\[[^\]]+\]/;
+            var re = /\w+\[[^\]]+\]/;
 			
             data = DOM.attribute(n, 'data-mediabox') || DOM.attribute(n, 'data-json');
 
@@ -2456,6 +2468,12 @@
                 }
                 // Set AREA group
                 group = group || 'AREA_ELEMENT';
+                // set type
+                if (!data.type) {
+                    if (match = /\b(ajax|iframe|image|flash|director|shockwave|mplayer|windowsmedia|quicktime|realaudio|real|divx|pdf)\b/.exec(el.className)) {
+                        data.type = match[0];
+                    }
+                }
             }
 
             // check for auto popup
@@ -3068,11 +3086,11 @@
             var height	= p.height 	|| JCEMediaBox.options.popup.height || 0;
             
             if (/%/.test(width)) {
-            	width = DIM.getWidth() * parseInt(width) / 100;
+                width = DIM.getWidth() * parseInt(width) / 100;
             }
             
             if (/%/.test(height)) {
-            	height = DIM.getHeight() * parseInt(height) / 100;
+                height = DIM.getHeight() * parseInt(height) / 100;
             }
 
             extend(this.active, {
@@ -3104,8 +3122,8 @@
                     };
                     
                     this.img.onerror = function() {
-                    	t.img.error = true;
-                    	return t.setup();
+                        t.img.error = true;
+                        return t.setup();
                     };
 
                     this.img.src = this.active.src;
@@ -3191,7 +3209,7 @@
                         }
                         // Add closing object element
                         this.object += '</object>';
-                        // Use embed for non-IE browsers
+                    // Use embed for non-IE browsers
                     } else {
                         this.object = '<embed type="' + mt.mediatype + '"';
                         for (n in p) {
@@ -3208,70 +3226,73 @@
                     this.setup();
                     break;
                 case 'video/x-flv':
-                	this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+                    this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
             		
-            		var src = this.active.src;
+                    var src = this.active.src;
                     
                     if (!/:\/\//.test(src)) {
-                    	src = JCEMediaBox.site + src;
+                        src = JCEMediaBox.site + src;
                     }
                     
                     var map = {
-                    	'loop' 		: 'loop',
-                    	'autoplay' 	: 'autoPlay',
-                    	'controls' 	: 'controlBarAutoHide'
+                        'loop' 		: 'loop',
+                        'autoplay' 	: 'autoPlay',
+                        'controls' 	: 'controlBarAutoHide'
                     };
                     
-                    var v, flashvars = ['src=' + src], params = {wmode : 'opaque', allowfullscreen : true};
+                    var v, flashvars = ['src=' + src], params = {
+                        wmode : 'opaque', 
+                        allowfullscreen : true
+                    };
             		
-            		for (n in p) {
+                    for (n in p) {
                         if (p[n] !== '') {                                
                             if (/(id|width|height|style)$/.test(n)) {
                                 t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                             } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
-                            	params[n] = p[n];
+                                params[n] = p[n];
                             } else {
-                            	if (/(loop|autoplay|controls)$/.test(n)) {
+                                if (/(loop|autoplay|controls)$/.test(n)) {
                                     if (map[n]) {
-                                    	v = (n == 'controls') ? !p[n] : !!p[n];
-                                    	n = map[n];
+                                        v = (n == 'controls') ? !p[n] : !!p[n];
+                                        n = map[n];
                                     }
                                 } else {
-                                	v = p[n];
+                                    v = p[n];
                                 }
                             	
-                            	flashvars.push(n + '=' + v);
+                                flashvars.push(n + '=' + v);
                             }
                         }
                     }
                     
                     this.object += '>';
 
-                   	this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
-                   	this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
-                   	for (n in params) {
-                   		this.object += '<param name="' + n + '" value="' + params[n] + '" />';
-                   	}
+                    this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+                    this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+                    for (n in params) {
+                        this.object += '<param name="' + n + '" value="' + params[n] + '" />';
+                    }
                    	
-                   	this.object += '</object>';
+                    this.object += '</object>';
                    	
-                   	// set global media type
+                    // set global media type
                     this.active.type = 'media';
 
                     this.setup();
-                	break;
+                    break;
                 case 'video/mp4':
-               	case 'audio/mp3':
-               	case 'video/webm':
-               	case 'audio/webm':
-                	var type = this.active.type;               	
-                	var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
-					var tag = /video/.test(type) ? 'video' : 'audio';
+                case 'audio/mp3':
+                case 'video/webm':
+                case 'audio/webm':
+                    var type = this.active.type;               	
+                    var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
+                    var tag = /video/.test(type) ? 'video' : 'audio';
 					
-                	if (hasSupport) {
-                		this.object = '<' + tag;
+                    if (hasSupport) {
+                        this.object = '<' + tag;
                 		
-                		for (n in p) {
+                        for (n in p) {
                             if (p[n] !== '') {
                                 if (/(loop|autoplay|controls|preload)$/.test(n)) {
                                     t.object += ' ' + n + '="' + n + '"';
@@ -3285,61 +3306,61 @@
                         
                         this.object += '>';
                         
-                       	this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
+                        this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
                        	
-                       	this.object += '</' + tag + '>';
+                        this.object += '</' + tag + '>';
                 		
-                	} else { 
-                		if (type == 'video/mp4' || type == 'audio/mp3') {
-                			this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+                    } else { 
+                        if (type == 'video/mp4' || type == 'audio/mp3') {
+                            this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
                 		
-	                		var src = this.active.src;
+                            var src = this.active.src;
 	                        
-	                        if (!/:\/\//.test(src)) {
-	                        	src = JCEMediaBox.site + src;
-	                        }
+                            if (!/:\/\//.test(src)) {
+                                src = JCEMediaBox.site + src;
+                            }
 	                        
-	                        var map = {
-	                        	'loop' 		: 'loop',
-	                        	'autoplay' 	: 'autoPlay',
-	                        	'controls' 	: 'controlBarAutoHide'
-	                        };
+                            var map = {
+                                'loop' 		: 'loop',
+                                'autoplay' 	: 'autoPlay',
+                                'controls' 	: 'controlBarAutoHide'
+                            };
 	                        
-	                        var flashvars = ['src=' + src];
+                            var flashvars = ['src=' + src];
 	                		
-	                		for (n in p) {
-	                            if (p[n] !== '') {                                
-	                                if (/(loop|autoplay|controls|preload)$/.test(n)) {
-	                                    if (map[n]) {
-	                                    	var v = (n == 'controls') ? !p[n] : !!p[n];
-	                                    	flashvars.push(map[n] + '=' + v);
-	                                    }
-	                                }
+                            for (n in p) {
+                                if (p[n] !== '') {                                
+                                    if (/(loop|autoplay|controls|preload)$/.test(n)) {
+                                        if (map[n]) {
+                                            var v = (n == 'controls') ? !p[n] : !!p[n];
+                                            flashvars.push(map[n] + '=' + v);
+                                        }
+                                    }
 	                                
-	                                if (/(id|width|height|style)$/.test(n)) {
-	                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
-	                                }
-	                            }
-	                        }
+                                    if (/(id|width|height|style)$/.test(n)) {
+                                        t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    }
+                                }
+                            }
 	                        
-	                        this.object += '>';
+                            this.object += '>';
 	
-	                       	this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
-	                       	this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
-	                       	this.object += '<param name="allowfullscreen" value="true" />';
-	                       	this.object += '<param name="wmode" value="transparent" />';
+                            this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+                            this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+                            this.object += '<param name="allowfullscreen" value="true" />';
+                            this.object += '<param name="wmode" value="transparent" />';
 	                       	
-	                       	this.object += '</object>';
-                		} else {
-                			DOM.addClass(this.content, 'broken-media');
-                		}
-                	}
+                            this.object += '</object>';
+                        } else {
+                            DOM.addClass(this.content, 'broken-media');
+                        }
+                    }
                 	
-                	// set global media type
+                    // set global media type
                     this.active.type = 'media';
 
                     this.setup();
-                	break;
+                    break;
                 case 'ajax':
                 case 'text/html':
                 case 'text/xml':
@@ -3382,58 +3403,58 @@
 
                     // show loader
                     if (this.loader) {
-                    	DOM.show(this.loader);
+                        DOM.show(this.loader);
                     }
                     
                     // create an iframe to load internal content in rather than using ajax so that javascript in the article is processed
                     var iframe = DOM.add(document.body, 'iframe', {
-                    	src 	: this.active.src,
-                    	style 	: 'display:none;'
+                        src 	: this.active.src,
+                        style 	: 'display:none;'
                     });
                     
                     // transfer data and delete iframe when loaded
                     Event.add(iframe, 'load', function() {
-                    //iframe.onload = function() {
-                    	// transfer data
-                    	t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
+                        //iframe.onload = function() {
+                        // transfer data
+                        t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
                     	
-                    	window.setTimeout(function() {
-                    		// remove iframe
-                    		DOM.remove(iframe);
-                    	}, 10);
+                        window.setTimeout(function() {
+                            // remove iframe
+                            DOM.remove(iframe);
+                        }, 10);
 
-                    	// process any popups in loaded content
+                        // process any popups in loaded content
                         t.create(t.getPopups('', t.content));
 
-                            // process any tooltips in loaded content
-                            JCEMediaBox.ToolTip.create(t.content);
+                        // process any tooltips in loaded content
+                        JCEMediaBox.ToolTip.create(t.content);
 
-                            each(DOM.select('a, area', t.content), function(el) {
-                                JCEMediaBox.Event.add(el, 'click', function(e) {
-                                    if (el.href && el.href.indexOf('#') == -1) {
-                                        if (/jce(popup|box|lightbox)/.test(el.className)) {
-                                            Event.cancel(e);
-                                            t.close(true);
-                                        } else {
-                                            t.close();
-                                            if (isIE) {
-                                                if (/http(s)?:\/\//.test(el.href)) {
-                                                    document.location.href = el.href;
-                                                }
+                        each(DOM.select('a, area', t.content), function(el) {
+                            JCEMediaBox.Event.add(el, 'click', function(e) {
+                                if (el.href && el.href.indexOf('#') == -1) {
+                                    if (/jce(popup|box|lightbox)/.test(el.className)) {
+                                        Event.cancel(e);
+                                        t.close(true);
+                                    } else {
+                                        t.close();
+                                        if (isIE) {
+                                            if (/http(s)?:\/\//.test(el.href)) {
+                                                document.location.href = el.href;
                                             }
                                         }
                                     }
-                                });
-
+                                }
                             });
 
-                            // setup
-                            return t.setup();
+                        });
+
+                        // setup
+                        return t.setup();
                     });
                     
                     iframe.onerror = function() {
-                    	DOM.addClass(this.content, 'broken-page');
-                    	return t.setup();
+                        DOM.addClass(this.content, 'broken-page');
+                        return t.setup();
                     };
 
                     break;
@@ -3504,17 +3525,17 @@
             // Get image dimensions and resize if necessary
             if (this.active.type == 'image') {
                 if (t.img.error) {
-                	w = 300;
-                	h = 300;
+                    w = 300;
+                    h = 300;
                 }
                 
                 var x = this.img.width;
                 var y = this.img.height;
 
                 if (w && !h) {
-                	h = y * (w / x);
+                    h = y * (w / x);
                 } else if (!w && h) {
-                	w = x * (h / y);
+                    w = x * (h / y);
                 }
 
                 w = w || x;
@@ -3540,11 +3561,11 @@
             DOM.hide(this.content);
 
             if (this.active.type == 'image') {
-            	if (this.img.error) {
-            		DOM.addClass(this.content, 'broken-image');
-            	} else {
-            		this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
-            	}
+                if (this.img.error) {
+                    DOM.addClass(this.content, 'broken-image');
+                } else {
+                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+                }
 
                 // fix resized images in IE
                 if (JCEMediaBox.isIE) {
@@ -3592,7 +3613,7 @@
                 'top': top,
                 'width': cw
             }, ss, function() {
-            	// Iframe
+                // Iframe
                 if (t.active.type == 'iframe') {
                     // Create IFrame
                     var iframe = DOM.add(t.content, 'iframe', {
@@ -3603,13 +3624,13 @@
                         'style'				: {
                             width	: '100%',
                             height	: '100%'
-                        },
-                        seamless 			: "seamless"
+                        }/*,
+                        seamless 			: "seamless"*/
                     });
                     
                     Event.add(iframe, 'load', function() {
-                    //iframe.onload = function() {
-                    	// Hide loader
+                        //iframe.onload = function() {
+                        // Hide loader
                         if (t.loader) {
                             DOM.hide(t.loader);
                         }
@@ -3620,7 +3641,7 @@
                     
                     t.iframe = iframe;
                 } else {
-                	// Hide loader
+                    // Hide loader
                     if (t.loader) {
                         DOM.hide(t.loader);
                     }

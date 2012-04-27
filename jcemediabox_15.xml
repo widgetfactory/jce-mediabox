@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.5" type="plugin" group="system" method="upgrade">
+	<name>System - JCE MediaBox</name>
+	<author>Ryan Demmer</author>
+	<creationDate>@@date@@</creationDate>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<authorEmail>@@email@@</authorEmail>
+	<authorUrl>www.joomlacontenteditor.net</authorUrl>
+	<version>@@version@@</version>
+	<description>JCEMEDIABOX_DESC</description>
+
+	<params>
+		<param name="theme" type="folderlist" directory="plugins/system/jcemediabox/themes" hide_none="true" hide_default="true" exclude="(css|img)" default="standard" label="JCEMEDIABOX_THEME" description="JCEMEDIABOX_THEMEDESC" />
+		<!--param name="themepath" type="text" size="50" default="plugins/system/jcemediabox/themes" label="JCEMEDIABOX_THEMEPATH" description="JCEMEDIABOX_THEMEPATHDESC"/ -->
+		<param name="imgpath" type="text" size="50" default="plugins/system/jcemediabox/img" label="JCEMEDIABOX_IMAGEPATH" description="JCEMEDIABOX_IMAGEPATHDESC"/>
+		<param type="spacer" default="JCEMEDIABOX_POPUP" />
+		<param name="fadespeed" type="text" default="500" label="JCEMEDIABOX_FADESPEED" description="JCEMEDIABOX_FADESPEEDDESC"/>
+		<param name="scalespeed" type="text" default="500" label="JCEMEDIABOX_SCALESPEED" description="JCEMEDIABOX_SCALESPEEDDESC"/>
+		<param name="overlay" type="radio" default="1" label="JCEMEDIABOX_OVERLAY" description="JCEMEDIABOX_OVERLAYDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="overlayopacity" type="list" default="0.8" label="JCEMEDIABOX_OVERLAYOPACITY" description="JCEMEDIABOX_OVERLAYOPACITYDESC">
+			<option value="0">0</option>
+			<option value="0.1">0.1</option>
+			<option value="0.2">0.2</option>
+			<option value="0.3">0.3</option>
+			<option value="0.4">0.4</option>
+			<option value="0.5">0.5</option>
+			<option value="0.6">0.6</option>
+			<option value="0.7">0.7</option>
+			<option value="0.8">0.8</option>
+			<option value="0.9">0.9</option>
+			<option value="1">1</option>
+		</param>
+		<param name="overlaycolor" type="text" default="#000000" class="color" label="JCEMEDIABOX_OVERLAYCOLOR" description="JCEMEDIABOX_OVERLAYCOLORDESC" />
+		<param name="width" type="text" default="" label="JCEMEDIABOX_WIDTH" description="JCEMEDIABOX_WIDTHDESC" />
+		<param name="height" type="text" default="" label="JCEMEDIABOX_HEIGHT" description="JCEMEDIABOX_HEIGHTDESC" />
+		<param name="resize" type="radio" default="1" label="JCEMEDIABOX_RESIZE" description="JCEMEDIABOX_RESIZEDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="close" type="list" default="2" label="JCEMEDIABOX_CLOSE_ACTION" description="JCEMEDIABOX_CLOSE_ACTIONDESC">
+ 			<option value="1">JCEMEDIABOX_CLOSE_BUTTON</option>
+			<option value="2">JCEMEDIABOX_CLOSE_BUTTON_OVERLAY</option>
+ 		</param>
+		<param name="icons" type="radio" default="1" label="JCEMEDIABOX_ICONS" description="JCEMEDIABOX_ICONSDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="hideobjects" type="radio" default="0" label="JCEMEDIABOX_HIDEOBJECTS" description="JCEMEDIABOX_HIDEOBJECTSDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="scrolling" type="radio" default="fixed" label="JCEMEDIABOX_SCROLLPOSITION" description="JCEMEDIABOX_SCROLLPOSITIONDESC">
+ 			<option value="scroll">JCEMEDIABOX_SCROLL</option>
+			<option value="fixed">JCEMEDIABOX_FIXED</option>
+ 		</param>
+		<param name="components" type="text" size="50" default="" label="JCEMEDIABOX_COMPONENTS" description="JCEMEDIABOX_COMPONENTSDESC" />
+		<param name="dynamic_themes" type="radio" default="0" label="JCEMEDIABOX_DYNAMICTHEMES" description="JCEMEDIABOX_DYNAMICTHEMESDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="legacy" type="radio" default="0" label="JCEMEDIABOX_LEGACY" description="JCEMEDIABOX_LEGACYDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="lightbox" type="radio" default="0" label="JCEMEDIABOX_LIGHTBOX" description="JCEMEDIABOX_LIGHTBOXDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param name="shadowbox" type="radio" default="0" label="JCEMEDIABOX_SHADOWBOX" description="JCEMEDIABOX_SHADOWBOXDESC">
+ 			<option value="1">JCEMEDIABOX_YES</option>
+			<option value="0">JCEMEDIABOX_NO</option>
+ 		</param>
+		<param type="spacer" default="JCEMEDIABOX_TOOLTIP" />
+		<param name="tipclass" type="text" default="tooltip" label="JCEMEDIABOX_TOOLTIPCLASS" description="JCEMEDIABOX_TOOLTIPCLASSDESC"/>
+		<param name="tipopacity" type="list" default="0.8" label="JCEMEDIABOX_TOOLTIPOPACITY" description="JCEMEDIABOX_TOOLTIPOPACITYDESC">
+			<option value="0">0</option>
+			<option value="0.1">0.1</option>
+			<option value="0.2">0.2</option>
+			<option value="0.3">0.3</option>
+			<option value="0.4">0.4</option>
+			<option value="0.5">0.5</option>
+			<option value="0.6">0.6</option>
+			<option value="0.7">0.7</option>
+			<option value="0.8">0.8</option>
+			<option value="0.9">0.9</option>
+			<option value="1">1</option>
+		</param>
+		<param name="tipspeed" type="text" default="150" label="JCEMEDIABOX_TOOLTIPSPEED" description="JCEMEDIABOX_TOOLTIPSPEEDDESC"/>
+		<param name="tipposition" type="list" default="br" label="JCEMEDIABOX_TOOLTIPPOSITION" description="JCEMEDIABOX_TOOLTIPPOSITIONDESC">
+ 			<option value="tl">JCEMEDIABOX_TOPLEFT</option>
+ 			<option value="tr">JCEMEDIABOX_TOPRIGHT</option>
+			<option value="tc">JCEMEDIABOX_TOPCENTRE</option>
+ 			<option value="bl">JCEMEDIABOX_BOTTOMLEFT</option>
+			<option value="br">JCEMEDIABOX_BOTTOMRIGHT</option>
+ 			<option value="bc">JCEMEDIABOX_BOTTOMCENTRE</option>
+ 		</param>
+		<param name="tipoffsets_x" type="text" default="16" label="JCEMEDIABOX_TOOLTIPXOFFSET" description="JCEMEDIABOX_TOOLTIPXOFFSETDESC"/>
+		<param name="tipoffsets_y" type="text" default="16" label="JCEMEDIABOX_TOOLTIPYOFFSET" description="JCEMEDIABOX_TOOLTIPYOFFSETDESC"/>
+		<param type="spacer" default="JCEMEDIABOX_OTHER" />
+		<param name="flash" type="text" size="50" default="10,0,22,87" label="JCEMEDIABOX_FLASH" />
+		<param name="windowsmedia" type="text" size="50" default="5,1,52,701" label="JCEMEDIABOX_WINDOWSMEDIA" />
+		<param name="quicktime" type="text" size="50" default="6,0,2,0" label="JCEMEDIABOX_QUICKTIME" />
+		<param name="realmedia" type="text" size="50" default="7,0,0,0" label="JCEMEDIABOX_REALMEDIA" />
+		<param name="shockwave" type="text" size="50" default="8,5,1,0" label="JCEMEDIABOX_SHOCKWAVE" />
+	</params>
+
+	<files folder="plugins/system">
+		<file plugin="jcemediabox">jcemediabox.php</file>
+		<file>jcemediabox/index.html</file>
+		<file>jcemediabox/licence.txt</file>
+		<folder>jcemediabox/addons</folder>
+		<folder>jcemediabox/css</folder>
+		<folder>jcemediabox/img</folder>
+		<folder>jcemediabox/js</folder>
+		<folder>jcemediabox/themes</folder>
+		<folder>jcemediabox/mediaplayer</folder>
+	</files>
+	
+	<languages folder="administrator/language/en-GB">
+		<language tag="en-GB">en-GB.plg_system_jcemediabox.ini</language>
+	</languages>
+	
+</install>

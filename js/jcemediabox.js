@@ -12,7 +12,9 @@
  * other free or open source software licenses.
  *
  */
-(function(window) {
+jQuery.noConflict();
+
+(function($) {
     
     // html5 element support
     var support = {};
@@ -70,6 +72,34 @@
         return bool;
     })();
     
+    
+    /**
+     * IE6 PNG Fix
+     * @param {Object} el Element to fix
+     */
+    $.fn.png = function() {
+            
+        var s;
+        // Image Elements
+        if (this.nodeName == 'IMG') {
+            s = this.src;
+            if (/\.png$/i.test(s)) {
+                $(this).attr('src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif').css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
+            }
+        // Background-image styles
+        } else {
+            s = $(this).css('background-image');
+            
+            if (/\.png/i.test(s)) {
+                var bg = /url\("(.*)"\)/.exec(s)[1];
+                $(this).css({
+                    'background-image': 'none',
+                    'filter': "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + bg + "', sizingMethod='image')"
+                });
+            }
+        }
+    };
+    
     window.JCEMediaBox = {
         /**
          * Global Options Object
@@ -125,62 +155,8 @@
                     document.execCommand("BackgroundImageCache", false, true);
                 } catch (e) {
                 };
-            this.ready();
-        },
-
-        /**
-         * Function to determine if DOM is ready.
-         * Based on JQuery 'bindReady' function - http://jquery.com/
-         * Copyright (c) 2009 John Resig
-         */
-        ready: function() {
-            // Mozilla, Opera and webkit nightlies currently support this event
-            if (document.addEventListener) {
-                // Use the handy event callback
-                document.addEventListener("DOMContentLoaded", function() {
-                    document.removeEventListener("DOMContentLoaded", arguments.callee, false);
-                    return JCEMediaBox._init();
-                }, false);
-
-            // If IE event model is used
-            } else if (document.attachEvent) {
-                // ensure firing before onload,
-                // maybe late but safe also for iframes
-                document.attachEvent("onreadystatechange", function() {
-                    if (document.readyState === "complete") {
-                        document.detachEvent("onreadystatechange", arguments.callee);
-                        return JCEMediaBox._init();
-                    }
-                });
-
-                // If IE and not an iframe
-                // continually check to see if the document is ready
-                if (document.documentElement.doScroll && window == window.top) {
-                    (function() {
-                        if (JCEMediaBox.domLoaded)
-                            return;
-
-                        try {
-                            // If IE is used, use the trick by Diego Perini
-                            // http://javascript.nwbox.com/IEContentLoaded/
-                            document.documentElement.doScroll("left");
-                        } catch (error) {
-                            setTimeout(arguments.callee, 0);
-                            return;
-                        }
-
-                        // and execute any waiting functions
-                        return JCEMediaBox._init();
-                    })();
-
-                }
-            }
-
-            // A fallback to window.onload, that will always work
-            JCEMediaBox.Event.add(window, "load", function() {
-                return JCEMediaBox._init();
-            });
-
+            // start...
+            $(document).ready(this._init());
         },
 
         /**
@@ -219,11 +195,6 @@
          * Initialize JCEMediaBox
          */
         _init: function() {
-            if (this.domLoaded)
-                return;
-
-            this.domLoaded = true;
-
             var t = this, na = navigator, ua = na.userAgent;
             /**
              * Constant that is true if the browser is Opera.
@@ -292,1165 +263,8 @@
             // Initialize Popup / Tooltip creation
             this.Popup.init();
             this.ToolTip.init();
-        },
-
-        /**
-         * Performs an iteration of all items in a collection such as an object or array. This method will execure the
-         * callback function for each item in the collection, if the callback returns false the iteration will terminate.
-         * The callback has the following format: cb(value, key_or_index).
-         *
-         * @method each
-         * @param {Object} o Collection to iterate.
-         * @param {function} cb Callback function to execute for each item.
-         * @param {Object} s Optional scope to execute the callback in.
-         * @copyright	Copyright 2009, Moxiecode Systems AB
-         */
-        each: function(o, cb, s) {
-            var n, l;
-
-            if (!o)
-                return 0;
-
-            s = s || o;
-
-            if (o.length !== undefined) {
-                // Indexed arrays, needed for Safari
-                for (n = 0, l = o.length; n < l; n++) {
-                    if (cb.call(s, o[n], n, o) === false)
-                        return 0;
-                }
-            } else {
-                // Hashtables
-                for (n in o) {
-                    if (o.hasOwnProperty(n)) {
-                        if (cb.call(s, o[n], n, o) === false)
-                            return 0;
-                    }
-                }
-            }
-
-            return 1;
-        },
-
-        /**
-         * Extends an object with the specified other object(s).
-         *
-         * @method extend
-         * @param {Object} o Object to extend with new items.
-         * @param {Object} e..n Object(s) to extend the specified object with.
-         * @return {Object} o New extended object, same reference as the input object.
-         * @copyright	Copyright 2009, Moxiecode Systems AB
-         */
-        extend: function(o, e) {
-            var t = JCEMediaBox, i, l, a = arguments;
-
-            for (i = 1, l = a.length; i < l; i++) {
-                e = a[i];
-
-                t.each(e, function(v, n) {
-                    if (v !== undefined)
-                        o[n] = v;
-                });
-
-            }
-
-            return o;
-        },
-
-        /**
-         * Removes whitespace from the beginning and end of a string.
-         *
-         * @method trim
-         * @param {String} s String to remove whitespace from.
-         * @return {String} New string with removed whitespace.
-         * @copyright	Copyright 2009, Moxiecode Systems AB
-         */
-        trim: function(s) {
-            return (s ? '' + s : '').replace(/^\s*|\s*$/g, '');
-        },
-
-        /**
-         * DOM functions
-         */
-        DOM: {
-            /**
-             * Get an Element by ID
-             * @param {Object} s ID
-             */
-            get: function(s) {
-                if (typeof(s) == 'string')
-                    return document.getElementById(s);
-
-                return s;
-            },
-
-            /**
-             * Return elements matching a simple selector, eg: a, a[id], a.classname
-             * @param {Object} o Selector
-             * @param {Object} p Parent Element
-             */
-            select: function(o, p) {
-                var t = this, r = [], s, parts, at, tag, cl, each = JCEMediaBox.each;
-                p = p || document;
-                // Return all elements
-                if (o == '*') {
-                    return p.getElementsByTagName(o);
-                }
-
-                // Use native support if available
-                if (p.querySelectorAll) {
-                    return p.querySelectorAll(o);
-                }
-
-                /**
-                 * Internal inArray function
-                 * @param {Object} a Array to check
-                 * @param {Object} s Key to check for
-                 */
-                function inArray(a, v) {
-                    var i, l;
-
-                    if (a) {
-                        for (i = 0, l = a.length; i < l; i++) {
-                            if (a[i] === v)
-                                return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                // Split selector
-                s = o.split(',');
-                each(s, function(selectors) {
-                    parts = JCEMediaBox.trim(selectors).split('.');
-                    // Element
-                    tag = parts[0] || '*';
-                    // Class
-                    cl = parts[1] || '';
-                    // Handle attributes
-                    if (/\[(.*?)\]/.test(tag)) {
-                        tag = tag.replace(/(.*?)\[(.*?)\]/, function(a, b, c) {
-                            at = c;
-                            return b;
-                        });
-
-                    }
-                    // Get all elements for the given parent and tag
-                    var elements = p.getElementsByTagName(tag);
-
-                    // If class or attribute
-                    if (cl || at) {
-                        each(elements, function(el) {
-                            // If class
-                            if (cl) {
-                                if (t.hasClass(el, cl)) {
-                                    if (!inArray(r, el)) {
-                                        r.push(el);
-                                    }
-                                }
-                            }
-                            // If attribute
-                            if (at) {
-                                if (el.getAttribute(at)) {
-                                    if (!inArray(r, el)) {
-                                        r.push(el);
-                                    }
-                                }
-                            }
-                        });
-
-                    } else {
-                        r = elements;
-                    }
-                });
-
-                return r;
-            },
-
-            /**
-             * Check if an element has a specific class
-             * @param {Object} el Element
-             * @param {Object} c Class
-             */
-            hasClass: function(el, c) {
-                return new RegExp(c).test(el.className);
-            },
-
-            /**
-             * Add a class to an element
-             * @param {Object} el Element
-             * @param {Object} c Class
-             */
-            addClass: function(el, c) {
-                if (!this.hasClass(el, c)) {
-                    el.className = JCEMediaBox.trim(el.className + ' ' + c);
-                }
-            },
-
-            /**
-             * Remove a class from an element
-             * @param {Object} el Element
-             * @param {Object} c Class to remove
-             */
-            removeClass: function(el, c) {
-                if (this.hasClass(el, c)) {
-                    var s = el.className;
-                    var re = new RegExp("(^|\\s+)" + c + "(\\s+|$)", "g");
-                    var v = s.replace(re, ' ');
-                    v = v.replace(/^\s|\s$/g, '');
-                    el.className = v;
-                }
-            },
-
-            /**
-             * Show an element
-             * @param {Object} el Element to show
-             */
-            show: function(el) {
-                el.style.display = 'block';
-            },
-
-            /**
-             * Hide and element
-             * @param {Object} el Element to hide
-             */
-            hide: function(el) {
-                el.style.display = 'none';
-            },
-
-            /**
-             * Remove an element or attribute
-             * @param {Object} el Element
-             * @param {String} attrib Attribute
-             */
-            remove: function(el, attrib) {
-                if (attrib) {
-                    el.removeAttribute(attrib);
-                } else {
-                    var p = el.parentNode || document.body;
-                    p.removeChild(el);
-                }
-            },
-
-            /**
-             * Set or retrieve a style
-             * @param {Object} el Target Element
-             * @param {Object} s Style to set / get
-             * @param {Object} v Value to set
-             */
-            style: function(n, na, v) {
-                var isIE = JCEMediaBox.isIE, r, s;
-
-                // Camelcase it, if needed
-                na = na.replace(/-(\D)/g, function(a, b) {
-                    return b.toUpperCase();
-                });
-
-                s = n.style;
-
-                // Get value
-                if (typeof v == 'undefined') {
-
-                    if (na == 'float')
-                        na = isIE ? 'styleFloat' : 'cssFloat';
-
-                    r = s[na];
-
-                    if (document.defaultView && !r) {
-                        if (/float/i.test(na))
-                            na = 'float';
-
-                        // Remove camelcase
-                        na = na.replace(/[A-Z]/g, function(a) {
-                            return '-' + a;
-                        }).toLowerCase();
-
-                        try {
-                            r = document.defaultView.getComputedStyle(n, null).getPropertyValue(na);
-                        } catch (e) {
-                        }
-                    }
-
-                    if (n.currentStyle && !r)
-                        r = n.currentStyle[na];
-
-                    return r;
-
-                } else {
-
-                    switch (na) {
-                        case 'opacity':
-                            v = parseFloat(v);
-                            // IE specific opacity
-                            if (isIE) {
-                                s.filter = v === '' ? '' : "alpha(opacity=" + (v * 100) + ")";
-
-                                if (!n.currentStyle || !n.currentStyle.hasLayout)
-                                    s.display = 'inline-block';
-                            }
-                            s[na] = v;
-                            break;
-                        case 'float':
-                            na = isIE ? 'styleFloat' : 'cssFloat';
-                            break;
-                        default:
-                            if (v && /(margin|padding|width|height|top|bottom|left|right)/.test(na)) {
-                                // Add pixel value if number
-                                v = /^[\-0-9\.]+$/.test(v) ? v + 'px' : v;
-                            }
-                            break;
-                    }
-                    s[na] = v;
-                }
-            },
-
-            /**
-             * Set styles
-             * @param {Object} el Target Element
-             * @param {Object} props Object of style key/values
-             */
-            styles: function(el, props) {
-                var t = this;
-                JCEMediaBox.each(props, function(v, s) {
-                    return t.style(el, s, v);
-                });
-
-            },
-
-            /**
-             * Set an Element attribute
-             * @param {Object} el
-             * @param {Object} s
-             * @param {Object} v
-             */
-            attribute: function(el, s, v) {
-                if (typeof v == 'undefined') {
-                    if (s == 'class') {
-                        return el.className;
-                    }
-                    v = el.getAttribute(s);
-                    // Remove anonymous function from events
-                    if (/^on/.test(s)) {
-                        v = v.toString();
-                        v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
-                    }
-                    // Fix Hspace
-                    if (s == 'hspace' && v == -1) {
-                        v = '';
-                    }
-                    return v;
-                }
-                // Remove attribute if no value
-                if (v === '') {
-                    el.removeAttribute(s);
-                }
-
-                switch (s) {
-                    case 'style':
-                        if (typeof v == 'object') {
-                            this.styles(el, v);
-                        } else {
-                            el.style.cssText = v;
-                        }
-                        break;
-                    case 'class':
-                        el.className = v || '';
-                        break;
-                    default:
-                        el.setAttribute(s, v);
-                        break;
-                }
-            },
-
-            /**
-             * Set Attributes on an Element
-             * @param {Object} el Target Element
-             * @param {Object} attribs Attributes Object
-             */
-            attributes: function(el, attribs) {
-                var t = this;
-                JCEMediaBox.each(attribs, function(v, s) {
-                    t.attribute(el, s, v);
-                });
-
-            },
-
-            /**
-             * Create an Element
-             * @param {Object} el Element to create
-             * @param {Object} attribs Attributes
-             * @param {Object} styles Styles
-             * @param {Object} html HTML
-             */
-            create: function(el, attribs, html) {
-                var o = document.createElement(el);
-                this.attributes(o, attribs);
-                if (typeof html != 'undefined') {
-                    o.innerHTML = html;
-                }
-
-                return o;
-            },
-
-            /**
-             * Add an element to another
-             * @param {Object} n Element to add to
-             * @param {Object} o Element to add. Will be created if string
-             * @param {Object} a Optional attributes
-             * @param {Object} h Optional HTML
-             */
-            add: function(n, o, a, h) {
-                if (typeof o == 'string') {
-                    a = a || {};
-                    o = this.create(o, a, h);
-                }
-                n.appendChild(o);
-
-                return o;
-            },
-
-            /**
-             * Add an element before the passed in element
-             * @param {Object} n Element to insert into
-             * @param {Object} o Element to insert
-             * @param {Object} c Element to insert before
-             */
-            addBefore: function(n, o, c) {
-                if (typeof c == 'undefined') {
-                    c = n.firstChild;
-                }
-                n.insertBefore(o, c);
-            },
-
-            /**
-             * IE6 PNG Fix
-             * @param {Object} el Element to fix
-             */
-            png: function(el) {
-                var s;
-                // Image Elements
-                if (el.nodeName == 'IMG') {
-                    s = el.src;
-                    if (/\.png$/i.test(s)) {
-                        this.attribute(el, 'src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif');
-                        this.style(el, 'filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
-                    }
-                // Background-image styles
-                } else {
-                    s = this.style(el, 'background-image');
-                    if (/\.png/i.test(s)) {
-                        var bg = /url\("(.*)"\)/.exec(s)[1];
-                        this.styles(el, {
-                            'background-image': 'none',
-                            'filter': "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + bg + "', sizingMethod='image')"
-                        });
-                    }
-                }
-            }
-
-        },
-        /**
-         * Event Functions
-         */
-        Event: {
-            events: [],
-            /**
-             * Add an Event handler
-             * @param {Object} o Target Element
-             * @param {Object} n Event name
-             * @param {Object} f Callback function
-             * @param {Object} s Scope
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            add: function(o, n, f, s) {
-                var t = this;
-
-                // Setup event callback
-                cb = function(e) {
-                    // Is all events disabled
-                    if (t.disabled)
-                        return;
-
-                    e = e || window.event;
-
-                    // Patch in target, preventDefault and stopPropagation in IE it's W3C valid
-                    if (e && JCEMediaBox.isIE) {
-                        if (!e.target) {
-                            e.target = e.srcElement || document;
-                        }
-
-                        if (!e.relatedTarget && e.fromElement) {
-                            e.relatedTarget = e.fromElement == e.target ? e.toElement : e.fromElement;
-                        }
-
-                        // Patch in preventDefault, stopPropagation methods for W3C compatibility
-                        JCEMediaBox.extend(e, {
-                            preventDefault: function() {
-                                this.returnValue = false;
-                            },
-
-                            stopPropagation: function() {
-                                this.cancelBubble = true;
-                            }
-
-                        });
-                    }
-                    if (e && JCEMediaBox.isWebKit) {
-                        if (e.target.nodeType == 3) {
-                            e.target = e.target.parentNode;
-                        }
-                    }
-
-                    if (!s)
-                        return f(e);
-
-                    return f.call(s, e);
-                };
-
-                // Internal function to add an event to an object
-                function _add(o, n, f) {
-                    if (o.attachEvent) {
-                        o.attachEvent('on' + n, f);
-                    } else if (o.addEventListener) {
-                        o.addEventListener(n, f, false);
-                    } else {
-                        o['on' + n] = f;
-                    }
-                }
-
-                t.events.push({
-                    obj: o,
-                    name: n,
-                    func: f,
-                    cfunc: cb,
-                    scope: s
-                });
-
-                // Add event
-                _add(o, n, cb);
-            },
-
-            /**
-             * Removes the specified event handler by name and function from a element or collection of elements.
-             *
-             * @method remove
-             * @param {String/Element/Array} o Element ID string or HTML element or an array of elements or ids to remove handler from.
-             * @param {String} n Event handler name like for example: "click"
-             * @param {function} f Function to remove.
-             * @return {bool/Array} Bool state if true if the handler was removed or an array with states if multiple elements where passed in.
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            remove: function(o, n, f) {
-                var t = this, a = t.events, s = false;
-
-                JCEMediaBox.each(a, function(e, i) {
-                    if (e.obj == o && e.name == n && (!f || (e.func == f || e.cfunc == f))) {
-                        a.splice(i, 1);
-                        t._remove(o, n, e.cfunc);
-                        s = true;
-                        return false;
-                    }
-                });
-
-                return s;
-            },
-
-            /**
-             * Internal function to remove an Event
-             * @param {Object} o
-             * @param {Object} n
-             * @param {Object} f
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            _remove: function(o, n, f) {
-                if (o) {
-                    try {
-                        if (o.detachEvent)
-                            o.detachEvent('on' + n, f);
-                        else if (o.removeEventListener)
-                            o.removeEventListener(n, f, false);
-                        else
-                            o['on' + n] = null;
-                    } catch (ex) {
-                    // Might fail with permission denined on IE so we just ignore that
-                    }
-                }
-            },
-
-            /**
-             * Cancels an event for both bubbeling and the default browser behavior.
-             *
-             * @method cancel
-             * @param {Event} e Event object to cancel.
-             * @return {Boolean} Always false.
-             * @copyright Copyright 2009, Moxiecode Systems AB
-             */
-            cancel: function(e) {
-                if (!e)
-                    return false;
-
-                this.stop(e);
-
-                return this.prevent(e);
-            },
-
-            /**
-             * Stops propogation/bubbeling of an event.
-             *
-             * @method stop
-             * @param {Event} e Event to cancel bubbeling on.
-             * @return {Boolean} Always false.
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            stop: function(e) {
-                if (e.stopPropagation)
-                    e.stopPropagation();
-                else
-                    e.cancelBubble = true;
-
-                return false;
-            },
-
-            /**
-             * Prevent default browser behvaior of an event.
-             *
-             * @method prevent
-             * @param {Event} e Event to prevent default browser behvaior of an event.
-             * @return {Boolean} Always false.
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            prevent: function(e) {
-                if (e.preventDefault)
-                    e.preventDefault();
-                else
-                    e.returnValue = false;
-
-                return false;
-            },
-
-            /**
-             * Destroys the instance.
-             *
-             * @method destroy
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            destroy: function() {
-                var t = this;
-
-                JCEMediaBox.each(t.events, function(e, i) {
-                    t._remove(e.obj, e.name, e.cfunc);
-                    e.obj = e.cfunc = null;
-                });
-
-                t.events = [];
-                t = null;
-            },
-
-            /**
-             * Adds an unload handler to the document. This handler will be executed when the document gets unloaded.
-             * This method is useful for dealing with browser memory leaks where it might be vital to remove DOM references etc.
-             *
-             * @method addUnload
-             * @param {function} f Function to execute before the document gets unloaded.
-             * @param {Object} s Optional scope to execute the function in.
-             * @return {function} Returns the specified unload handler function.
-             * @copyright	Copyright 2009, Moxiecode Systems AB
-             */
-            addUnload: function(f, s) {
-                var t = this;
-
-                f = {
-                    func: f,
-                    scope: s || this
-                };
-
-                if (!t.unloads) {
-                    function unload() {
-                        var li = t.unloads, o, n;
-
-                        if (li) {
-                            // Call unload handlers
-                            for (n in li) {
-                                o = li[n];
-
-                                if (o && o.func)
-                                    o.func.call(o.scope, 1); // Send in one arg to distinct unload and user destroy
-                            }
-
-                            // Detach unload function
-                            if (window.detachEvent) {
-                                window.detachEvent('onbeforeunload', fakeUnload);
-                                window.detachEvent('onunload', unload);
-                            } else if (window.removeEventListener)
-                                window.removeEventListener('unload', unload, false);
-
-                            // Destroy references
-                            t.unloads = o = li = w = unload = 0;
-
-                            // Run garbarge collector on IE
-                            if (window.CollectGarbage)
-                                CollectGarbage();
-                        }
-                    };
-
-                    function fakeUnload() {
-                        var d = document;
-
-                        // Is there things still loading, then do some magic
-                        if (d.readyState == 'interactive') {
-                            function stop() {
-                                // Prevent memory leak
-                                d.detachEvent('onstop', stop);
-
-                                // Call unload handler
-                                if (unload)
-                                    unload();
-
-                                d = 0;
-                            };
-
-                            // Fire unload when the currently loading page is stopped
-                            if (d)
-                                d.attachEvent('onstop', stop);
-
-                            // Remove onstop listener after a while to prevent the unload function
-                            // to execute if the user presses cancel in an onbeforeunload
-                            // confirm dialog and then presses the browser stop button
-                            window.setTimeout( function() {
-                                if (d)
-                                    d.detachEvent('onstop', stop);
-                            }, 0);
-
-                        }
-                    };
-
-                    // Attach unload handler
-                    if (window.attachEvent) {
-                        window.attachEvent('onunload', unload);
-                        window.attachEvent('onbeforeunload', fakeUnload);
-                    } else if (window.addEventListener)
-                        window.addEventListener('unload', unload, false);
-
-                    // Setup initial unload handler array
-                    t.unloads = [f];
-                } else
-                    t.unloads.push(f);
-
-                return f;
-            },
-
-            /**
-             * Removes the specified function form the unload handler list.
-             *
-             * @method removeUnload
-             * @param {function} f Function to remove from unload handler list.
-             * @return {function} Removed function name or null if it wasn't found.
-             */
-            removeUnload: function(f) {
-                var u = this.unloads, r = null;
-
-                JCEMediaBox.each(u, function(o, i) {
-                    if (o && o.func == f) {
-                        u.splice(i, 1);
-                        r = f;
-                        return false;
-                    }
-                });
-
-                return r;
-            }
-
-        },
-        Dimensions: {
-            /**
-             * Get client window width
-             */
-            getWidth: function() {
-                return document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth || 0;
-            },
-
-            /**
-             * Get client window height
-             */
-            getHeight: function() {
-                return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight || 0;
-            },
-
-            /**
-             * Get client window scroll height
-             */
-            getScrollHeight: function() {
-                return document.documentElement.scrollHeight || document.body.scrollHeight || 0;
-            },
-
-            /**
-             * Get client window scroll width
-             */
-            getScrollWidth: function() {
-                return document.documentElement.scrollWidth || document.body.scrollWidth || 0;
-            },
-
-            /**
-             * Get client window scroll top
-             */
-            getScrollTop: function() {
-                return document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop || 0;
-            },
-
-            /**
-             * Get the page scrollbar width
-             */
-            getScrollbarWidth: function() {
-                var DOM = JCEMediaBox.DOM;
-
-                if (this.scrollbarWidth) {
-                    return this.scrollbarWidth;
-                }
-
-                var outer = DOM.add(document.body, 'div', {
-                    'style': {
-                        position: 'absolute',
-                        visibility: 'hidden',
-                        width: 200,
-                        height: 200,
-                        border: 0,
-                        margin: 0,
-                        padding: 0,
-                        overflow: 'hidden'
-                    }
-                });
-
-                var inner = DOM.add(outer, 'div', {
-                    'style': {
-                        width: '100%',
-                        height: 200,
-                        border: 0,
-                        margin: 0,
-                        padding: 0
-                    }
-                });
-
-                var w1 = parseInt(inner.offsetWidth);
-                outer.style.overflow = 'scroll';
-                var w2 = parseInt(inner.offsetWidth);
-                if (w1 == w2) {
-                    w2 = parseInt(outer.clientWidth);
-                }
-                document.body.removeChild(outer);
-                this.scrollbarWidth = (w1 - w2);
-
-                return this.scrollbarWidth;
-            },
-
-            /**
-             * Get the outerwidth of an element
-             * @param {Object} n Element
-             */
-            outerWidth: function(n) {
-                var v = 0, x = 0;
-
-                x = n.offsetWidth;
-
-                if (!x) {
-                    JCEMediaBox.each(['padding-left', 'padding-right', 'border-left', 'border-right', 'width'], function(s) {
-                        v = parseFloat(JCEMediaBox.DOM.style(n, s));
-                        v = /[0-9]/.test(v) ? v : 0;
-                        x = x + v;
-                    });
-
-                }
-                return x;
-            },
-
-            /**
-             * Get the outerheight of an Element
-             * @param {Object} n Element
-             */
-            outerHeight: function(n) {
-                var v = 0, x = 0;
-
-                x = n.offsetHeight;
-
-                if (!x) {
-                    JCEMediaBox.each(['padding-top', 'padding-bottom', 'border-top', 'border-bottom', 'height'], function(s) {
-                        v = parseFloat(JCEMediaBox.DOM.style(n, s));
-                        v = /[0-9]/.test(v) ? v : 0;
-                        x = x + v;
-                    });
-
-                }
-                return x;
-            }
-
-        },
-
-        /**
-         * FX Functions
-         * @param {Object} t
-         * @param {Object} b
-         * @param {Object} c
-         * @param {Object} d
-         */
-        FX: {
-            animate: function(el, props, speed, cb) {
-                var DOM = JCEMediaBox.DOM;
-                var options = {
-                    speed: speed || 100,
-                    callback: cb ||
-                    function() {
-                    }
-
-                };
-
-                var styles = {};
-
-                JCEMediaBox.each(props, function(v, s) {
-                    // Find start value
-                    sv = parseFloat(DOM.style(el, s));
-                    styles[s] = [sv, v];
-                });
-
-                new JCEMediaBox.fx(el, options).custom(styles);
-                return true;
-            }
-
         }
     };
-
-    /**
-     * XHR Functions
-     * Based on XHR.js (Mootools) and XHR.js (TinyMCE)
-     * Copyright 2009, Moxiecode Systems AB, <http://tinymce.moxiecode.com>
-     * copyright (c) 2007 Valerio Proietti, <http://mad4milk.net>
-     */
-    JCEMediaBox.XHR = function(options, scope) {
-        this.options = {
-            //method: 'GET',
-            async: true,
-            headers: {
-                //'User-Agent' 		: 'XMLHTTP/1.0',
-                'X-Requested-With' 	: 'XMLHttpRequest',
-                'Accept' 			: 'text/javascript, text/html, application/xml, text/xml, */*'
-            },
-            data: null,
-            encoding: 'UTF-8',
-            success: function() {
-            },
-
-            error: function() {
-            }
-
-        };
-        // Set options
-        JCEMediaBox.extend(this.options, options);
-        // optional scope for callback functions
-        this.scope = scope || this;
-    };
-
-    JCEMediaBox.XHR.prototype = {
-        /**
-         * Set transport method
-         */
-        setTransport: function() {
-            function get(s) {
-                x = 0;
-
-                try {
-                    x = new ActiveXObject(s);
-                } catch (ex) {
-                }
-
-                return x;
-            };
-
-            this.transport = window.XMLHttpRequest ? new XMLHttpRequest() : get('Microsoft.XMLHTTP') || get('Msxml2.XMLHTTP');
-        },
-
-        /**
-         * Process return
-         */
-        onStateChange: function() {
-            if (this.transport.readyState != 4 || !this.running) {
-                return;
-            }
-
-            this.running = false;
-
-            if ((this.transport.status >= 200) && (this.transport.status < 300)) {
-                var s = this.transport.responseText;
-                var x = this.transport.responseXML;
-
-                this.options.success.call(this.scope, s, x);
-            } else {
-                this.options.error.call(this.scope, this.transport, this.options);
-            }
-            // Clean up
-            this.transport.onreadystatechange = function() {
-            };
-
-            this.transport = null;
-        },
-
-        /**
-         * Send request
-         * @param {Object} url URL
-         * @param {Object} options Request options
-         * @param {Object} s Scope
-         */
-        send: function(url) {
-            var t = this, extend = JCEMediaBox.extend;
-            if (this.running) {
-                return this;
-            }
-            this.running = true;
-            // Set request transport method
-            this.setTransport();
-            // store request method as uppercase (GET|POST)
-            var method = this.options.data ? 'POST' : 'GET';
-            
-            // set encoding
-            var encoding = (this.options.encoding) ? '; charset=' + this.options.encoding.toUpperCase() : '';
-            
-            // Set standard GET header
-            var contentType = {
-                'Content-type': 'text/html' + encoding
-                };
-
-            // Set URL Encoded / POST header options
-            if (this.options.data) {
-                contentType = {
-                    'Content-type': 'application/x-www-form-urlencoded' + encoding
-                    };
-            }
-            
-            extend(this.options.headers, contentType);
-            
-            // Open transport
-            this.transport.open(method, url, this.options.async);
-            // Set readystatechange function
-            this.transport.onreadystatechange = function() {
-                return t.onStateChange();
-            };
-
-            /*if (method == 'POST' && this.transport.overrideMimeType) {
-            extend(this.options.headers, {
-            'Connection': 'close'
-            });
-            }*/
-            // set headers
-            for (var type in this.options.headers) {
-                try {
-                    this.transport.setRequestHeader(type, this.options.headers[type]);
-                } catch (e) {
-                };
-            }
-            // send request
-            this.transport.send(this.options.data);
-        }
-
-    },    /**
-     * Core Fx Functions
-     * @param {Object} el Element to animate
-     * @param {Object} props A set of styles to animate
-     * @param {String} speed Speed of animation in milliseconds
-     * @param {Object} cb Optional Callback when the animation finishes
-     */
-    JCEMediaBox.fx = function(el, options) {
-        this.element = el;
-        this.callback = options.callback;
-        this.speed = options.speed;
-        this.wait = true;
-        this.fps = 50;
-        this.now = {};
-    };
-
-    /**
-     * Based on Moo.Fx.Base and Moo.Fx.Styles
-     * @copyright (c) 2006 Valerio Proietti (http://mad4milk.net). MIT-style license.
-     */
-    JCEMediaBox.fx.prototype = {
-        step: function() {
-            var time = new Date().getTime();
-            if (time < this.time + this.speed) {
-                this.cTime = time - this.time;
-                this.setNow();
-
-            } else {
-                var t = this;
-                this.clearTimer();
-                this.now = this.to;
-
-                setTimeout( function() {
-                    t.callback.call(t.element, t);
-                }, 10);
-
-            }
-            this.increase();
-        },
-
-        setNow: function() {
-            for (p in this.from) {
-                this.now[p] = this.compute(this.from[p], this.to[p]);
-            }
-        },
-
-        compute: function(from, to) {
-            var change = to - from;
-            return this.transition(this.cTime, from, change, this.speed);
-        },
-
-        clearTimer: function() {
-            clearInterval(this.timer);
-            this.timer = null;
-            return this;
-        },
-
-        start: function(from, to) {
-            var t = this;
-            if (!this.wait)
-                this.clearTimer();
-
-            if (this.timer)
-                return;
-
-            this.from = from;
-            this.to = to;
-            this.time = new Date().getTime();
-            this.timer = setInterval( function() {
-                return t.step();
-            }, Math.round(1000 / this.fps));
-
-            return this;
-        },
-
-        custom: function(o) {
-            if (this.timer && this.wait)
-                return;
-            var from = {};
-            var to = {};
-            for (property in o) {
-                from[property] = o[property][0];
-                to[property] = o[property][1];
-            }
-            return this.start(from, to);
-        },
-
-        increase: function() {
-            for (var p in this.now) {
-                this.setStyle(this.element, p, this.now[p]);
-            }
-        },
-
-        transition: function(t, b, c, d) {
-            return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-        },
-
-        setStyle: function(e, p, v) {
-            JCEMediaBox.DOM.style(e, p, v);
-        }
-
-    },
     /**
      * Core Tooltip Object
      * Create and display tooltips
@@ -1464,25 +278,22 @@
          * @param {Object} options
          */
         init: function() {
-            var t = this;
+            var self = this;
 
             // Load tooltip theme
             var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
 
             this.tooltiptheme = '';
-
-            new JCEMediaBox.XHR({
-                success: function(text, xml) {
-                    var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
-                    if (re.test(text)) {
-                        text = re.exec(text)[1];
-                    }
-                    t.tooltiptheme = text;
-
-                    t.create();
+            
+            $.post(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html', function(text) {
+                var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
+                if (re.test(text)) {
+                    text = re.exec(text)[1];
                 }
+                self.tooltiptheme = text;
 
-            }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');
+                self.create();
+            });
         },
 
         /**
@@ -1490,7 +301,7 @@
          * @param o Option parent node, defaults to document
          */
         create : function(o) {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var self = this;
 
             /**
              * Private internal function to exclude children of element in event
@@ -1517,34 +328,30 @@
             }
 
             // Add events to each found tooltip element
-            each(DOM.select('.jcetooltip, .jce_tooltip', o), function(el) {
+            $('.jcetooltip, .jce_tooltip', o).each(function() {
                 // store away title
-                el.tmpTitle = el.title;
-                DOM.remove(el, 'title');
+                this.tmpTitle = this.title;
+                $(this).removeAttr('title');
 
-                var n = el;
+                var n = this;
 
                 // set event element as parent if popup icon
-                if (el.nodeName == 'IMG' && el.parentNode.className == 'jcemediabox-zoom-span') {
-                    n = el.parentNode;
+                if (this.nodeName == 'IMG' && this.parentNode.className == 'jcemediabox-zoom-span') {
+                    n = this.parentNode;
                 }
-
-                Event.add(n, 'mouseover', function(e) {
-                    _withinElement(el, e, function() {
-                        return t.start(el);
+                
+                $(n).hover(function(e) {
+                    _withinElement(n, e, function() {
+                        return self.start(n);
                     });
-
+                }, function(e) {
+                    _withinElement(n, e, function() {
+                        return self.end(n);
+                    });
                 });
 
-                Event.add(n, 'mouseout', function(e) {
-                    _withinElement(el, e, function() {
-                        return t.end(el);
-                    });
-
-                });
-
-                Event.add(n, 'mousemove', function(e) {
-                    return t.locate(e);
+                $(n).mousemove(function(e) {
+                    return self.locate(e);
                 });
 
             });
@@ -1556,15 +363,11 @@
          */
         build: function() {
             if (!this.toolTip) {
-                var DOM = JCEMediaBox.DOM;
-                this.toolTip = DOM.add(document.body, 'div', {
-                    'style': {
-                        'opacity': 0
-                    },
-                    'class': 'jcemediabox-tooltip'
-                }, this.tooltiptheme);
+
+                this.toolTip = $('<div />').css('opacity', 0).addClass('jcemediabox-tooltip').html(this.tooltiptheme).appendTo(document.body);
+                
                 if (JCEMediaBox.isIE6) {
-                    DOM.addClass(this.toolTip, 'ie6');
+                    $(this.toolTip).addClass('ie6');
                 }
             }
         },
@@ -1574,8 +377,7 @@
          * @param {Object} e  Event
          * @param {Object} el Target Element
          */
-        start: function(el) {
-            var t = this, DOM = JCEMediaBox.DOM;
+        start: function(el) {            
             if (!this.tooltiptheme)
                 return false;
             // Create tooltip if it doesn't exist
@@ -1587,8 +389,8 @@
             // Split tooltip text ie: title::text
             if (/::/.test(text)) {
                 var parts = text.split('::');
-                title = JCEMediaBox.trim(parts[0]);
-                text = JCEMediaBox.trim(parts[1]);
+                title   = $.trim(parts[0]);
+                text    = $.trim(parts[1]);
             }
 
             var h = '';
@@ -1602,7 +404,7 @@
             }
 
             // Set tooltip html
-            var tn = DOM.get('jcemediabox-tooltip-text');
+            var tn = $('#jcemediabox-tooltip-text').get(0);
             // Use simple tooltip
             if (typeof tn == 'undefined') {
                 this.toolTip.className = 'jcemediabox-tooltip-simple';
@@ -1611,11 +413,9 @@
                 tn.innerHTML = h;
             }
             // Set visible
-            DOM.style(t.toolTip, 'visibility', 'visible');
+            $(this.toolTip).css('visibility', 'visible');
             // Fade in tooltip
-            JCEMediaBox.FX.animate(t.toolTip, {
-                'opacity': JCEMediaBox.options.tooltip.opacity
-            }, JCEMediaBox.options.tooltip.speed);
+            $(this.toolTip).fadeIn(JCEMediaBox.options.tooltip.speed);
         },
 
         /**
@@ -1629,7 +429,7 @@
 
             // Fade out tooltip and hide
 
-            JCEMediaBox.DOM.styles(this.toolTip, {
+            $(this.toolTip).css({
                 'visibility': 'hidden',
                 'opacity': 0
             });
@@ -1687,8 +487,8 @@
                     pos.y = page.y + ah + o.y;
                     break;
             }
-            JCEMediaBox.DOM.styles(this.toolTip, {
-                top: pos.y,
+            $(this.toolTip).css({
+                top : pos.y,
                 left: pos.x
             });
         },
@@ -3791,7 +2591,7 @@
         }
 
     };
-})(window);
+})(jQuery);
 // Cleanup events
 JCEMediaBox.Event.addUnload( function() {
     JCEMediaBox.Event.destroy();

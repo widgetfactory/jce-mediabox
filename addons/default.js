@@ -1,19 +1,19 @@
 /**
  * JCEMediaBox Addons 	@@version@@
- * @package 			JCEMediaBox
- * @url					http://www.joomlacontenteditor.net
- * @copyright 			@@copyright@@
- * @license 			@@licence@@
- * @date				@@date@@
+ * @package             JCEMediaBox
+ * @url			http://www.joomlacontenteditor.net
+ * @copyright           @@copyright@@
+ * @license 		@@licence@@
+ * @date		@@date@@
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  *
  */
-(function(mediabox){
+(function(mediabox, undefined){
     // don't load if JCEMediaBox class is not defined
-    if (typeof mediabox === 'undefined') {
+    if (mediabox === undefined) {
         return;
     }
 	

@@ -124,7 +124,7 @@
         <folder>img</folder>
         <folder>js</folder>
         <folder>themes</folder>
-        <folder>mediaplayer</folder>
+        <folder>mediaelement</folder>
     </files>
 	
     <languages folder="administrator/language/en-GB">

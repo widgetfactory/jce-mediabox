@@ -107,6 +107,10 @@
 a.jcepopup[type="image"], a.jcepopup[href$=".jpg"], a.jcepopup[href$=".png"], a.jcepopup[href$=".gif"], a.jcepopup[href$=".tiff"], a.jcepopup[href$=".bmp"] {
 	line-height : 0;
 }
+a.jcepopup.noshow,
+a.jcepopup.wf-popup-hidden {
+    display: none;
+}
 a.jcepopup span.jcemediabox-zoom-span {
 	margin: 0;
 	padding: 0;

@@ -14,17 +14,13 @@
  */
 jQuery.noConflict();
 
-(function($) {
-    
-    // html5 element support
-    var support = {};
-    
+(function($) {    
     /*
      * From Modernizr v2.0.6
  	 * http://www.modernizr.com
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
-    support.video = (function() {
+    $.support.video = (function() {
         var el = document.createElement('video');
         var bool = false;
         // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
@@ -51,7 +47,7 @@ jQuery.noConflict();
  	 * http://www.modernizr.com
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
-    support.audio = (function() {
+    $.support.audio = (function() {
         var el = document.createElement('audio');
     	
         try { 
@@ -72,12 +68,14 @@ jQuery.noConflict();
         return bool;
     })();
     
+    // create Mediabox namespace
+    $.fn.mediabox = {};
     
     /**
      * IE6 PNG Fix
      * @param {Object} el Element to fix
      */
-    $.fn.png = function() {
+    $.fn.mediabox.png = function() {
             
         var s;
         // Image Elements
@@ -100,7 +98,7 @@ jQuery.noConflict();
         }
     };
     
-    window.JCEMediaBox = {
+    var MediaBox = {
         /**
          * Global Options Object
          */
@@ -271,7 +269,7 @@ jQuery.noConflict();
      * Based on Mootools Tips Class
      * copyright (c) 2007 Valerio Proietti, <http://mad4milk.net>
      */
-    JCEMediaBox.ToolTip = {
+    MediaBox.ToolTip = {
         /**
          * Initialise the tooltip
          * @param {Object} elements
@@ -505,14 +503,14 @@ jQuery.noConflict();
      * Core Popup Object
      * Creates and displays a media popup
      */
-    JCEMediaBox.Popup = {
+    MediaBox.Popup = {
         /**
          * List of default addon media types
          */
         addons: {
             'flash'	: {},
             'image'	: {},
-            'iframe': {},
+            'iframe'    : {},
             'html'	: {}
         },
         /**
@@ -521,7 +519,7 @@ jQuery.noConflict();
          * @param {Object} o Addon object
          */
         setAddons: function(n, o) {
-            JCEMediaBox.extend(this.addons[n], o);
+            $.extend(this.addons[n], o);
         },
 
         /**
@@ -541,18 +539,17 @@ jQuery.noConflict();
          * @param {Object} n
          */
         getAddon: function(v, n) {
-            var cp = false, r, each = JCEMediaBox.each;
+            var cp = false, r;
 
-            addons = this.getAddons(n);
+            var addons = this.getAddons(n);
 
-            each(this.addons, function(o, s) {
-                each(o, function(fn) {
+            $.each(this.addons, function(i, o) {
+                o.each(function(fn) {
                     r = fn.call(this, v);
                     if (typeof r != 'undefined') {
                         cp = r;
                     }
                 });
-
             });
 
             return cp;
@@ -568,30 +565,6 @@ jQuery.noConflict();
         },
 
         /**
-         * Create an object from a well formed JSON string
-         * @param {String} data JSON String
-         * @return {Object}
-         * Logic borrowed from JQuery
-         * http://jquery.com/
-         * Copyright 2010, John Resig
-         */
-        parseJSON : function(data) {
-            if ( typeof data !== "string" || !data ) {
-                return null;
-            }
-
-            if (/^[\],:{}\s]*$/
-                .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-                // Try to use the native JSON parser first
-                return window.JSON && window.JSON.parse ?
-                window.JSON.parse( data ) :
-                (new Function("return " + data))();
-            }
-        },
-
-        /**
          * Get a popup parameter object
          * @param {String} s Parameter string
          */
@@ -601,7 +574,7 @@ jQuery.noConflict();
             if (typeof s == 'string') {
                 // if a JSON string return the object
                 if (new RegExp('^{[\w\W]+}$').test(s)) {
-                    return this.parseJSON(s);
+                    return $.parseJSON(s);
                 }
                 
                 // JCE MediaBox parameter format eg: title[title]
@@ -610,7 +583,7 @@ jQuery.noConflict();
                         return '"' + b + '":"' + c + '"' + (d ? ',' : '');
                     });
 
-                    return this.parseJSON('{' + s + '}');
+                    return $.parseJSON('{' + s + '}');
                 }
                 
                 // if url
@@ -620,11 +593,11 @@ jQuery.noConflict();
             }
 
             // if array
-            if (typeof s == 'object' && s instanceof Array) {
+            if ($.type(s) == 'array') {
                 x = s;
             }
 
-            JCEMediaBox.each(x, function(n, i) {
+            $.each(x, function(i, n) {
                 if (n) {
                     n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function(a, b, c, d) {
                         if (d) {
@@ -642,7 +615,7 @@ jQuery.noConflict();
                 }
             });
 
-            return this.parseJSON('{' + a.join(',') + '}');
+            return $.parseJSON('{' + a.join(',') + '}');
         },
 
         /**
@@ -703,13 +676,14 @@ jQuery.noConflict();
          * Convert legacy popups to new format
          */
         convertLegacy: function() {
-            var self = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
-            each(DOM.select('a[href]'), function(el) {
+            var self = this;
+            
+            $('a[href]').each(function() {
 
                 // Only JCE Popup links
-                if (/com_jce/.test(el.href)) {
+                if (/com_jce/.test(this.href)) {
                     var p, s;
-                    var oc = DOM.attribute(el, 'onclick');
+                    var oc = $(this).attr('onclick');
                     s = oc.replace(/&#39;/g, "'").split("'");                    
                     p = self.params(s[1]);
 
@@ -724,13 +698,13 @@ jQuery.noConflict();
                             img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
                         
-                        DOM.attributes(el, {
-                            'href'		: img,
-                            'title'		: title.replace(/_/, ' '),
+                        $(this).attr({
+                            'href'	: img,
+                            'title'	: title.replace(/_/, ' '),
                             'onclick'	: ''
                         });
 
-                        DOM.addClass(el, 'jcepopup');
+                        $(this).addClass('jcepopup');
                     }
                 }
             });
@@ -741,29 +715,22 @@ jQuery.noConflict();
          * Convert lightbox popups to MediaBox
          */
         convertLightbox: function() {
-            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
-            each(DOM.select('a[rel*=lightbox]'), function(el) {
-                DOM.addClass(el, 'jcepopup');
-                r = el.rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
+            $('a[rel*=lightbox]').attr('rel', function(i, v) {
+                return v.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
                     if (b) {
                         return 'group['+ b +']';
                     }
                     return '';
                 });
-
-                DOM.attribute(el, 'rel', r);
-            });
-
+            }).addClass('jcepopup');
         },
 
         /**
          * Convert shadowbox popups to MediaBox
          */
         convertShadowbox: function() {
-            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
-            each(DOM.select('a[rel*=shadowbox]'), function(el) {
-                DOM.addClass(el, 'jcepopup');
-                r = el.rel.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
+            $('a[rel*=shadowbox]').attr('rel', function(i, v) {
+                return v.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
                     var attribs = '', group = '';
                     // group
                     if (b) {
@@ -781,9 +748,7 @@ jQuery.noConflict();
                     }
                     return group || attribs || '';
                 });
-
-                DOM.attribute(el, 'rel', r);
-            });
+            }).addClass('jcepopup');
 
         },
 
@@ -811,7 +776,7 @@ jQuery.noConflict();
             if (!o)
                 return {};
 
-            JCEMediaBox.each(o.split(';'), function(s, i) {
+            $.each(o.split(';'), function(i, s) {
                 s = s.replace(/(.*):(.*)/, function(a, b, c) {
                     return '"' + b + '":"' + c + '"';
                 });
@@ -819,7 +784,7 @@ jQuery.noConflict();
                 x.push(s);
             });
 
-            return this.parseJSON('{' + x.join(',') + '}');
+            return $.parseJSON('{' + x.join(',') + '}');
         },
 
         /**
@@ -924,8 +889,8 @@ jQuery.noConflict();
         frameWidth: function() {
             var w = 0, el = this.frame;
 
-            JCEMediaBox.each(['left', 'right'], function(s) {
-                w = w + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
+            $.each(['left', 'right'], function(i, s) {
+                w = w + parseFloat($(el).css('padding-' + s));
             });
 
             return parseFloat(this.frame.clientWidth - w);
@@ -935,15 +900,15 @@ jQuery.noConflict();
          * Get the height of the container frame
          */
         frameHeight: function() {
-            var h = 0, el = this.frame, DIM = JCEMediaBox.Dimensions;
+            var h = 0, el = this.frame;
 
-            JCEMediaBox.each(['top', 'bottom'], function(s) {
-                h = h + parseFloat(JCEMediaBox.DOM.style(el, 'padding-' + s));
+            $.each(['top', 'bottom'], function(i, s) {
+                h = h + parseFloat($(el).css('padding-' + s));
             });
 
             h = h + ((JCEMediaBox.isIE6 || JCEMediaBox.isIE7) ? DIM.getScrollbarWidth() : 0);
 
-            return parseInt(DIM.getHeight()) - h;
+            return parseInt($(window).height()) - h;
         },
 
         /**
@@ -957,11 +922,12 @@ jQuery.noConflict();
          * Get the height of the usable window less info divs
          */
         height: function() {
-            var h = 0, t = this, each = JCEMediaBox.each, DIM = JCEMediaBox.Dimensions;
+            var h = 0, t = this;
             each(['top', 'bottom'], function(s) {
                 var el = t['info-' + s];
+                
                 if (el) {
-                    h = h + parseInt(DIM.outerHeight(el));
+                    h = h + parseInt($(el).outerHeight());
                 }
             });
 
@@ -980,54 +946,53 @@ jQuery.noConflict();
          * @param {Object} el Popup link element
          */
         zoom: function(el) {
-            var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var child = el.firstChild;
             // Create basic zoom element
-            var zoom = DOM.create('span');
+            var zoom = $('<span/>');
 
             // add IE6 identifier class
             if (JCEMediaBox.isIE6) {
-                DOM.addClass(el, 'ie6');
+                $(el).addClass('ie6');
             }
 
             // If child is an image (thumbnail)
             if (child && child.nodeName == 'IMG') {
-                var align = child.getAttribute('align');
-                var vspace = child.getAttribute('vspace');
-                var hspace = child.getAttribute('hspace');
+                var align   = child.getAttribute('align');
+                var vspace  = child.getAttribute('vspace');
+                var hspace  = child.getAttribute('hspace');
 
                 var styles = {};
 
                 // Transfer margin, padding and border
-                each(['top', 'right', 'bottom', 'left'], function(pos) {
+                $.each(['top', 'right', 'bottom', 'left'], function(i, pos) {
                     // Set margin
-                    styles['margin-' + pos] = DOM.style(child, 'margin-' + pos);
+                    styles['margin-' + pos]     = $(child).css('margin-' + pos);
                     // Set padding
-                    styles['padding-' + pos] = DOM.style(child, 'padding-' + pos);
+                    styles['padding-' + pos]    = $(child).css('padding-' + pos);
                     // Set border
                     each(['width', 'style', 'color'], function(prop) {
-                        styles['border-' + pos + '-' + prop] = DOM.style(child, 'border-' + pos + '-' + prop);
+                        styles['border-' + pos + '-' + prop] = $(child).css('border-' + pos + '-' + prop);
                     });
 
                 });
 
                 // Correct from deprecated align attribute
                 if (/\w+/.test(align)) {
-                    extend(styles, {
+                    $.extend(styles, {
                         'float': /left|right/.test(align) ? align : '',
                         'text-align': /top|middle|bottom/.test(align) ? align : ''
                     });
                 }
                 // Correct from deprecated vspace attribute
                 if (vspace > 0) {
-                    extend(styles, {
+                    $.extend(styles, {
                         'margin-top': parseInt(vspace),
                         'margin-bottom': parseInt(vspace)
                     });
                 }
                 // Correct from deprecated hspace attribute
                 if (hspace > 0) {
-                    extend(styles, {
+                    $.extend(styles, {
                         'margin-left': parseInt(hspace),
                         'margin-right': parseInt(hspace)
                     });
@@ -1035,7 +1000,7 @@ jQuery.noConflict();
 
                 var w 	= child.getAttribute('width');
                 var h 	= child.getAttribute('height');
-                var ws 	= DOM.style(child, 'width');
+                var ws 	= $(child).css('width');
 
                 // get 'real' width and height
                 var rh = child.height, rw = child.width;
@@ -1053,12 +1018,12 @@ jQuery.noConflict();
                     } else {
                         w = child.width;
                     }
-                    child.setAttribute('width', w);
+                    $(child).attr('width', w);
                 }
 
                 // Add style alignment
-                extend(styles, {
-                    'float'		: DOM.style(child, 'float'),
+                $.extend(styles, {
+                    'float'	: $(child).css('float'),
                     'text-align': child.style.textAlign,
                     'width' 	: w
                 });
@@ -1073,55 +1038,42 @@ jQuery.noConflict();
                  */
                 function _buildIcon(el, zoom, child, styles) {
                     // Clone image as span element
-                    var span = DOM.add(el, 'span', {
+                    var span = $('<span/>').attr({
                         'class'	: 'jcemediabox-zoom-span',
                         'style'	: child.style.cssText,
                         'title' : child.title || child.alt || ''	 
-                    });
+                    }).appendTo(el).css(styles).append(child).append(zoom);
 
-                    // Set styles
-                    DOM.styles(span, styles);
-
-                    // Move the image into the parent SPAN
-                    DOM.add(span, child);
-                    // Move the zoom icon into the parent SPAN
-                    DOM.add(span, zoom);
-
-                    // Remove attributes that may affect layout
-                    each(['style', 'align', 'border', 'hspace', 'vspace'], function(v, i) {
-                        child.removeAttribute(v);
+                    // Remove attributes and css that may affect layout
+                    $(child).removeAttr('style align border hspace vspace').css({
+                        'margin'    : 0,
+                        'padding'   : 0,
+                        'float'     : 'none',
+                        'border'    : 'none'
                     });
 
                     // Add zoom-image class
-                    DOM.addClass(zoom, 'jcemediabox-zoom-image');
+                    $(zoom).addClass('jcemediabox-zoom-image');
 
                     // Set explicit positions for IE6 when zoom icon is png
-                    if (JCEMediaBox.isIE6 && /\.png/i.test(DOM.style(zoom, 'background-image'))) {
-                        DOM.png(zoom);
+                    if (JCEMediaBox.isIE6 && /\.png/i.test($(zoom).css('background-image'))) {
+                        $(zoom).png();
                     }
-
-                    // Remove styles from image
-                    DOM.styles(child, {
-                        'margin': 0,
-                        'padding': 0,
-                        'float': 'none',
-                        'border': 'none'
-                    });
                 }
 
                 // build zoom icon
                 _buildIcon(el, zoom, child, styles);
 
             } else {
-                DOM.addClass(zoom, 'jcemediabox-zoom-link');
-                if (DOM.hasClass(el, 'icon-left')) {
-                    DOM.addBefore(el, zoom);
+                $(zoom).addClass('jcemediabox-zoom-link');
+                if ($(el).hasClass('icon-left')) {
+                    $(el).before(zoom);
                 } else {
-                    DOM.add(el, zoom);
+                    $(el).append(zoom);
                 }
                 // IE7 won't accept display:inherit
                 if (JCEMediaBox.isIE7) {
-                    DOM.style(zoom, 'display', 'inline-block');
+                    $(zoom).css('display', 'inline-block');
                 }
             }
             // Return zoom icon element
@@ -1132,17 +1084,17 @@ jQuery.noConflict();
          * Process autopopups
          */
         auto: function() {
-            var t = this;
-            JCEMediaBox.each(this.popups, function(el, i) {
+            var self = this;
+            $.each(this.popups, function(i, el) {
                 if (el.auto) {
                     if (el.auto == 'single') {
-                        var cookie = t.getCookie('jcemediabox_autopopup_' + el.id);
+                        var cookie = self.getCookie('jcemediabox_autopopup_' + el.id);
                         if (!cookie) {
-                            t.setCookie('jcemediabox_autopopup_' + el.id, 1);
-                            t.start(el);
+                            self.setCookie('jcemediabox_autopopup_' + el.id, 1);
+                            self.start(el);
                         }
                     } else if (el.auto == 'multiple') {
-                        t.start(el);
+                        self.start(el);
                     }
                 }
             });
@@ -1154,7 +1106,7 @@ jQuery.noConflict();
          * @param {Object} elements Optional array of popup elements
          */
         init: function() {
-            window.jcepopup = this;
+            window.jcepopup = window.mediabox = this;
             this.create();
         },
 
@@ -1165,26 +1117,26 @@ jQuery.noConflict();
          */
         getPopups : function(s, p) {
             var selector = 'a.jcebox, a.jcelightbox, a.jcepopup, area.jcebox, area.jcelightbox, area.jcepopup';
-            return JCEMediaBox.DOM.select(s || selector, p);
+            return $(s || selector, p);
         },
 
         getData : function(n) {
-            var DOM = JCEMediaBox.DOM, o = {}, data;
+            var o = {}, data;
             var re = /\w+\[[^\]]+\]/;
 			
-            data = DOM.attribute(n, 'data-mediabox') || DOM.attribute(n, 'data-json');
+            data = $(n).data('mediabox') || $(n).data('json');
 
             // try title or rel attributes
             if (!data) {
-                var title 	= DOM.attribute(n, 'title');
-                var rel 	= DOM.attribute(n, 'rel');
+                var title 	= $(n).attr('title');
+                var rel 	= $(n).attr('rel');
 
                 if (re.test(title)) {
                     // convert to object
                     o = this.params(title);
 
                     // restore rel attribute
-                    DOM.attribute(n, 'title', o.title || '');
+                    $(n).attr('title', o.title || '');
 
                     return o;
                 }
@@ -1200,14 +1152,13 @@ jQuery.noConflict();
                     o = this.params(args);
 
                     // restore rel attribute
-                    DOM.attribute(n, 'rel', rel || o.rel || '');
+                    $(n).attr('rel', rel || o.rel || '');
 
                     return o;
                 }
             } else {
                 // remove data attributes
-                n.removeAttribute('data-json');
-                n.removeAttribute('data-mediabox');
+                $(n).removeAttr('data-json data-mediabox');
 
                 return this.params(data);
             }
@@ -1220,21 +1171,15 @@ jQuery.noConflict();
          * @param {Object} el Popup link element
          */
         process : function(el) {
-            var DOM = JCEMediaBox.DOM, data, o = {}, group = '', auto = false;
+            var data, o = {}, group = '', auto = false, match;
 
             // Simplify class identifier for css
             if (/(jcelightbox|jcebox)/.test(el.className)) {
-                DOM.removeClass(el, 'jcelightbox');
-                DOM.removeClass(el, 'jcebox');
-                DOM.addClass(el, 'jcepopup');
+                $(el).removeClass('jcelightbox jcebox').addClass('jcepopup');
             }
             // Create zoom icon
             if (JCEMediaBox.options.popup.icons == 1 && el.nodeName == 'A' && !/(noicon|icon-none|noshow)/.test(el.className) && el.style.display != 'none') {
                 var zoom = this.zoom(el);
-            }
-            // Hide popup link if specified in class
-            if (DOM.hasClass(el, 'noshow')) {
-                DOM.hide(el);
             }
 
             // Fix title and rel and move parameters
@@ -1258,7 +1203,7 @@ jQuery.noConflict();
                 var lb 	= '(lightbox(\[(.*?)\])?)';
                 var lt 	= '(lyte(box|frame|show)(\[(.*?)\])?)';
 
-                group 	= JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
+                group 	= $.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
             }
 
             // Get AREA parameters from URL if not set
@@ -1287,10 +1232,10 @@ jQuery.noConflict();
             group = group || data.group || '';
 
             // Popup object
-            JCEMediaBox.extend(o, {
+            $.extend(o, {
                 'src'	: src,
                 'title'	: data.title || title,
-                'group'	: DOM.hasClass(el, 'nogroup') ? '' : group,
+                'group'	: $(el).hasClass('nogroup') ? '' : group,
                 'type'	: data.type || el.type || '',
                 'params': data,
                 'id'	: el.id || '',
@@ -1309,7 +1254,7 @@ jQuery.noConflict();
          * @param {Object} elements Optional array of popup elements
          */
         create: function(elements) {
-            var t = this, each = JCEMediaBox.each, Event = JCEMediaBox.Event, pageload = false, auto = false;
+            var self = this, pageload = false, auto = false;
 
             // set pageload marker
             if (!elements) {
@@ -1318,17 +1263,17 @@ jQuery.noConflict();
 
                 // Converts a legacy (window) popup into an inline popup
                 if (JCEMediaBox.options.popup.legacy == 1) {
-                    t.convertLegacy();
+                    self.convertLegacy();
                 }
 
                 // Converts a lightbox popup into mediabox popup
                 if (JCEMediaBox.options.popup.lightbox == 1) {
-                    t.convertLightbox();
+                    self.convertLightbox();
                 }
 
                 // Converts a shadowbox popup into mediabox popup
                 if (JCEMediaBox.options.popup.shadowbox == 1) {
-                    t.convertShadowbox();
+                    self.convertShadowbox();
                 }
             }
 
@@ -1336,20 +1281,20 @@ jQuery.noConflict();
             elements = elements || this.getPopups();
 
             // Iterate through all found or specified popup links
-            each(elements, function(el, i) {
-                var o = t.process(el);
+            $(elements).each(function(i) {
+                var o = self.process(this);
 
-                t.popups.push(o);
+                self.popups.push(o);
 
                 // new index if not a pageload
                 if (!pageload) {
-                    i = t.popups.length - 1;
+                    i = self.popups.length - 1;
                 }
 
                 // Add click event to link
-                Event.add(el, 'click', function(e) {
-                    Event.cancel(e);
-                    return t.start(o, i);
+                $(this).click(function(e) {
+                    e.preventDefault();
+                    return self.start(o, i);
                 });
 
             });
@@ -1362,21 +1307,18 @@ jQuery.noConflict();
                 // Load the popup theme
                 var theme = JCEMediaBox.options.theme;
 
-                new JCEMediaBox.XHR({
-                    success: function(text, xml) {
-                        var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
-                        if (re.test(text)) {
-                            text = re.exec(text)[1];
-                        }
-                        t.popuptheme = text;
-                        // Process auto popups
-                        if (!auto) {
-                            t.auto();
-                            auto = true;
-                        }
+                $.post(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html', function(text, xml) {
+                    var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
+                    if (re.test(text)) {
+                        text = re.exec(text)[1];
                     }
-
-                }).send(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html');
+                    self.popuptheme = text;
+                    // Process auto popups
+                    if (!auto) {
+                        self.auto();
+                        auto = true;
+                    }
+                });
             }
         },
 
@@ -1389,13 +1331,13 @@ jQuery.noConflict();
          * @param {Object} params Popup Parameters Object
          */
         open: function(data, title, group, type, params) {
-            if (typeof data == 'string') {
+            if ($.type(data) == 'string') {
                 data = {
                     'src'	: data,
                     'title'	: title,
                     'group'	: group,
                     'type'	: type,
-                    'params': params
+                    'params'    : params
                 };
             }
 
@@ -1408,14 +1350,14 @@ jQuery.noConflict();
          * @param {Object} i The popup index
          */
         start: function(p, i) {
-            var n = 0, items = [], each = JCEMediaBox.each;
+            var n = 0, items = [];
 
             // build popup window
             if (this.build()) {
                 if (p.group) {
-                    each(this.popups, function(o, x) {
+                    $.each(this.popups, function(x, o) {
                         if (o.group == p.group) {
-                            len = items.push(o);
+                            var len = items.push(o);
                             if (i && x == i) {
                                 n = len - 1;
                             }
@@ -1438,35 +1380,30 @@ jQuery.noConflict();
          * Build Popup structure
          */
         build: function() {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var self = this;
 
-            if (!this.page) {
+            if (!$('#jcemediabox-popup-page').get(0)) {
                 // Create main page object
-                this.page = DOM.add(document.body, 'div', {
-                    id: 'jcemediabox-popup-page'
-                });
-
-                if (JCEMediaBox.isIE6) {
-                    DOM.addClass(this.page, 'ie6');
-                }
-
-                if (JCEMediaBox.isIE7) {
-                    DOM.addClass(this.page, 'ie7');
-                }
-
-                if (JCEMediaBox.isIDevice) {
-                    DOM.addClass(this.page, 'idevice');
-                }
+                var $page = $('<div/>').attr('id', 'jcemediabox-popup-page').addClass(function() {
+                    if (JCEMediaBox.isIE6) {
+                        return 'ie6';
+                    }
+                    
+                    if (JCEMediaBox.isIE7) {
+                        return 'ie7';
+                    }
+                    
+                    if (JCEMediaBox.isIDevice) {
+                        return 'idevice';
+                    }
+                }).appendTo(document.body);
 
                 if (JCEMediaBox.options.popup.overlay == 1) {
                     // Create overlay
-                    this.overlay = DOM.add(this.page, 'div', {
-                        id: 'jcemediabox-popup-overlay',
-                        style: {
-                            'opacity': 0,
-                            'background-color': JCEMediaBox.options.popup.overlaycolor
-                        }
-                    });
+                    $('<div/>').attr('id', 'jcemediabox-popup-overlay').css({
+                        'opacity': 0,
+                        'background-color': JCEMediaBox.options.popup.overlaycolor
+                    }).appendTo($page);
                 }
 
                 // Cancel if no theme
@@ -1478,74 +1415,43 @@ jQuery.noConflict();
                 // Translate
                 this.popuptheme = this.translate(this.popuptheme);
                 // Create Frame
-                this.frame = DOM.add(this.page, 'div', {
-                    id: 'jcemediabox-popup-frame'
-                }, '<div id="jcemediabox-popup-body">' + this.popuptheme + '</div>');
+                var $frame = $('<div/>').attr('id', 'jcemediabox-popup-frame').html('<div id="jcemediabox-popup-body">' + this.popuptheme + '</div>').appendTo($page);
 
-                // Create all Popup structure objects
-                each(DOM.select('*[id]', this.frame), function(el) {
-                    var s = el.id.replace('jcemediabox-popup-', '');
-                    t[s] = el;
-                    DOM.hide(el);
-                });
+                // Hide all
+                $('[id]', $frame).hide();
 
                 // Add close function to frame on click
                 if (JCEMediaBox.options.popup.close == 2) {
-                    Event.add(this.frame, 'click', function(e) {
-                        if (e.target && e.target == t.frame) {
-                            t.close();
+                    $frame.click(function(e) {
+                        if (e.target && e.target == this) {
+                            self.close();
                         }
                     });
                 }
 
-                // Setup Close link event
-                if (this.closelink) {
-                    Event.add(this.closelink, 'click', function() {
-                        return t.close();
-                    });
+                // Setup Close and Cancel link event
+                $('#jcemediabox-popup-closelink, #jcemediabox-popup-cancellink').click(function() {
+                    return self.close();
+                });
 
-                }
-                // Setup Cancel link event
-                if (this.cancellink) {
-                    Event.add(this.cancellink, 'click', function() {
-                        return t.close();
-                    });
-
-                }
                 // Setup Next link event
-                if (this.next) {
-                    Event.add(this.next, 'click', function() {
-                        return t.nextItem();
-                    });
+                $('#jcemediabox-popup-next').click(function() {
+                    return self.nextItem();
+                });
 
-                }
                 // Setup Previous link event
-                if (this.prev) {
-                    Event.add(this.prev, 'click', function() {
-                        return t.previousItem();
-                    });
+                $('#jcemediabox-popup-prev').click(function() {
+                    return self.previousItem();
+                });
 
-                }
-                if (this.numbers) {
+                if ('#jcemediabox-popup-numbers') {
                     this.numbers.tmpHTML = this.numbers.innerHTML;
                 }
 
-                if (this.print) {
-                    Event.add(this.print, 'click', function() {
-                        return t.printPage();
-                    });
-
-                }
                 // PNG Fix
                 if (JCEMediaBox.isIE6) {
-                    DOM.png(this.body);
-                    each(DOM.select('*', this.body), function(el) {
-                        // Exclude loaded content
-                        if (DOM.attribute(el, 'id') == 'jcemediabox-popup-content') {
-                            return;
-                        }
-                        DOM.png(el);
-                    });
+                    $('#jcemediabox-popup-body').png();
+                    $('*', '#jcemediabox-popup-body').not('#jcemediabox-popup-content').png();
 
                 }
             }
@@ -1558,28 +1464,26 @@ jQuery.noConflict();
          * @param {Int} n Index of current popup
          */
         show: function(items, n) {
-            var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
             this.items = items;
             this.bind(true);
 
             // Show popup
-            DOM.show(this.body);
+            $('#jcemediabox-popup-body').show();
             // Get top position
-            var top = (DIM.getHeight() - DIM.outerHeight(this.body)) / 2;
+            var top = ($(document).height() - $('#jcemediabox-popup-body').outerHeight()) / 2;
 
             // Set top position
-            DOM.style(this.body, 'top', top);
+            $('#jcemediabox-popup-body').css('top', top);
             // Changes if IE6 or scrollpopup
             if (JCEMediaBox.isIE6 || JCEMediaBox.isIDevice || JCEMediaBox.options.popup.scrolling == 'scroll') {
-                DOM.style(this.page, 'position', 'absolute');
-                DOM.style(this.overlay, 'height', DIM.getScrollHeight());
-                DOM.style(this.body, 'top', DIM.getScrollTop() + top);
+                $('#jcemediabox-popup-page').css('position', 'absolute');
+                $('#jcemediabox-popup-overlay').css('height', $(document).height());
+                $('#jcemediabox-popup-body').css('top', $(document).scrollTop() + top);
             }
             // Fade in overlay
-            if (JCEMediaBox.options.popup.overlay == 1 && this.overlay) {
-                DOM.show(this.overlay);
-                JCEMediaBox.FX.animate(this.overlay, {
-                    'opacity': JCEMediaBox.options.popup.overlayopacity
+            if (JCEMediaBox.options.popup.overlay == 1) {
+                $('#jcemediabox-popup-overlay').show().animate({
+                    'opacity' : JCEMediaBox.options.popup.overlayopacity
                 }, JCEMediaBox.options.popup.fadespeed);
             }
 
@@ -1593,50 +1497,42 @@ jQuery.noConflict();
 
         // TODO - Resize popup when browser window resizes
         bind: function(open) {
-            var t = this, isIE6 = JCEMediaBox.isIE6, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var self = this, isIE6 = JCEMediaBox.isIE6;
 
             if (isIE6) {
-                each(DOM.select('select'), function(el) {
+                $('select').each(function() {
                     if (open) {
-                        el.tmpStyle = el.style.visibility || '';
+                        this.tmpStyle = this.style.visibility || '';
                     }
-                    el.style.visibility = open ? 'hidden' : el.tmpStyle;
+                    this.style.visibility = open ? 'hidden' : this.tmpStyle;
                 });
 
             }
             if (JCEMediaBox.options.popup.hideobjects) {
-                each(DOM.select('object, embed'), function(el) {
-                    if (el.id == 'jcemediabox-popup-object')
-                        return;
+                $('object, embed').not('#jcemediabox-popup-object').each(function() {
                     if (open) {
-                        el.tmpStyle = el.style.visibility || '';
+                        this.tmpStyle = this.style.visibility || '';
                     }
-                    el.style.visibility = open ? 'hidden' : el.tmpStyle;
+                    this.style.visibility = open ? 'hidden' : this.tmpStyle;
                 });
 
             }
             var scroll = JCEMediaBox.options.popup.scrollpopup;
             if (open) {
-                Event.add(document, 'keydown', function(e) {
-                    t.listener(e);
+                $(document).bind('mediabox.keydown', function(e) {
+                    self.listener(e);
                 });
 
                 if (isIE6) {
-                    Event.add(window, 'scroll', function(e) {
-                        DOM.style(t.overlay, 'height', JCEMediaBox.Dimensions.getScrollHeight());
+                    $(window).bind('mediabox.scroll', function(e) {
+                        $(self.overlay).height($(document).scrollTop()).width($(document).scrollLeft());
                     });
-
-                    Event.add(window, 'scroll', function(e) {
-                        DOM.style(t.overlay, 'width', JCEMediaBox.Dimensions.getScrollWidth());
-                    });
-
                 }
             } else {
                 if (isIE6 || !scroll) {
-                    Event.remove(window, 'scroll');
-                    Event.remove(window, 'resize');
+                    $(window).unbind('mediabox.scroll').unbind('mediabox.resize');
                 }
-                Event.remove(document, 'keydown');
+                $(document).unbind('mediabox.keydown');
             }
         },
 
@@ -1663,29 +1559,29 @@ jQuery.noConflict();
          * @param {Object} n Queue position
          */
         queue: function(n) {
-            var t = this;
+            var self = this;
             // Optional element
             var changed = false;
 
-            JCEMediaBox.each(['top', 'bottom'], function(s) {
-                var el = t['info-' + s];
-                if (el) {
-                    var v = JCEMediaBox.Dimensions.outerHeight(el);
-                    var style = {};
-                    style['top'] = (s == 'top') ? v : -v;
-                    JCEMediaBox.FX.animate(el, style, JCEMediaBox.options.popup.scalespeed, function() {
-                        if (!changed) {
-                            changed = true;
-                            JCEMediaBox.FX.animate(t.content, {
-                                'opacity': 0
-                            }, JCEMediaBox.options.popup.fadespeed, function() {
-                                return t.change(n);
-                            });
+            $('#jcemediabox-popup-info-top, #jcemediabox-popup-info-bottom').each(function() {
 
-                        }
-                    });
+                var v = $(this).outerHeight();
+                
+                var style = {
+                    top : $(this).is('#jcemediabox-popup-info-top') ? v : -v
+                };
+                
+                $(this).animate(style, JCEMediaBox.options.popup.scalespeed, function() {
+                    if (!changed) {
+                        changed = true;
+                        $('#jcemediabox-popup-content').animate({
+                            'opacity': 0
+                        }, JCEMediaBox.options.popup.fadespeed, function() {
+                            return self.change(n);
+                        });
 
-                }
+                    }
+                });
             });
 
         },
@@ -1722,10 +1618,9 @@ jQuery.noConflict();
          * Set the popup information (caption, title, numbers)
          */
         info: function() {
-            var each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
             // Optional Element Caption/Title
 
-            if (this.caption) {
+            if ($('#jcemediabox-popup-caption').get(0)) {
                 var title = this.active.caption || this.active.title || '', text = '';
 
                 var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
@@ -1750,22 +1645,17 @@ jQuery.noConflict();
                 if (text) {
                     h += '<p>' + text + '</p>';
                 }
-                this.caption.innerHTML = h || '&nbsp;';
+                $('#jcemediabox-popup-caption').html(h || '&nbsp;');
 
                 // Process e-mail and urls
-                each(DOM.select('*', this.caption), function(el) {
-                    if (el.nodeName != 'A') {
-                        each(el.childNodes, function(n, i) {
-                            if (n.nodeType == 3) {
-                                var s = n.innerText || n.textContent || n.data || null;
-                                if (s && /(@|:\/\/)/.test(s)) {
-                                    if (s = processRe(s)) {
-                                        n.parentNode.innerHTML = s;
-                                    }
-                                }
+                $('*', '#jcemediabox-popup-caption').not('a').children().each(function() {
+                    if (this.nodeType == 3) {
+                        var s = $(this).text();
+                        if (s && /(@|:\/\/)/.test(s)) {
+                            if (s = processRe(s)) {
+                                $(this).parent().html(s);
                             }
-                        });
-
+                        }
                     }
                 });
 

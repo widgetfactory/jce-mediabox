@@ -1816,6 +1816,8 @@
                 // if url
                 if (s.indexOf('&') != -1) {
                     x = s.split(/&(amp;)?/g);
+                } else {
+                    x.push(s);
                 }
             }
 

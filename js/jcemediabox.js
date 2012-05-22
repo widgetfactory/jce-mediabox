@@ -3292,6 +3292,9 @@
                     var tag = /video/.test(type) ? 'video' : 'audio';
 					
                     if (hasSupport) {
+                        p.width     = p.width   || this.active.width;
+                        p.height    = p.height  || this.active.height;  
+                        
                         this.object = '<' + tag;
                 		
                         for (n in p) {
@@ -3316,6 +3319,9 @@
                         if (type == 'video/mp4' || type == 'audio/mp3') {
                             this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
                 		
+                            p.width     = p.width   || this.active.width;
+                            p.height    = p.height  || this.active.height;
+                            
                             var src = this.active.src;
 	                        
                             if (!/:\/\//.test(src)) {

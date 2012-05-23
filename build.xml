@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JCE MediaBox" basedir="." default="build">
+    <property description="Package Version" name="version" value="1.1.4" />
+    <property description="File Version" name="file_version" value="114" />
+    <property description="Export directory" name="export_dir" value="/Users/ryandemmer/Releases/jcemediabox/${file_version}" />
+    <property description="Language" name="lang" value="../../../administrator/language/en-GB/" />
+    <property description="E-mail" name="e-mail" value="info@joomlacontenteditor.net" />
+    <property description="Licence" name="licence" value="GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html" />
+    <property description="Copyright" name="copyright" value="Copyright (C) 2006 - 2012 Ryan Demmer. All rights reserved" />
+
+    <target name="phing" description="Builds the project">
+        <tstamp>
+            <format property="DATE" pattern="%d %B %Y" />
+        </tstamp>
+        
+        <delete dir="${export_dir}" quiet="true" />
+        <copy todir="${export_dir}/plugins/system">
+            <fileset dir=".">
+                <include name="jcemediabox.php" />
+                <include name="jcemediabox/**" />
+                <exclude name="*.xml" />
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="@@" endtoken="@@">
+                    <token key="version" value="${version}" />
+                    <token key="email" value="${e-mail}" />
+                    <token key="date" value="${DATE}" />
+                    <token key="licence" value="${licence}" />
+                    <token key="copyright" value="${copyright}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <copy todir="${export_dir}">
+            <fileset dir=".">
+                <include name="jcemediabox.xml" />
+                <include name="jcemediabox_17.xml" />
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="@@" endtoken="@@">
+                    <token key="version" value="${version}" />
+                    <token key="e-mail" value="${e-mail}" />
+                    <token key="date" value="${DATE}" />
+                    <token key="licence" value="${licence}" />
+                    <token key="copyright" value="${copyright}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+		
+        <copy todir="${export_dir}">
+            <fileset dir="jcemediabox">
+                <include name="install.php" />
+            </fileset>
+        </copy>
+		
+        <copy todir="${export_dir}/administrator/language/en-GB">
+            <fileset dir="${lang}">
+                <include name="en-GB.plg_system_jcemediabox.ini" />
+                <include name="en-GB.plg_system_jcemediabox.sys.ini" />
+            </fileset>
+        </copy>
+		
+        <copy todir="${export_dir}/plugins/system">
+            <fileset dir="${export_dir}/plugins/system" />
+            <mapper type="regexp" from="(.*)\.js" to="\1-src.js" />
+        </copy>
+		
+        <delete file="${export_dir}/plugins/system/jcemediabox/addons/default.js" quiet="true" />
+        <delete file="${export_dir}/plugins/system/jcemediabox/js/mediaobject.js" quiet="true" />
+        <delete file="${export_dir}/plugins/system/jcemediabox/js/jcemediabox.js" quiet="true" />
+		
+        <append destFile="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-tmp.js">
+            <fileset dir="${export_dir}">
+                <include name="plugins/system/jcemediabox/js/jcemediabox-src.js" />
+            </fileset>
+        </append>
+		
+        <append destFile="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-tmp.js">
+            <fileset dir="${export_dir}">
+                <include name="plugins/system/jcemediabox/addons/default-src.js" />
+                <include name="plugins/system/jcemediabox/js/mediaobject-src.js" />
+            </fileset>
+        </append>
+
+        <taskdef name="jspacker" classname="phing.tasks.ext.JsPacker" />
+        <jspacker encoding="0" fastDecode="false" specialChars="false" src="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-tmp.js" dest="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-tmp.js" />
+
+        <append destFile="${export_dir}/plugins/system/jcemediabox/js/jcemediabox.js">
+            <fileset dir="${export_dir}">
+                <include name="plugins/system/jcemediabox/header.txt" />
+                <include name="plugins/system/jcemediabox/js/jcemediabox-tmp.js" />
+            </fileset>
+        </append>
+				
+        <delete file="${export_dir}/plugins/system/jcemediabox/header.txt" quiet="true" />
+        <delete file="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-tmp.js" quiet="true" />
+		
+		<!--taskdef name="jfilemanifest" classname="phing.tasks.ext.JFileManifest" />
+		<jfilemanifest file="${export_dir}/plugins/system/jcemediabox.xml" type="plugin">
+			<parameter type="file" name="#plugin" value="jcemediabox" />
+			<fileset dir="${export_dir}">
+	    		<include name="jcemediabox.php" />
+				<include name="jcemediabox/**" />
+			</fileset>
+		</jfilemanifest-->
+		
+		<!-- Prepare Version Folders -->
+		
+        <copy todir="${export_dir}/joomla15">
+            <fileset dir="${export_dir}">
+                <include name="**" />
+                <exclude name="plugins/system/jcemediabox.xml" />
+                <exclude name="plugins/system/jcemediabox_17.xml" />
+                <exclude name="administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini" />
+            </fileset>
+        </copy>
+		
+        <copy todir="${export_dir}/joomla17">
+            <fileset dir="${export_dir}">
+                <include name="plugins/**" />
+                <exclude name="plugins/system/jcemediabox.php" />
+                <exclude name="plugins/system/jcemediabox.xml" />
+                <exclude name="plugins/system/jcemediabox_17.xml" />
+            </fileset>
+        </copy>
+        <copy todir="${export_dir}/joomla17">
+            <fileset dir="${export_dir}">
+                <include name="administrator/language/**" />
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern='\\"' replace='"_QQ_"' />
+                </replaceregexp>
+            </filterchain>
+        </copy>
+		
+        <copy file="${export_dir}/plugins/system/jcemediabox.php" tofile="${export_dir}/joomla17/plugins/system/jcemediabox/jcemediabox.php" />
+        <copy file="${export_dir}/jcemediabox_17.xml" tofile="${export_dir}/joomla17/jcemediabox.xml" />
+		
+		<!-- Joomla! 1.5 -->
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla15.zip" basedir="${export_dir}/joomla15">
+            <fileset dir="${export_dir}/joomla15">
+                <include name="**" />
+            </fileset>
+        </zip>
+
+		<!-- Joomla! 1.7 -->
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla17.zip" basedir="${export_dir}/joomla17">
+            <fileset dir="${export_dir}/joomla17">
+                <include name="**" />
+            </fileset>
+        </zip>
+    </target>
+    
+    <target name="ant" description="Builds the project">
+
+        <taskdef name="jsmin"
+                 classname="net.matthaynes.jsmin.JSMin_Task"
+                 classpath="../../../../../ant-tools/jsmin.jar"/>
+        
+        <tstamp>
+            <format property="DATE" pattern="dd MMMM yyyy" />
+        </tstamp>
+        
+        <delete dir="${export_dir}" quiet="true" />
+        
+        <!-- Joomla! 1.7+ -->
+        <copy todir="${export_dir}/plugins/system/jcemediabox">
+            <fileset dir=".">
+                <include name="**" />
+                <exclude name="*.xml" />
+                
+                <exclude name="build.xml" />
+                <exclude name=".project" />
+                <exclude name=".settings" />
+                <exclude name=".buildpath" />
+                <exclude name=".externalToolBuilders/" />
+                <exclude name="**.project" />
+                <exclude name="**.settings" />
+                <exclude name="*.settings" />
+                <exclude name="**.settings/" />
+                <exclude name="**.buildpath" />
+                <exclude name="**.externalToolBuilders/" />
+                <exclude name="changelog.txt" />
+                <exclude name="README" />
+                <exclude name="**/nbproject" />
+                <exclude name="**/nbproject/**" />
+            </fileset>
+        </copy>
+        <!-- Joomla! 1.5 -->
+        <copy todir="${export_dir}">
+            <fileset dir=".">
+                <include name="jcemediabox.xml" />
+                <include name="jcemediabox_15.xml" />
+            </fileset>
+        </copy>
+        
+        <copy todir="${export_dir}/administrator/language/en-GB">
+            <fileset dir="${lang}">
+                <include name="en-GB.plg_system_jcemediabox.ini" />
+                <include name="en-GB.plg_system_jcemediabox.sys.ini" />
+            </fileset>
+        </copy>
+        
+        <move todir="${export_dir}/plugins/system/jcemediabox" includeemptydirs="false">
+            <fileset dir="${export_dir}/plugins/system/jcemediabox">
+                <include name="**/*.js" />
+                <exclude name="**/**-src.js"/>
+            </fileset>
+            <mapper type="regexp" from="^(.*)\.js$$" to="\1-src.js"/>
+        </move>
+        
+        <replace 
+            dir="${export_dir}">
+            <replacefilter 
+                token="@@version@@" 
+                value="${version}"/>
+            <replacefilter 
+                token="@@e-mail@@" 
+                value="${e-mail}"/>
+            <replacefilter 
+                token="@@date@@" 
+                value="${DATE}"/>
+            <replacefilter 
+                token="@@licence@@" 
+                value="${licence}"/>
+            <replacefilter 
+                token="@@copyright@@" 
+                value="${copyright}"/>
+        </replace>
+
+        <concat destfile="${export_dir}/plugins/system/jcemediabox/js/jcemediabox.js">           
+            <fileset file="${export_dir}/plugins/system/jcemediabox/js/jcemediabox-src.js" />
+            <fileset file="${export_dir}/plugins/system/jcemediabox/js/mediaobject-src.js" /> 
+            <fileset file="${export_dir}/plugins/system/jcemediabox/addons/default-src.js" /> 
+        </concat>
+        
+        <!-- Load Header file -->
+        
+        <loadfile property="header" srcFile="${export_dir}/plugins/system/jcemediabox/header.txt"/>
+        
+        <!-- JSMin -->
+        
+        <jsmin force="true" copyright="${header}">
+            <fileset dir="${export_dir}/plugins/system/jcemediabox/js">                
+                <include name="jcemediabox.js" />                
+            </fileset>
+        </jsmin>
+        
+        <copy todir="${export_dir}/joomla15">
+            <fileset dir="${export_dir}">
+                <include name="**" />
+                <exclude name="**/*.xml" />
+                <exclude name="administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini" />
+                <exclude name="header.txt" />               
+            </fileset>
+        </copy>
+		
+        <copy todir="${export_dir}/joomla25">
+            <fileset dir="${export_dir}">
+                <include name="jcemediabox.xml" />
+                <include name="plugins/**" />
+                <exclude name="plugins/system/jcemediabox.php" />
+                <exclude name="plugins/system/jcemediabox_15.xml" />
+                <exclude name="header.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${export_dir}/joomla25">
+            <fileset dir="${export_dir}">
+                <include name="administrator/language/**" />
+            </fileset>
+        </copy>
+	
+        <!-- Joomla! 1.5 -->
+        <copy file="${export_dir}/plugins/system/jcemediabox/jcemediabox.php" tofile="${export_dir}/joomla15/plugins/system/jcemediabox.php" />
+        <copy file="${export_dir}/jcemediabox_15.xml" tofile="${export_dir}/joomla15/jcemediabox.xml" />
+		
+	<!-- Joomla! 1.5 -->
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla15.zip" basedir="${export_dir}/joomla15">
+            <zipfileset dir="${export_dir}/joomla15">
+                <include name="**" />
+                <exclude name="jcemediabox_15.xml" />
+            </zipfileset>
+        </zip>
+
+	<!-- Joomla! 1.7+ -->
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla25.zip" basedir="${export_dir}/joomla25">
+            <zipfileset dir="${export_dir}/joomla25">
+                <include name="**" />
+            </zipfileset>
+        </zip>
+    </target>
+</project>

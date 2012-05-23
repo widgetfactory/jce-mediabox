@@ -1519,7 +1519,7 @@
             // Add events to each found tooltip element
             each(DOM.select('.jcetooltip, .jce_tooltip', o), function(el) {
                 // store away title
-                el.tmpTitle = el.title;
+                DOM.attribute(el, 'data-title', el.title);
                 DOM.remove(el, 'title');
 
                 var n = el;
@@ -1582,7 +1582,7 @@
             this.build();
 
             // Get tooltip text from title
-            var text = el.tmpTitle || '', title = '';
+            var text = DOM.attribute(el, 'data-title') || '', title = '';
 
             // Split tooltip text ie: title::text
             if (/::/.test(text)) {
@@ -2277,8 +2277,7 @@
                     // Clone image as span element
                     var span = DOM.add(el, 'span', {
                         'class'	: 'jcemediabox-zoom-span',
-                        'style'	: child.style.cssText,
-                        'title' : child.title || child.alt || ''	 
+                        'style'	: child.style.cssText	 
                     });
 
                     // Set styles

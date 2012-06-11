@@ -64,6 +64,8 @@
 	right: -15px;
 	position: absolute;
 	border: none;
+        
+        cursor: pointer;
 }
 #jcemediabox-popup-nav {
 	line-height: 20px;
@@ -76,7 +78,10 @@
 	position: absolute;
 	border: none;
 	background-repeat: no-repeat;
+        background-color: transparent;
 	bottom: 5px;
+        
+        cursor: pointer;
 }
 #jcemediabox-popup-prev{
 	background-image: url(../img/prev.png);

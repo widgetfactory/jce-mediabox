@@ -354,6 +354,70 @@ class plgSystemJCEMediabox extends JPlugin {
         $document->addScriptDeclaration($html);
         return true;
     }
+    
+    function onAfterRender() {
+        $params = $this->params;
+        $theme  = $params->get('theme', 'standard');
+
+        if ($params->get('dynamic_themes', 0)) {
+            $theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
+        }
+        
+        $path   = $params->get('themepath', 'plugins/system/jcemediabox/themes');
+        $file   = $path . DS . $theme;
+        
+        $custom = $params->get('themecustom', '');
+        
+        if ($custom) {
+            $file = $path . DS . $custom;
+        }
+        
+        // get input filter
+        $filter = new JFilterInput(array('div', 'span', 'a', ''), array('id', 'class', 'href', 'title'), 0, 0);
+        
+        $html = '';
+        
+        if (JFile::exists($file . DS . 'tooltip.html')) {
+            $data = JFile::read($file . DS . 'tooltip.html');
+            
+            preg_match('#<body>([\s\S]+)<\/body>#', $data, $matches);
+            
+            if ($matches) {
+                $data = $matches[1];
+            }
+            
+            $data = $filter->clean($data);
+            
+            $html .= '<div id="jcemediabox-tooltip-html" class="jcemediabox-tooltip">' . $data . '</div>';
+        }
+        
+        if (JFile::exists($file . DS . 'popup.html')) {
+            $data = JFile::read($file . DS . 'popup.html');
+            
+            preg_match('#<body>([\s\S]+)<\/body>#', $data, $matches);
+            
+            if ($matches) {
+                $data = $matches[1];
+            }
+            
+            $data = $filter->clean($data);
+            
+            // translate
+            $data = preg_replace_callback('/\{#(\w+?)\}/', array($this, 'translate'), $data);
+            
+            $html .= '<div id="jcemediabox-popup-html"><div id="jcemediabox-popup-overlay"></div><div id="jcemediabox-popup-frame"><div id="jcemediabox-popup-body">' . $data . '</div></div></div>';
+        }
+
+        $buffer     = JResponse::getBody();      
+        $buffer     = str_replace('</body>', preg_replace("#\r\s+#", "", $html) . "\n</body>", $buffer); 
+        
+        JResponse::setBody($buffer);
+	return true;
+    }
+    
+    function translate($matches) {
+        return htmlspecialchars(JText::_('JCEMEDIABOX_' . strtoupper($matches[1])));
+    }
 
     function getScripts() {
         $scripts = array('js/jcemediabox.js');

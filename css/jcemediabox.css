@@ -12,7 +12,7 @@
 		background: none !important;	
 	}
 }
-#jcemediabox-popup-page, #jcemediabox-popup-overlay, #jcemediabox-popup-body, #jcemediabox-popup-loader, #jcemediabox-popup-container, 
+#jcemediabox-popup-html, #jcemediabox-popup-overlay, #jcemediabox-popup-body, #jcemediabox-popup-loader, #jcemediabox-popup-container, 
 #jcemediabox-popup-content, #jcemediabox-popup-content, #jcemediabox-popup-object, #jcemediabox-popup-iframe, #jcemediabox-popup-img {
 	left: 0;
 	top: 0;
@@ -26,9 +26,11 @@
 	height: 100%;
 	width: 100%;
 }
-#jcemediabox-popup-page {
+#jcemediabox-popup-html {
 	position: fixed;
 	z-index: 10000;
+        
+        display : none;
 }
 #jcemediabox-popup-overlay {
 	position: absolute;
@@ -90,7 +92,7 @@
 	text-align: center;
 }
 
-#jcemediabox-popup-page.idevice #jcemediabox-popup-content {
+#jcemediabox-popup-html.idevice #jcemediabox-popup-content {
 	overflow: scroll;
 	-webkit-overflow-scrolling: touch;
 }

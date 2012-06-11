@@ -49,6 +49,8 @@
 	padding-left: 22px;
 	vertical-align: middle;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        
+        cursor: pointer;
 }
 #jcemediabox-popup-closelink:hover, #jcemediabox-popup-closelink:visited:hover {
 	text-decoration: none;
@@ -61,6 +63,9 @@
 	position: absolute;
 	top: 25%;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        background-color: transparent;
+        
+        cursor: pointer;
 }
 #jcemediabox-popup-prev {
 	left : 10px;

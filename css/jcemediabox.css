@@ -94,7 +94,6 @@
 
 #jcemediabox-popup-html.idevice #jcemediabox-popup-content {
 	overflow: scroll;
-	-webkit-overflow-scrolling: touch;
 }
 
 #jcemediabox-popup-ajax {

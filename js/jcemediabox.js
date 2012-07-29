@@ -1591,8 +1591,7 @@
          */
         start: function(el) {
             var t = this, DOM = JCEMediaBox.DOM;
-            if (!this.tooltiptheme)
-                return false;
+
             // Create tooltip if it doesn't exist
             this.build();
 
@@ -1625,6 +1624,7 @@
             } else {
                 tn.innerHTML = h;
             }
+            
             // Set visible
             DOM.style(t.toolTip, 'visibility', 'visible');
             // Fade in tooltip
@@ -1639,9 +1639,6 @@
          * @param {Object} el Element
          */
         end: function(el) {
-            if (!this.tooltiptheme)
-                return false;
-
             // Fade out tooltip and hide
 
             JCEMediaBox.DOM.styles(this.toolTip, {
@@ -1655,9 +1652,6 @@
          * @param {Object} e Event trigger
          */
         locate: function(e) {
-            if (!this.tooltiptheme)
-                return false;
-
             this.build();
 
             var o = JCEMediaBox.options.tooltip.offsets;
@@ -2714,6 +2708,11 @@
                 t[s] = el;
                 DOM.hide(el);
             });
+            
+            if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
+                // add iPad scroll fix
+                DOM.setStyle(this.content, '-webkit-overflow-scrolling', 'touch');
+            }
 
             // Add close function to frame on click
             if (JCEMediaBox.options.popup.close == 2) {
@@ -3113,7 +3112,7 @@
             // Get set parameters
             extend(p, o.params);
             
-            var width 	= p.width 	|| JCEMediaBox.options.popup.width 	|| 0;
+            var width 	= p.width 	|| JCEMediaBox.options.popup.width  || 0;
             var height	= p.height 	|| JCEMediaBox.options.popup.height || 0;
             
             if (/%/.test(width)) {

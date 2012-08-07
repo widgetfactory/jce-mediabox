@@ -612,7 +612,6 @@
              */
             styles: function(el, props) {
                 var t = this;
-                
                 JCEMediaBox.each(props, function(v, s) {
                     return t.style(el, s, v);
                 });
@@ -1316,13 +1315,13 @@
             // Set standard GET header
             var contentType = {
                 'Content-type': 'text/html' + encoding
-            };
+                };
 
             // Set URL Encoded / POST header options
             if (this.options.data) {
                 contentType = {
                     'Content-type': 'application/x-www-form-urlencoded' + encoding
-                };
+                    };
             }
             
             extend(this.options.headers, contentType);
@@ -1465,14 +1464,14 @@
          * @param {Object} options
          */
         init: function() {
-            var t = this, n;
+            var t = this;
 
             // Load tooltip theme
-            //var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
+            var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
 
             this.tooltiptheme = '';
 
-            /*new JCEMediaBox.XHR({
+            new JCEMediaBox.XHR({
                 success: function(text, xml) {
                     var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
                     if (re.test(text)) {
@@ -1483,13 +1482,7 @@
                     t.create();
                 }
 
-            }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');*/
-            
-            // we have valid theme html
-            if (JCEMediaBox.DOM.get('jcemediabox-tooltip-html')) {                
-                this.create();
-            }
-            
+            }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');
         },
 
         /**
@@ -1564,20 +1557,12 @@
         build: function() {
             if (!this.toolTip) {
                 var DOM = JCEMediaBox.DOM;
-                
-                this.toolTip = DOM.get('jcemediabox-tooltip-html');
-                
-                
-                /*this.toolTip = DOM.add(document.body, 'div', {
+                this.toolTip = DOM.add(document.body, 'div', {
                     'style': {
                         'opacity': 0
                     },
                     'class': 'jcemediabox-tooltip'
-                }, this.tooltiptheme);*/
-                
-                // make invisible
-                DOM.style(this.toolTip, 'opacity', 0);
-
+                }, this.tooltiptheme);
                 if (JCEMediaBox.isIE6) {
                     DOM.addClass(this.toolTip, 'ie6');
                 }
@@ -1591,7 +1576,8 @@
          */
         start: function(el) {
             var t = this, DOM = JCEMediaBox.DOM;
-
+            if (!this.tooltiptheme)
+                return false;
             // Create tooltip if it doesn't exist
             this.build();
 
@@ -1624,7 +1610,6 @@
             } else {
                 tn.innerHTML = h;
             }
-            
             // Set visible
             DOM.style(t.toolTip, 'visibility', 'visible');
             // Fade in tooltip
@@ -1639,6 +1624,9 @@
          * @param {Object} el Element
          */
         end: function(el) {
+            if (!this.tooltiptheme)
+                return false;
+
             // Fade out tooltip and hide
 
             JCEMediaBox.DOM.styles(this.toolTip, {
@@ -1652,6 +1640,9 @@
          * @param {Object} e Event trigger
          */
         locate: function(e) {
+            if (!this.tooltiptheme)
+                return false;
+
             this.build();
 
             var o = JCEMediaBox.options.tooltip.offsets;
@@ -2288,10 +2279,6 @@
                         'class'	: 'jcemediabox-zoom-span',
                         'style'	: child.style.cssText	 
                     });
-                    
-                    if (!/jce(tooltip|_tooltip)/.test(child.className)) {
-                        span.setAttribute('title', child.title || child.alt || '');
-                    }
 
                     // Set styles
                     DOM.styles(span, styles);
@@ -2523,7 +2510,7 @@
          * @param {Object} elements Optional array of popup elements
          */
         create: function(elements) {
-            var t = this, each = JCEMediaBox.each, Event = JCEMediaBox.Event, DOM = JCEMediaBox.DOM, pageload = false, auto = false, n;
+            var t = this, each = JCEMediaBox.each, Event = JCEMediaBox.Event, pageload = false, auto = false;
 
             // set pageload marker
             if (!elements) {
@@ -2571,10 +2558,10 @@
             // if no elements are specified, must be a pageload
             if (pageload) {
                 // set theme
-                //this.popuptheme = '';
+                this.popuptheme = '';
 
                 // Load the popup theme
-                /*var theme = JCEMediaBox.options.theme;
+                var theme = JCEMediaBox.options.theme;
 
                 new JCEMediaBox.XHR({
                     success: function(text, xml) {
@@ -2590,14 +2577,7 @@
                         }
                     }
 
-                }).send(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html');*/
-                
-                if (DOM.get('jcemediabox-popup-html')) {                    
-                    if (!auto) {
-                        this.auto();
-                        auto = true;
-                    }
-                }
+                }).send(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html');
             }
         },
 
@@ -2629,7 +2609,7 @@
          * @param {Object} i The popup index
          */
         start: function(p, i) {
-            var n = 0, items = [], len, each = JCEMediaBox.each;
+            var n = 0, items = [], each = JCEMediaBox.each;
 
             // build popup window
             if (this.build()) {
@@ -2661,117 +2641,119 @@
         build: function() {
             var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
 
-            // get page object
-            this.page = DOM.get('jcemediabox-popup-html');
-                
-            // Cancel if no page
             if (!this.page) {
-                return false;
-            }
-
-            if (JCEMediaBox.isIE6) {
-                DOM.addClass(this.page, 'ie6');
-            }
-
-            if (JCEMediaBox.isIE7) {
-                DOM.addClass(this.page, 'ie7');
-            }
-
-            if (JCEMediaBox.isIDevice) {
-                DOM.addClass(this.page, 'idevice');
-            }
-            
-            var overlay = DOM.get('jcemediabox-popup-overlay');
-
-            if (JCEMediaBox.options.popup.overlay == 1) {
-                DOM.styles(overlay, {
-                    'opacity' : 0,
-                    'background-color': JCEMediaBox.options.popup.overlaycolor
-                });
-                
-                this.overlay = overlay;
-                
-            } else {
-                DOM.hide(overlay);
-            }
-
-            // Create Frame
-            /*this.frame = DOM.add(this.page, 'div', {
-                id: 'jcemediabox-popup-frame'
-            }, '<div id="jcemediabox-popup-body">' + this.popuptheme + '</div>');*/
-            
-            this.frame = DOM.get('jcemediabox-popup-frame');
-
-            // Create all Popup structure objects
-            each(DOM.select('*[id]', this.frame), function(el) {
-                var s = el.id.replace('jcemediabox-popup-', '');
-                t[s] = el;
-                DOM.hide(el);
-            });
-            
-            if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
-                // add iPad scroll fix
-                DOM.setStyle(this.content, '-webkit-overflow-scrolling', 'touch');
-            }
-
-            // Add close function to frame on click
-            if (JCEMediaBox.options.popup.close == 2) {
-                Event.add(this.frame, 'click', function(e) {
-                    if (e.target && e.target == t.frame) {
-                        t.close();
-                    }
-                });
-            }
-
-            // Setup Close link event
-            if (this.closelink) {
-                Event.add(this.closelink, 'click', function() {
-                    return t.close();
+                // Create main page object
+                this.page = DOM.add(document.body, 'div', {
+                    id: 'jcemediabox-popup-page'
                 });
 
-            }
-            // Setup Cancel link event
-            if (this.cancellink) {
-                Event.add(this.cancellink, 'click', function() {
-                    return t.close();
+                if (JCEMediaBox.isIE6) {
+                    DOM.addClass(this.page, 'ie6');
+                }
+
+                if (JCEMediaBox.isIE7) {
+                    DOM.addClass(this.page, 'ie7');
+                }
+
+                if (JCEMediaBox.isIDevice) {
+                    DOM.addClass(this.page, 'idevice');
+                }
+
+                if (JCEMediaBox.options.popup.overlay == 1) {
+                    // Create overlay
+                    this.overlay = DOM.add(this.page, 'div', {
+                        id: 'jcemediabox-popup-overlay',
+                        style: {
+                            'opacity': 0,
+                            'background-color': JCEMediaBox.options.popup.overlaycolor
+                        }
+                    });
+                }
+
+                // Cancel if no theme
+                if (!this.popuptheme) {
+                    return false;
+                }
+                // Remove comments
+                this.popuptheme = this.popuptheme.replace(/<!--(.*?)-->/g, '');
+                // Translate
+                this.popuptheme = this.translate(this.popuptheme);
+                // Create Frame
+                this.frame = DOM.add(this.page, 'div', {
+                    id: 'jcemediabox-popup-frame'
+                }, '<div id="jcemediabox-popup-body">' + this.popuptheme + '</div>');
+
+                // Create all Popup structure objects
+                each(DOM.select('*[id]', this.frame), function(el) {
+                    var s = el.id.replace('jcemediabox-popup-', '');
+                    t[s] = el;
+                    DOM.hide(el);
                 });
 
-            }
-            // Setup Next link event
-            if (this.next) {
-                Event.add(this.next, 'click', function() {
-                    return t.nextItem();
-                });
+                if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
+                    // add iPad scroll fix
+                    DOM.setStyle(this.content, '-webkit-overflow-scrolling', 'touch');
+                }
 
-            }
-            // Setup Previous link event
-            if (this.prev) {
-                Event.add(this.prev, 'click', function() {
-                    return t.previousItem();
-                });
+                // Add close function to frame on click
+                if (JCEMediaBox.options.popup.close == 2) {
+                    Event.add(this.frame, 'click', function(e) {
+                        if (e.target && e.target == t.frame) {
+                            t.close();
+                        }
+                    });
+                }
 
-            }
-            if (this.numbers) {
-                this.numbers.tmpHTML = this.numbers.innerHTML;
-            }
+                // Setup Close link event
+                if (this.closelink) {
+                    Event.add(this.closelink, 'click', function() {
+                        return t.close();
+                    });
 
-            if (this.print) {
-                Event.add(this.print, 'click', function() {
-                    return t.printPage();
-                });
+                }
+                // Setup Cancel link event
+                if (this.cancellink) {
+                    Event.add(this.cancellink, 'click', function() {
+                        return t.close();
+                    });
 
-            }
-            // PNG Fix
-            if (JCEMediaBox.isIE6) {
-                DOM.png(this.body);
-                each(DOM.select('*', this.body), function(el) {
-                    // Exclude loaded content
-                    if (DOM.attribute(el, 'id') == 'jcemediabox-popup-content') {
-                        return;
-                    }
-                    DOM.png(el);
-                });
+                }
+                // Setup Next link event
+                if (this.next) {
+                    Event.add(this.next, 'click', function() {
+                        return t.nextItem();
+                    });
 
+                }
+                // Setup Previous link event
+                if (this.prev) {
+                    Event.add(this.prev, 'click', function() {
+                        return t.previousItem();
+                    });
+
+                }
+                if (this.numbers) {
+                    this.numbers.tmpHTML = this.numbers.innerHTML;
+                }
+
+                if (this.print) {
+                    Event.add(this.print, 'click', function() {
+                        return t.printPage();
+                    });
+
+                }
+                // PNG Fix
+                if (JCEMediaBox.isIE6) {
+                    DOM.png(this.body);
+                    each(DOM.select('*', this.body), function(el) {
+                        // Exclude loaded content
+                        if (DOM.attribute(el, 'id') == 'jcemediabox-popup-content') {
+                            return;
+                        }
+                        DOM.png(el);
+                    });
+
+                }
             }
             return true;
         },
@@ -2785,12 +2767,6 @@
             var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
             this.items = items;
             this.bind(true);
-            
-            // show page
-            DOM.show(this.page);
-
-            // show frame
-            DOM.show(this.frame);
 
             // Show popup
             DOM.show(this.body);
@@ -3112,7 +3088,7 @@
             // Get set parameters
             extend(p, o.params);
             
-            var width 	= p.width 	|| JCEMediaBox.options.popup.width  || 0;
+            var width 	= p.width 	|| JCEMediaBox.options.popup.width 	|| 0;
             var height	= p.height 	|| JCEMediaBox.options.popup.height || 0;
             
             if (/%/.test(width)) {
@@ -3775,13 +3751,6 @@
             each(['img', 'object', 'iframe', 'ajax'], function(i, v) {
                 t[v] = null;
             });
-            
-            JCEMediaBox.each(['top', 'bottom'], function(s) {
-                var el = t['info-' + s];
-                if (el) {
-                    DOM.attribute(el, 'style', '');
-                }
-            });
 
             // Hide closelink
             if (this.closelink) {
@@ -3803,34 +3772,31 @@
                     this.popups.pop();
                 }
 
-                DOM.hide(this.frame);
-
+                // remove frame
+                DOM.remove(this.frame);
                 // Fade out overlay
                 if (this.overlay) {
                     if (JCEMediaBox.isIE6) {
                         // Remove event bindings
                         this.bind();
-                        // Hide body, ie: popup
-                        DOM.hide(this.page);
-                        
-                        // reset
-                        DOM.attribute(this.body, 'style', '');
+                        // Remove body, ie: popup
+                        DOM.remove(this.page);
+                        this.page = null;
                     } else {
                         JCEMediaBox.FX.animate(this.overlay, {
                             'opacity': 0
                         }, JCEMediaBox.options.popup.fadespeed, function() {
                             t.bind();
-                            // hide page
-                            DOM.hide(t.page);
-                            
-                            // reset
-                            DOM.attribute(t.body, 'style', '');
+                            // destroy page
+                            DOM.remove(t.page);
+                            t.page = null;
                         });
 
                     }
                 } else {
-                    DOM.hide(this.page);
-                    DOM.attribute(t.body, 'style', '');
+                    // destroy page
+                    DOM.remove(this.page);
+                    this.page = null;
                 }
             }
             return false;

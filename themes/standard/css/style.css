@@ -66,8 +66,6 @@
 	position: relative;
 	float: right;
 	border: none;
-        
-        cursor: pointer;
 }
 #jcemediabox-popup-nav {
 	line-height: 10px;
@@ -81,8 +79,6 @@
 	border: none;
 	background-color: #cccccc;
 	background-repeat: no-repeat;
-        
-        cursor: pointer;
 }
 #jcemediabox-popup-closelink:hover, #jcemediabox-popup-prev:hover, #jcemediabox-popup-next:hover {
 	background-color: #333333;

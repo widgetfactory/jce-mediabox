@@ -125,7 +125,7 @@
                     height	: 350,
                     type	: 'iframe',
                     'src'	: v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
-                        var query = '';
+                        var k, query = '';
 						
                         if (/watch\?/.test(d)) {
                             // remove watch?

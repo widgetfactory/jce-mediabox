@@ -2609,7 +2609,7 @@
          * @param {Object} i The popup index
          */
         start: function(p, i) {
-            var n = 0, items = [], each = JCEMediaBox.each;
+            var n = 0, items = [], each = JCEMediaBox.each, len;
 
             // build popup window
             if (this.build()) {

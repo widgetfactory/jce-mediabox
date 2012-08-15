@@ -61,6 +61,7 @@
 	position: absolute;
 	top: 25%;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        outline: none;
 }
 #jcemediabox-popup-prev {
 	left : 10px;

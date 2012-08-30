@@ -631,7 +631,7 @@
                     }
                     v = el.getAttribute(s);
                     // Remove anonymous function from events
-                    if (/^on/.test(s)) {
+                    if (v && /^on/.test(s)) {
                         v = v.toString();
                         v = v.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
                     }
@@ -1910,13 +1910,15 @@
 
                 // Only JCE Popup links
                 if (/com_jce/.test(el.href)) {
-                    var p, s;
+                    var p, s, img;
                     var oc = DOM.attribute(el, 'onclick');
-                    s = oc.replace(/&#39;/g, "'").split("'");                    
-                    p = self.params(s[1]);
+                    if (oc) {
+                        s = oc.replace(/&#39;/g, "'").split("'");                    
+                        p = self.params(s[1]);
 
-                    var img 	= p.img 	|| '';
-                    var title 	= p.title 	|| '';
+                        var img 	= p.img 	|| '';
+                        var title 	= p.title 	|| '';
+                    }
 
                     if (img) {
                         if (!/http:\/\//.test(img)) {

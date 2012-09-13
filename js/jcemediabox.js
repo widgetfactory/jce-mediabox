@@ -2934,7 +2934,7 @@
             // Optional Element Caption/Title
 
             if (this.caption) {
-                var title = this.active.caption || this.active.title || '', text = '';
+                var title = this.active.title || '', text = this.active.caption || '', h = '';
 
                 var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
                 var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+)';
@@ -2948,16 +2948,18 @@
 
                 if (/::/.test(title)) {
                     var parts = title.split('::');
-                    title = JCEMediaBox.trim(parts[0]);
-                    text = JCEMediaBox.trim(parts[1]);
+                    title   = JCEMediaBox.trim(parts[0]);
+                    text    = JCEMediaBox.trim(parts[1]);
                 }
-                var h = '';
+
                 if (title) {
                     h += '<h4>' + title + '</h4>';
                 }
+                
                 if (text) {
                     h += '<p>' + text + '</p>';
                 }
+                
                 this.caption.innerHTML = h || '&nbsp;';
 
                 // Process e-mail and urls

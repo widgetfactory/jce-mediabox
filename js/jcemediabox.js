@@ -3451,13 +3451,6 @@
                                     if (/jce(popup|box|lightbox)/.test(el.className)) {
                                         Event.cancel(e);
                                         t.close(true);
-                                    } else {
-                                        t.close();
-                                        if (isIE) {
-                                            if (/http(s)?:\/\//.test(el.href)) {
-                                                document.location.href = el.href;
-                                            }
-                                        }
                                     }
                                 }
                             });

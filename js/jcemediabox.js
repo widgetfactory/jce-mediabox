@@ -2694,7 +2694,7 @@
 
                 if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
                     // add iPad scroll fix
-                    DOM.setStyle(this.content, '-webkit-overflow-scrolling', 'touch');
+                    DOM.style(this.content, 'webkitOverflowScrolling', 'touch');
                 }
 
                 // Add close function to frame on click

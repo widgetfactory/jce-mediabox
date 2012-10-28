@@ -41,7 +41,7 @@ class plgSystemJCEMediabox extends JPlugin {
     }
 
     function getPath() {
-        return JPATH_PLUGINS . DS . 'system' . DS . 'jcemediabox';
+        return JPATH_PLUGINS . '/system/jcemediabox';
     }
 
     function getURL() {
@@ -126,7 +126,7 @@ class plgSystemJCEMediabox extends JPlugin {
         }
 
         // Load template css file
-        if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style.css')) {
+        if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style.css')) {
             $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style.css' . $version);
         } else {
             $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/standard/css/style.css' . $version);
@@ -136,16 +136,16 @@ class plgSystemJCEMediabox extends JPlugin {
         $browser = &JBrowser::getInstance();
 
         if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 8) {
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
+            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
                 $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css' . $version);
             }
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css')) {
+            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css')) {
                 $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css' . $version);
             }
         }
 
         if (preg_match('#(ipad|iphone)#i', $browser->getAgentString())) {
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css')) {
+            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css')) {
                 $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css' . $version);
             }
         }
@@ -183,7 +183,7 @@ class plgSystemJCEMediabox extends JPlugin {
 
         $document = JFactory::getDocument();
 
-        $path = $this->getPath() . DS . 'addons';
+        $path = $this->getPath() . '/addons';
         $filter = array('default-src.js');
 
         if ($this->getVersion()) {
@@ -251,6 +251,17 @@ class plgSystemJCEMediabox extends JPlugin {
                 if ($option == 'com_' . $exclude || $option == $exclude) {
                     return;
                 }
+            }
+        }
+        
+        // get active menu
+        $menus  = JSite::getMenu();
+        $menu   = $menus->getActive();
+        
+        // is there a menu assignment?
+        if ($params->get('menu', '')) {
+            if (!in_array($menu->id, explode(',', $params->get('menu')))) {
+                return;
             }
         }
 
@@ -331,7 +342,7 @@ class plgSystemJCEMediabox extends JPlugin {
         $browser = &JBrowser::getInstance();
 
         if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 7) {
-            if (JFile::exists(dirname(__FILE__) . DS . 'jcemediabox' . DS . 'css' . DS . 'jcemediabox_ie6.css')) {
+            if (JFile::exists(dirname(__FILE__) . '/jcemediabox/css/jcemediabox_ie6.css')) {
                 $document->addStyleSheet($url . '/css/jcemediabox_ie6.css' . $version);
             }
         }
@@ -359,7 +370,7 @@ class plgSystemJCEMediabox extends JPlugin {
         $scripts = array('js/jcemediabox.js');
 
         // only for development
-        if (!$this->getVersion() && is_file($this->getPath() . DS . 'js' . DS . 'mediaobject.js')) {
+        if (!$this->getVersion() && is_file($this->getPath() . '/js/mediaobject.js')) {
             $scripts[] = 'js/mediaobject.js';
         }
 

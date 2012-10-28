@@ -289,5 +289,11 @@
                 <include name="**" />
             </zipfileset>
         </zip>
+        
+        <tar destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla25.tar.gz" basedir="${export_dir}/joomla25" compression="gzip" excludes="*.zip,*.gz">
+            <fileset dir="${export_dir}/joomla25">
+                <include name="**" />
+            </fileset>
+        </tar>
     </target>
 </project>

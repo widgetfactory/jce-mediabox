@@ -133,7 +133,7 @@ class plgSystemJCEMediabox extends JPlugin {
         }
         // Load any ie6 variation
         jimport('joomla.environment.browser');
-        $browser = &JBrowser::getInstance();
+        $browser = JBrowser::getInstance();
 
         if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 8) {
             if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
@@ -339,7 +339,7 @@ class plgSystemJCEMediabox extends JPlugin {
 
         // Load any ie6 variation
         jimport('joomla.environment.browser');
-        $browser = &JBrowser::getInstance();
+        $browser = JBrowser::getInstance();
 
         if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 7) {
             if (JFile::exists(dirname(__FILE__) . '/jcemediabox/css/jcemediabox_ie6.css')) {

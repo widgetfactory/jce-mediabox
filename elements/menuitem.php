@@ -28,27 +28,31 @@ class WFElementMenuItem extends WFElement {
 
     function fetchElement($name, $value, &$node, $control_name) {
         $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
 
         $menuType = $this->_parent->get('menu_type');
+        $where = array();
+        
         if (!empty($menuType)) {
-            $where = ' WHERE menutype = ' . $db->Quote($menuType);
+            $where[] = 'menutype = ' . $db->Quote($menuType);
         } else {
-            $where = ' WHERE 1';
+            $where[] = '1';
         }
 
         // Load the list of menu types
         // TODO: move query to model
-        $query = 'SELECT menutype, title' . ' FROM #__menu_types' . ' ORDER BY title';
+        $query->select('menutype, title')->from('#__menu_types')->order('title');
         $db->setQuery($query);
         $menuTypes = $db->loadObjectList();
 
         if ($state = (string) $node->attributes()->state) {
-            $where .= ' AND published = ' . (int) $state;
+            $where[] = 'published = ' . (int) $state;
         }
 
+		$query = $db->getQuery(true);
         // load the list of menu items
         // TODO: move query to model
-        $query = 'SELECT id, parent_id, title, menutype, type' . ' FROM #__menu' . $where . ' ORDER BY menutype, parent_id, ordering';
+        $query->select('id, parent_id, title, menutype, type')->from('#__menu')->where($where)->order('menutype, parent_id');
 
         $db->setQuery($query);
         $menuItems = $db->loadObjectList();

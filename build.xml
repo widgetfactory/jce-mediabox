@@ -137,8 +137,14 @@
                 <exclude name="jcemediabox_15.xml" />
             </zipfileset>
         </zip>
+        
+        <tar destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla15.tar.gz" basedir="${export_dir}/joomla15" compression="gzip" excludes="*.zip,*.gz">
+            <fileset dir="${export_dir}/joomla15">
+                <include name="**" />
+            </fileset>
+        </tar>
 
-	<!-- Joomla! 1.7+ -->
+	<!-- Joomla! 25+ -->
         <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla25.zip" basedir="${export_dir}/joomla25">
             <zipfileset dir="${export_dir}/joomla25">
                 <include name="**" />

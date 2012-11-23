@@ -114,6 +114,7 @@
         <file plugin="jcemediabox">jcemediabox.php</file>
         <folder>addons</folder>
         <folder>css</folder>
+        <folder>elements</folder>
         <folder>img</folder>
         <folder>js</folder>
         <folder>themes</folder>

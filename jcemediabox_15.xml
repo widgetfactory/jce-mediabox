@@ -109,6 +109,7 @@
         <file>jcemediabox/licence.txt</file>
         <folder>jcemediabox/addons</folder>
         <folder>jcemediabox/css</folder>
+        <folder>jcemediabox/elements</folder>
         <folder>jcemediabox/img</folder>
         <folder>jcemediabox/js</folder>
         <folder>jcemediabox/themes</folder>

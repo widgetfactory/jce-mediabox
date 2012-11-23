@@ -101,12 +101,6 @@
         </param>
         <param name="tipoffsets_x" type="text" default="16" label="JCEMEDIABOX_TOOLTIPXOFFSET" description="JCEMEDIABOX_TOOLTIPXOFFSETDESC"/>
         <param name="tipoffsets_y" type="text" default="16" label="JCEMEDIABOX_TOOLTIPYOFFSET" description="JCEMEDIABOX_TOOLTIPYOFFSETDESC"/>
-        <param type="spacer" default="JCEMEDIABOX_OTHER" />
-        <param name="flash" type="text" size="50" default="10,0,22,87" label="JCEMEDIABOX_FLASH" />
-        <param name="windowsmedia" type="text" size="50" default="5,1,52,701" label="JCEMEDIABOX_WINDOWSMEDIA" />
-        <param name="quicktime" type="text" size="50" default="6,0,2,0" label="JCEMEDIABOX_QUICKTIME" />
-        <param name="realmedia" type="text" size="50" default="7,0,0,0" label="JCEMEDIABOX_REALMEDIA" />
-        <param name="shockwave" type="text" size="50" default="8,5,1,0" label="JCEMEDIABOX_SHOCKWAVE" />
     </params>
 
     <files folder="plugins/system">

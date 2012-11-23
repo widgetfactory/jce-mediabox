@@ -222,13 +222,6 @@ class plgSystemJCEMediabox extends JPlugin {
             return;
         }
 
-        // check for mediabox classes in content
-        /* $buffer = JResponse::getBody();
-
-          if (!preg_match('#<(a|area)([^>]+)class="([^"]+?)(jcepopup|jcebox|jcelightbox|jcetooltip|jce_tooltip)([^"]+?)"([^>]+)>#i', $buffer) || !preg_match('#<a([^>]+)rel="(lightbox|shadowbox)"([^>]+)>#i', $buffer)) {
-          return;
-          } */
-
         $dev = true;
 
         $db = JFactory::getDBO();
@@ -308,19 +301,8 @@ class plgSystemJCEMediabox extends JPlugin {
             'themepath' => $params->get('themepath', 'plugins/system/jcemediabox/themes')
         );
 
-        $media_versions = array(
-            'flash' => $params->get('flash', '10,0,22,87'),
-            'windowmedia' => $params->get('windowmedia', '5,1,52,701'),
-            'quicktime' => $params->get('quicktime', '6,0,2,0'),
-            'realmedia' => $params->get('realmedia', '7,0,0,0'),
-            'shockwave' => $params->get('shockwave', '8,5,1,0')
-        );
-
         jimport('joomla.environment.browser');
         jimport('joomla.filesystem.file');
-
-        // Mediaobject plugin loaded?
-        $mediaobject = JPluginHelper::isEnabled('system', 'mediaobject');
 
         $version = $this->getVersion();
         $scripts = $this->getScripts();
@@ -348,15 +330,7 @@ class plgSystemJCEMediabox extends JPlugin {
         }
         $this->getThemeCss($standard);
 
-        $html = "";
-
-        if (!$mediaobject) {
-            $html .= "JCEMediaObject.init('" . JURI::base(true) . "/', {";
-            $html .= $this->renderParams('', $media_versions, true);
-            $html .= "});";
-        }
-
-        $html .= 'JCEMediaBox.init({';
+        $html  = "JCEMediaBox.init({";
         $html .= $this->renderParams('popup', $popup, false);
         $html .= $this->renderParams('tooltip', $tooltip, false);
         $html .= $this->renderParams('', $standard, true);
@@ -367,16 +341,7 @@ class plgSystemJCEMediabox extends JPlugin {
     }
 
     function getScripts() {
-        $scripts = array('js/jcemediabox.js');
-
-        // only for development
-        if (!$this->getVersion() && is_file($this->getPath() . '/js/mediaobject.js')) {
-            $scripts[] = 'js/mediaobject.js';
-        }
-
-        $scripts = array_merge($scripts, $this->getAddons());
-
-        return $scripts;
+        return array_merge(array('js/jcemediabox.js'), $this->getAddons());
     }
 
 }

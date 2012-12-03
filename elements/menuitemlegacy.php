@@ -51,18 +51,20 @@ class JElementMenuItemLegacy extends JElement
 				' ORDER BY title';
 		$db->setQuery( $query );
 		$menuTypes = $db->loadObjectList();
-
-		if ($state = $node->attributes('state')) {
-			$where .= ' AND published = '.(int) $state;
-		}
+                
+                // get state if set
+                $state = (int) $node->attributes('state');
+                
+                // only get published menu items
+		$where .= ' AND published = 1';
 
 		// load the list of menu items
 		// TODO: move query to model
 		$query = 'SELECT id, parent, name, menutype, type' .
-				' FROM #__menu' .
-				$where .
-				' ORDER BY menutype, parent, ordering'
-				;
+                ' FROM #__menu' .
+                $where .
+                ' ORDER BY menutype, parent, ordering'
+                ;
 
 		$db->setQuery($query);
 		$menuItems = $db->loadObjectList();

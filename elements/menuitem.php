@@ -42,12 +42,14 @@ class WFElementMenuItem extends WFElement {
         $query->select('menutype, title')->from('#__menu_types')->order('title');
         $db->setQuery($query);
         $menuTypes = $db->loadObjectList();
+        
+        // get state if set
+        $state = (string) $node->attributes()->state;
 
-        if ($state = (string) $node->attributes()->state) {
-            $where[] = 'published = ' . (int) $state;
-        }
+        // only get published menu items
+        $where[] = 'published = 1';
 
-		$query = $db->getQuery(true);
+        $query = $db->getQuery(true);
         // load the list of menu items
         // TODO: move query to model
         $query->select('id, parent_id, title, menutype, type')->from('#__menu')->where($where)->order('menutype, parent_id');

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JCE MediaBox" basedir="." default="build">
-    <property description="Package Version" name="version" value="1.1.5" />
-    <property description="File Version" name="file_version" value="115" />
+    <property description="Package Version" name="version" value="1.1.6" />
+    <property description="File Version" name="file_version" value="116" />
     <property description="Export directory" name="export_dir" value="/Users/ryandemmer/Releases/jcemediabox/${file_version}" />
     <property description="Language" name="lang" value="../../../administrator/language/en-GB/" />
     <property description="E-mail" name="e-mail" value="info@joomlacontenteditor.net" />

@@ -1,20 +1,18 @@
 <?php
-
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
- *
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2012 Ryan Demmer. All rights reserved.
  * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_BASE') or die;
 
 /**
  * Supports an HTML grouped select list of menu item grouped by menu
- *
- * @package     Joomla.Platform
- * @subpackage  Form
- * @since       11.1
  */
 class WFElementMenuItem extends WFElement {
 
@@ -111,16 +109,20 @@ class WFElementMenuItem extends WFElement {
             }
         }
         
+        $id      = $control_name . $name;
+        $name    = $control_name . '[' . $name . ']';
+        
         $attribs = array('class="inputbox"');
         
         if ($multiple = (string) $node->attributes()->multiple) {                        
             
-            $attribs[] = 'multiple="multiple"';
-            $attribs[] = 'size="' . (int) $node->attributes()->size . '"';
+            $attribs[]   = 'multiple="multiple"';
+            $attribs[]   = 'size="' . (int) $node->attributes()->size . '"';
+            $name       .= '[]';
         }
 
         return JHtml::_(
-            'select.genericlist', $options, $control_name . '[' . $name . ']', array('id' => $control_name . $name, 'list.attr' => implode(' ', $attribs), 'list.select' => $value)
+            'select.genericlist', $options, $name, array('id' => $id, 'list.attr' => implode(' ', $attribs), 'list.select' => $value)
         );
     }
 

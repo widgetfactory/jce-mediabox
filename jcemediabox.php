@@ -246,21 +246,23 @@ class plgSystemJCEMediabox extends JPlugin {
                 }
             }
         }
-        
+
         // get active menu
-        $menus      = JSite::getMenu();
-        $menu       = $menus->getActive();
+        $menus = JSite::getMenu();
+        $menu = $menus->getActive();
         // get menu items from parameter
-        $menuitems  = $params->get('menu');
-        
+        $menuitems = $params->get('menu');
+
         if (is_string($menuitems)) {
             $menuitems = explode(',', $menuitems);
         }
-        
-        // is there a menu assignment?
-        if ($params->get('menu', '')) {
-            if (!in_array($menu->id, (array) $menuitems)) {
-                return;
+
+        if ($menu) {
+            // is there a menu assignment?
+            if ($params->get('menu', '')) {
+                if (!in_array($menu->id, (array) $menuitems)) {
+                    return;
+                }
             }
         }
 
@@ -336,7 +338,7 @@ class plgSystemJCEMediabox extends JPlugin {
         }
         $this->getThemeCss($standard);
 
-        $html  = "JCEMediaBox.init({";
+        $html = "JCEMediaBox.init({";
         $html .= $this->renderParams('popup', $popup, false);
         $html .= $this->renderParams('tooltip', $tooltip, false);
         $html .= $this->renderParams('', $standard, true);

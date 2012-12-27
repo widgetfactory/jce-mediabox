@@ -83,7 +83,7 @@ class WFElementMenuItem extends WFElement {
 
         // Assemble menu items to the array
         $options = array();
-        //$options[] = JHtml::_('select.option', '', JText::_('JOPTION_SELECT_MENU_ITEM'));
+        $options[] = JHtml::_('select.option', '', JText::_('JOPTION_SELECT_MENU_ITEM'));
 
         foreach ($menuTypes as $type) {
             if ($menuType == '') {

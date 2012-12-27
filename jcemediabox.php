@@ -246,20 +246,20 @@ class plgSystemJCEMediabox extends JPlugin {
                 }
             }
         }
-
-        // get active menu
-        $menus = JSite::getMenu();
-        $menu = $menus->getActive();
         // get menu items from parameter
-        $menuitems = $params->get('menu');
+        $menuitems = (array) $params->get('menu');
+        
+        // is there a menu assignment?
+        if (!empty($menuitems) && !empty($menuitems[0])) {
+            // get active menu
+            $menus = JSite::getMenu();
+            $menu = $menus->getActive();
 
-        if (is_string($menuitems)) {
-            $menuitems = explode(',', $menuitems);
-        }
+            if (is_string($menuitems)) {
+                $menuitems = explode(',', $menuitems);
+            }
 
-        if ($menu) {
-            // is there a menu assignment?
-            if ($params->get('menu', '')) {
+            if ($menu) {
                 if (!in_array($menu->id, (array) $menuitems)) {
                     return;
                 }
@@ -290,7 +290,8 @@ class plgSystemJCEMediabox extends JPlugin {
             'scrolling' => $params->get('scrolling', 'fixed'),
             //'protect'			=>	$params->get('protect', 1),
             'close' => $params->get('close', 2),
-            'labels' => '{' . $this->getLabels() . '}'
+            'labels' => '{' . $this->getLabels() . '}',
+            'cookie_expiry' => $params->get('cookie_expiry', 7),
         );
 
         $tooltip = array(

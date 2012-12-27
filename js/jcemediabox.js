@@ -98,7 +98,8 @@
                     'previous': 'Previous',
                     'numbers': '{$current} of {$total}',
                     'cancel': 'Cancel'
-                }
+                },
+                cookie_expiry : 7
             },
             tooltip: {
                 speed: 150,
@@ -2341,7 +2342,10 @@
                     if (el.auto == 'single') {
                         var cookie = t.getCookie('jcemediabox_autopopup_' + el.id);
                         if (!cookie) {
-                            t.setCookie('jcemediabox_autopopup_' + el.id, 1);
+                            var expires = t.options.popup.cookie_expiry;
+                            var dts = new Date(); dts.setHours(expires * 24);
+                            
+                            t.setCookie('jcemediabox_autopopup_' + el.id, 1, dts);
                             t.start(el);
                         }
                     } else if (el.auto == 'multiple') {
@@ -3102,10 +3106,10 @@
             if (/%/.test(height)) {
                 height = DIM.getHeight() * parseInt(height) / 100;
             }
-
+            
             extend(this.active, {
                 'src'		: p.src || o.src,
-                'title'		: o.title,
+                'title'		: o.title || p.title || '',
                 'caption'	: p.caption || '',
                 'type'		: p.type || this.getType(o),
                 'params'	: p || {},

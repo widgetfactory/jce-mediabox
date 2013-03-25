@@ -11,47 +11,45 @@
  * other free or open source software licenses.
  *
  */
-(function(mediabox, undefined){
+(function(mediabox, undefined) {
     // don't load if JCEMediaBox class is not defined
     if (mediabox === undefined) {
         return;
     }
-	
+
     // JCEMediaBox.Popup shortcut
     var popup = mediabox.Popup, trim = mediabox.trim;
-	
+
     /**
-	 * Flash addons
-	 */
+     * Flash addons
+     */
     popup.setAddons('flash', {
         /**
-		 * Standard Flash object
-		 * @param {String} v URL
-		 */
-        flash : function(v) {
+         * Standard Flash object
+         * @param {String} v URL
+         */
+        flash: function(v) {
             if (/\.swf\b/.test(v)) {
                 return {
                     type: 'flash'
                 };
             }
         },
-		
         /**
-		 * Standard Flash object
-		 * @param {String} v URL
-		 */
-        flv : function(v) {
+         * Standard Flash object
+         * @param {String} v URL
+         */
+        flv: function(v) {
             if (/\.flv\b/.test(v)) {
                 return {
                     type: 'video/x-flv'
                 };
             }
         },
-		
         /**
-		 * Metacafe - http://www.metacafe.com
-		 * @param {String} v URL
-		 */
+         * Metacafe - http://www.metacafe.com
+         * @param {String} v URL
+         */
         metacafe: function(v) {
             if (/metacafe(.+)\/(watch|fplayer)\/(.+)/.test(v)) {
                 var s = trim(v);
@@ -61,7 +59,7 @@
                     }
                     s = s + '.swf';
                 }
-				
+
                 return {
                     width: 400,
                     height: 345,
@@ -74,14 +72,14 @@
             }
         },
         /**
-		 * Daily Motion - http://www.dailymotion.com
-		 * @param {String} v URL
-		 */
+         * Daily Motion - http://www.dailymotion.com
+         * @param {String} v URL
+         */
         dailymotion: function(v) {
             if (/dailymotion(.+)\/(swf|video)\//.test(v)) {
                 var s = trim(v);
                 s = s.replace(/_(.*)/, '');
-				
+
                 return {
                     width: 420,
                     height: 339,
@@ -92,9 +90,9 @@
             }
         },
         /**
-		 * Google Video - http://video.google.com
-		 * @param {String} v URL
-		 */
+         * Google Video - http://video.google.com
+         * @param {String} v URL
+         */
         googlevideo: function(v) {
             if (/google(.+)\/(videoplay|googleplayer\.swf)\?docid=(.+)/.test(v)) {
                 return {
@@ -110,32 +108,32 @@
     });
 
     /**
-	 * IFrame addons
-	 */
+     * IFrame addons
+     */
     popup.setAddons('iframe', {
         /**
-		 * Youtube - http://www.youtube.com
-		 * @param {String} v URL
-		 */
+         * Youtube - http://www.youtube.com
+         * @param {String} v URL
+         */
         youtube: function(v) {
             if (/youtu(\.)?be([^\/]+)?\/(.+)/.test(v)) {
-				
+
                 return {
-                    width	: 425,
-                    height	: 350,
-                    type	: 'iframe',
-                    'src'	: v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
+                    width: 425,
+                    height: 350,
+                    type: 'iframe',
+                    'src': v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
                         var k, query = '';
-						
+
                         if (/watch\?/.test(d)) {
                             // remove watch?
                             d = d.replace(/watch\?/, '');
                             // get query arguments
                             var args = JCEMediaBox.Popup.params(d);
                             // set video id
-                            query += args.v;					
+                            query += args.v;
                             delete args.v;
-							
+
                             for (k in args) {
                                 query += (((/\?/.test(query)) ? '&' : '?') + k + '=' + args[k]);
                             }
@@ -147,26 +145,25 @@
                         if (b && !c) {
                             c = '.com';
                         }
-						
+
                         if (!/wmode/.test(query)) {
-                            query += /\?/.test(query) ? '&wmode=opaque' : '?wmode=opaque'; 
+                            query += /\?/.test(query) ? '&wmode=opaque' : '?wmode=opaque';
                         }
 
                         return 'youtube' + c + '/embed/' + query;
-                    // add www (required by iOS ??)
+                        // add www (required by iOS ??)
                     }).replace(/\/\/youtube/i, '//www.youtube')
                 };
             }
         },
-		
         vimeo: function(v) {
             if (/vimeo\.com\/(video\/)?([0-9]+)/.test(v)) {
                 return {
-                    width	: 400,
-                    height	: 225,
-                    type	: 'iframe',
-                    'src'	: v.replace(/(player\.)?vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c, d) {						
-                        if (b) {						
+                    width: 400,
+                    height: 225,
+                    type: 'iframe',
+                    'src': v.replace(/(player\.)?vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c, d) {
+                        if (b) {
                             return a;
                         }
                         return 'player.vimeo.com/video/' + d;
@@ -174,25 +171,24 @@
                 };
             }
         },
-		
         /**
-		 * Twitvid - http://www.twitvid.com
-		 * @param {String} v URL
-		 */
+         * Twitvid - http://www.twitvid.com
+         * @param {String} v URL
+         */
         twitvid: function(v) {
             if (/twitvid(.+)\/(.+)/.test(v)) {
-				
+
                 var s = 'http://www.twitvid.com/embed.php?guid=';
-			
+
                 return {
-                    width	: 480,
-                    height	: 360,
-                    type	: 'iframe',
-                    'src': v.replace(/(.+)twitvid([^\/]+)\/(.+)/, function(a, b, c, d){
+                    width: 480,
+                    height: 360,
+                    type: 'iframe',
+                    'src': v.replace(/(.+)twitvid([^\/]+)\/(.+)/, function(a, b, c, d) {
                         if (/embed\.php/.test(d)) {
                             return a;
                         }
-						
+
                         return s + d;
                     })
                 };
@@ -201,28 +197,45 @@
     });
 
     /**
-	 * Image addons
-	 */
+     * Image addons
+     */
     popup.setAddons('image', {
         /**
-		 * Stnadard Image types
-		 * @param {String} v URL
-		 */
+         * Stnadard Image types
+         * @param {String} v URL
+         */
         image: function(v) {
             if (/\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(v)) {
                 return {
-                    type : 'image'
+                    type: 'image'
                 };
             }
         },
         /**
-		 * Twitpic - http://www.twitpic.com
-		 * @param {String} v URL
-		 */
+         * Twitpic - http://www.twitpic.com
+         * @param {String} v URL
+         */
         twitpic: function(v) {
             if (/twitpic(.+)\/(.+)/.test(v)) {
                 return {
-                    type : 'image'
+                    type: 'image'
+                };
+            }
+        }
+    });
+
+    /**
+     * Image addons
+     */
+    popup.setAddons('pdf', {
+        /**
+         * PDF
+         * @param {String} v URL
+         */
+        pdf: function(v) {
+            if (/\.(pdf)$/i.test(v)) {
+                return {
+                    type: 'application/pdf'
                 };
             }
         }

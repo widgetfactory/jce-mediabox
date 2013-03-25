@@ -15,46 +15,18 @@
 }
 #jcemediabox-popup-container {
 	background-color: #ffffff;
+        border-radius : 10px;
 }
 #jcemediabox-popup-loader {
 	background: url(../img/loader.gif) no-repeat center center;
 }
 #jcemediabox-popup-content {
-	padding: 0 10px;
-}
-.jcemediabox-popup-corner-tl {
-	background: url(../../standard/img/corner-tl.png) no-repeat left top;
-	clear: both;
-	height: 10px;
-}
-.jcemediabox-popup-corner-tr {
-	background: url(../../standard/img/corner-tr.png) no-repeat right top;
-	height: 10px;
-}
-.jcemediabox-popup-corner-tc {
-	background-color: #ffffff;
-	height: 10px;
-	margin: 0 10px;
-	width: auto;
+	padding: 10px;
 }
 #jcemediabox-popup-info-bottom {
 	padding-top: 10px;
 	margin-top: -20px;
-}
-.jcemediabox-popup-corner-bl {
-	background: url(../../standard/img/corner-bl.png) no-repeat left bottom;
-	clear: both;
-	height: 10px;
-}
-.jcemediabox-popup-corner-br {
-	background: url(../../standard/img/corner-br.png) no-repeat right bottom;
-	height: 10px;
-}
-.jcemediabox-popup-corner-bc {
-	background-color: #ffffff;
-	height: 10px;
-	margin: 0 10px;
-	width: auto;
+        border-radius : 0 0 10px 10px;
 }
 #jcemediabox-popup-closelink {
 	width: 30px;

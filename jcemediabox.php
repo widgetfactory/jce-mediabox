@@ -177,7 +177,7 @@ class plgSystemJCEMediabox extends JPlugin {
      * Load Addons
      * @return Boolean true
      */
-    function getAddons() {
+    public function getAddons() {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
@@ -201,6 +201,17 @@ class plgSystemJCEMediabox extends JPlugin {
         }
 
         return $scripts;
+    }
+    
+    public function getThemes() {
+        $document   = JFactory::getDocument();
+        $theme      = $this->params->get('theme', 'standard');
+
+        if ($this->params->get('dynamic_themes', 0)) {
+            $theme = JRequest::getWord('theme', $this->params->get('theme', 'standard'));
+        }
+        
+        return array('themes/' . $theme . '/js/popup.js', 'themes/' . $theme . '/js/tooltip.js');
     }
 
     /**
@@ -253,15 +264,18 @@ class plgSystemJCEMediabox extends JPlugin {
         if (!empty($menuitems) && !empty($menuitems[0])) {
             // get active menu
             $menus = JSite::getMenu();
-            $menu = $menus->getActive();
+            
+            if ($menus) {
+                $menu = $menus->getActive();
 
-            if (is_string($menuitems)) {
-                $menuitems = explode(',', $menuitems);
-            }
+                if (is_string($menuitems)) {
+                    $menuitems = explode(',', $menuitems);
+                }
 
-            if ($menu) {
-                if (!in_array($menu->id, (array) $menuitems)) {
-                    return;
+                if ($menu) {
+                    if (!in_array($menu->id, (array) $menuitems)) {
+                        return;
+                    }
                 }
             }
         }
@@ -350,7 +364,7 @@ class plgSystemJCEMediabox extends JPlugin {
     }
 
     function getScripts() {
-        return array_merge(array('js/jcemediabox.js'), $this->getAddons());
+        return array_merge(array('js/jcemediabox.js'), $this->getThemes(), $this->getAddons());
     }
 
 }

@@ -12,20 +12,23 @@
  * other free or open source software licenses.
  *
  */
-(function(window) {
-    
+(function(window, undef) {
+
     /**
-    *
-    *  Base64 encode / decode
-    *  http://www.webtoolkit.info/
-    *
-    **/
+     *
+     *  Base64 encode / decode
+     *  http://www.webtoolkit.info/
+     *
+     **/
     var Base64 = {
         // private property
-        _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
+        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
         // public method for encoding
-        encode : function (input) {
+        encode: function(input) {
+            if (input === undef) {
+                return false;
+            }
+
             var output = "";
             var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
             var i = 0;
@@ -50,16 +53,19 @@
                 }
 
                 output = output +
-                Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
-                Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+                        Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
+                        Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
 
             }
 
             return output;
         },
-
         // public method for decoding
-        decode : function (input) {
+        decode: function(input) {
+            if (input === undef) {
+                return false;
+            }
+
             var output = "";
             var chr1, chr2, chr3;
             var enc1, enc2, enc3, enc4;
@@ -94,10 +100,10 @@
             return output;
 
         },
-
         // private method for UTF-8 encoding
-        _utf8_encode : function (string) {
-            string = string.replace(/\r\n/g,"\n");
+        _utf8_encode: function(string) {
+            string = string.replace(/\r\n/g, "\n");
+
             var utftext = "";
 
             for (var n = 0; n < string.length; n++) {
@@ -107,7 +113,7 @@
                 if (c < 128) {
                     utftext += String.fromCharCode(c);
                 }
-                else if((c > 127) && (c < 2048)) {
+                else if ((c > 127) && (c < 2048)) {
                     utftext += String.fromCharCode((c >> 6) | 192);
                     utftext += String.fromCharCode((c & 63) | 128);
                 }
@@ -121,14 +127,13 @@
 
             return utftext;
         },
-
         // private method for UTF-8 decoding
-        _utf8_decode : function (utftext) {
+        _utf8_decode: function(utftext) {
             var string = "";
             var i = 0;
             var c = 0, c1 = 0, c2 = 0;
 
-            while ( i < utftext.length ) {
+            while (i < utftext.length) {
 
                 c = utftext.charCodeAt(i);
 
@@ -136,14 +141,14 @@
                     string += String.fromCharCode(c);
                     i++;
                 }
-                else if((c > 191) && (c < 224)) {
-                    c1 = utftext.charCodeAt(i+1);
+                else if ((c > 191) && (c < 224)) {
+                    c1 = utftext.charCodeAt(i + 1);
                     string += String.fromCharCode(((c & 31) << 6) | (c1 & 63));
                     i += 2;
                 }
                 else {
-                    c1 = utftext.charCodeAt(i+1);
-                    c2 = utftext.charCodeAt(i+2);
+                    c1 = utftext.charCodeAt(i + 1);
+                    c2 = utftext.charCodeAt(i + 2);
                     string += String.fromCharCode(((c & 15) << 12) | ((c1 & 63) << 6) | (c2 & 63));
                     i += 3;
                 }
@@ -152,7 +157,7 @@
             return string;
         }
     };
-    
+
     // patch in btoa
     if (!window.btoa) {
         window.btoa = Base64.encode;
@@ -161,13 +166,13 @@
     if (!window.atob) {
         window.atob = Base64.decode;
     }
-    
+
     // html5 element support
     var support = {};
-    
+
     /*
      * From Modernizr v2.0.6
- 	 * http://www.modernizr.com
+     * http://www.modernizr.com
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.video = (function() {
@@ -175,9 +180,9 @@
         var bool = false;
         // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
         try {
-            if (bool = !!el.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = el.canPlayType('video/ogg; codecs="theora"');
+            if (bool = !!el.canPlayType) {
+                bool = new Boolean(bool);
+                bool.ogg = el.canPlayType('video/ogg; codecs="theora"');
 
                 // Workaround required for IE9, which doesn't report video support without audio codec specified.
                 //   bug 599718 @ msft connect
@@ -186,46 +191,48 @@
 
                 bool.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
             }
-            
-        } catch(e) { }
-    	
+
+        } catch (e) {
+        }
+
         return bool;
     })();
-    
+
     var entities = {
-        '\"'    : '&quot;',
-        "'"     : '&#39;',
-        '<'     : '&lt;',
-        '>'     : '&gt;',
-        '&'     : '&amp;'
+        '\"': '&quot;',
+        "'": '&#39;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;'
     };
-    
+
     /*
      * From Modernizr v2.0.6
- 	 * http://www.modernizr.com
+     * http://www.modernizr.com
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.audio = (function() {
         var el = document.createElement('audio');
-    	
-        try { 
-            if (bool = !!el.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = el.canPlayType('audio/ogg; codecs="vorbis"');
-                bool.mp3  = el.canPlayType('audio/mpeg;');
+
+        try {
+            if (bool = !!el.canPlayType) {
+                bool = new Boolean(bool);
+                bool.ogg = el.canPlayType('audio/ogg; codecs="vorbis"');
+                bool.mp3 = el.canPlayType('audio/mpeg;');
 
                 // Mimetypes accepted:
                 //   https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
                 //   http://bit.ly/iphoneoscodecs
-                bool.wav  = el.canPlayType('audio/wav; codecs="1"');
-                bool.m4a  = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
+                bool.wav = el.canPlayType('audio/wav; codecs="1"');
+                bool.m4a = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
                 bool.webm = el.canPlayType('audio/webm; codecs="vp8, vorbis"');
             }
-        } catch(e) { }
-    	
+        } catch (e) {
+        }
+
         return bool;
     })();
-    
+
     window.JCEMediaBox = {
         /**
          * Global Options Object
@@ -235,8 +242,8 @@
                 width: '',
                 height: '',
                 legacy: 0,
-                lightbox : 0,
-                shadowbox : 0,
+                lightbox: 0,
+                shadowbox: 0,
                 overlay: 1,
                 overlayopacity: 0.8,
                 overlaycolor: '#000000',
@@ -247,7 +254,7 @@
                 hideobjects: 1,
                 scrolling: 'fixed',
                 //protect				: 1,
-                close : 2,
+                close: 2,
                 labels: {
                     'close': 'Close',
                     'next': 'Next',
@@ -255,7 +262,7 @@
                     'numbers': '{$current} of {$total}',
                     'cancel': 'Cancel'
                 },
-                cookie_expiry : 7
+                cookie_expiry: 7
             },
             tooltip: {
                 speed: 150,
@@ -274,6 +281,7 @@
             theme: 'standard',
             imgpath: 'plugins/system/jcemediabox/img'
         },
+        popupTheme: {},
         init: function(options) {
             this.extend(this.options, options);
             // Clear IE6 background cache
@@ -281,10 +289,10 @@
                 try {
                     document.execCommand("BackgroundImageCache", false, true);
                 } catch (e) {
-                };
+                }
+            ;
             this.ready();
         },
-
         /**
          * Function to determine if DOM is ready.
          * Based on JQuery 'bindReady' function - http://jquery.com/
@@ -299,7 +307,7 @@
                     return JCEMediaBox._init();
                 }, false);
 
-            // If IE event model is used
+                // If IE event model is used
             } else if (document.attachEvent) {
                 // ensure firing before onload,
                 // maybe late but safe also for iframes
@@ -339,7 +347,6 @@
             });
 
         },
-
         /**
          * Get the Site Base URL
          * @method getSite
@@ -360,7 +367,7 @@
                 // Get url part before base
                 if (url.indexOf(base) != -1) {
                     url = url.substr(0, url.indexOf(base));
-                // Get url part before first slash
+                    // Get url part before first slash
                 } else {
                     url = url.substr(0, url.indexOf('/')) || url;
                 }
@@ -370,7 +377,59 @@
             // Can't get site URL!
             return null;
         },
+        parseTheme: function(data) {
+            if (typeof(data) !== "object") {
+                return "";
+            }
 
+            var each = JCEMediaBox.each, node, el = document.createElement('div');
+
+            function is(s, t) {
+                if (t == "array") {
+                    var fn = Array.isArray || function(o) {
+                        return Object.prototype.toString.call(o) === "[object Array]";
+                    };
+                    
+                    return fn(s);
+                }
+
+                return typeof s === t;
+            }
+
+            /**
+             * Internal function to create or process a node
+             * @param o Data object
+             * @param el Element
+             */
+            function createNode(o, el) {
+                // process node object
+                each(o, function(v, k) {
+                    if (is(v, "string")) {
+                        if (k == "content") {
+                            el.appendChild(document.createTextNode(v));
+                        } else {
+                            el.setAttribute(k, v);
+                        }
+                    } else {                        
+                        if (is(v, "array")) {
+                            createNode(v, el);
+                        } else if (is(k, "string")) {
+                            node = document.createElement(k);
+                            el.appendChild(node);
+                            createNode(v, node);
+                        } else {
+                            createNode(v, el);
+                        }
+                    }
+                });
+            }
+
+            // create nodes
+            createNode(data, el);
+
+            // return html
+            return el.innerHTML;
+        },
         /**
          * Private internal function
          * Initialize JCEMediaBox
@@ -450,7 +509,6 @@
             this.Popup.init();
             this.ToolTip.init();
         },
-
         /**
          * Performs an iteration of all items in a collection such as an object or array. This method will execure the
          * callback function for each item in the collection, if the callback returns false the iteration will terminate.
@@ -488,7 +546,6 @@
 
             return 1;
         },
-
         /**
          * Extends an object with the specified other object(s).
          *
@@ -513,7 +570,6 @@
 
             return o;
         },
-
         /**
          * Removes whitespace from the beginning and end of a string.
          *
@@ -525,7 +581,6 @@
         trim: function(s) {
             return (s ? '' + s : '').replace(/^\s*|\s*$/g, '');
         },
-
         /**
          * DOM functions
          */
@@ -540,7 +595,6 @@
 
                 return s;
             },
-
             /**
              * Return elements matching a simple selector, eg: a, a[id], a.classname
              * @param {Object} o Selector
@@ -624,7 +678,6 @@
 
                 return r;
             },
-
             /**
              * Check if an element has a specific class
              * @param {Object} el Element
@@ -633,7 +686,6 @@
             hasClass: function(el, c) {
                 return new RegExp(c).test(el.className);
             },
-
             /**
              * Add a class to an element
              * @param {Object} el Element
@@ -644,7 +696,6 @@
                     el.className = JCEMediaBox.trim(el.className + ' ' + c);
                 }
             },
-
             /**
              * Remove a class from an element
              * @param {Object} el Element
@@ -659,7 +710,6 @@
                     el.className = v;
                 }
             },
-
             /**
              * Show an element
              * @param {Object} el Element to show
@@ -667,7 +717,6 @@
             show: function(el) {
                 el.style.display = 'block';
             },
-
             /**
              * Hide and element
              * @param {Object} el Element to hide
@@ -675,7 +724,6 @@
             hide: function(el) {
                 el.style.display = 'none';
             },
-
             /**
              * Remove an element or attribute
              * @param {Object} el Element
@@ -689,7 +737,6 @@
                     p.removeChild(el);
                 }
             },
-
             /**
              * Set or retrieve a style
              * @param {Object} el Target Element
@@ -761,7 +808,6 @@
                     s[na] = v;
                 }
             },
-
             /**
              * Set styles
              * @param {Object} el Target Element
@@ -774,7 +820,6 @@
                 });
 
             },
-
             /**
              * Set an Element attribute
              * @param {Object} el
@@ -819,7 +864,6 @@
                         break;
                 }
             },
-
             /**
              * Set Attributes on an Element
              * @param {Object} el Target Element
@@ -832,7 +876,6 @@
                 });
 
             },
-
             /**
              * Create an Element
              * @param {Object} el Element to create
@@ -849,7 +892,6 @@
 
                 return o;
             },
-
             /**
              * Add an element to another
              * @param {Object} n Element to add to
@@ -866,7 +908,6 @@
 
                 return o;
             },
-
             /**
              * Add an element before the passed in element
              * @param {Object} n Element to insert into
@@ -879,7 +920,6 @@
                 }
                 n.insertBefore(o, c);
             },
-
             /**
              * IE6 PNG Fix
              * @param {Object} el Element to fix
@@ -893,7 +933,7 @@
                         this.attribute(el, 'src', JCEMediaBox.site + 'plugins/system/jcemediabox/img/blank.gif');
                         this.style(el, 'filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + s + "')");
                     }
-                // Background-image styles
+                    // Background-image styles
                 } else {
                     s = this.style(el, 'background-image');
                     if (/\.png/i.test(s)) {
@@ -946,7 +986,6 @@
                             preventDefault: function() {
                                 this.returnValue = false;
                             },
-
                             stopPropagation: function() {
                                 this.cancelBubble = true;
                             }
@@ -987,7 +1026,6 @@
                 // Add event
                 _add(o, n, cb);
             },
-
             /**
              * Removes the specified event handler by name and function from a element or collection of elements.
              *
@@ -1012,7 +1050,6 @@
 
                 return s;
             },
-
             /**
              * Internal function to remove an Event
              * @param {Object} o
@@ -1030,11 +1067,10 @@
                         else
                             o['on' + n] = null;
                     } catch (ex) {
-                    // Might fail with permission denined on IE so we just ignore that
+                        // Might fail with permission denined on IE so we just ignore that
                     }
                 }
             },
-
             /**
              * Cancels an event for both bubbeling and the default browser behavior.
              *
@@ -1051,7 +1087,6 @@
 
                 return this.prevent(e);
             },
-
             /**
              * Stops propogation/bubbeling of an event.
              *
@@ -1068,7 +1103,6 @@
 
                 return false;
             },
-
             /**
              * Prevent default browser behvaior of an event.
              *
@@ -1085,7 +1119,6 @@
 
                 return false;
             },
-
             /**
              * Destroys the instance.
              *
@@ -1103,7 +1136,6 @@
                 t.events = [];
                 t = null;
             },
-
             /**
              * Adds an unload handler to the document. This handler will be executed when the document gets unloaded.
              * This method is useful for dealing with browser memory leaks where it might be vital to remove DOM references etc.
@@ -1149,7 +1181,8 @@
                             if (window.CollectGarbage)
                                 CollectGarbage();
                         }
-                    };
+                    }
+                    ;
 
                     function fakeUnload() {
                         var d = document;
@@ -1165,7 +1198,8 @@
                                     unload();
 
                                 d = 0;
-                            };
+                            }
+                            ;
 
                             // Fire unload when the currently loading page is stopped
                             if (d)
@@ -1174,13 +1208,14 @@
                             // Remove onstop listener after a while to prevent the unload function
                             // to execute if the user presses cancel in an onbeforeunload
                             // confirm dialog and then presses the browser stop button
-                            window.setTimeout( function() {
+                            window.setTimeout(function() {
                                 if (d)
                                     d.detachEvent('onstop', stop);
                             }, 0);
 
                         }
-                    };
+                    }
+                    ;
 
                     // Attach unload handler
                     if (window.attachEvent) {
@@ -1196,7 +1231,6 @@
 
                 return f;
             },
-
             /**
              * Removes the specified function form the unload handler list.
              *
@@ -1226,35 +1260,30 @@
             getWidth: function() {
                 return document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth || 0;
             },
-
             /**
              * Get client window height
              */
             getHeight: function() {
                 return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight || 0;
             },
-
             /**
              * Get client window scroll height
              */
             getScrollHeight: function() {
                 return document.documentElement.scrollHeight || document.body.scrollHeight || 0;
             },
-
             /**
              * Get client window scroll width
              */
             getScrollWidth: function() {
                 return document.documentElement.scrollWidth || document.body.scrollWidth || 0;
             },
-
             /**
              * Get client window scroll top
              */
             getScrollTop: function() {
                 return document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop || 0;
             },
-
             /**
              * Get the page scrollbar width
              */
@@ -1299,7 +1328,6 @@
 
                 return this.scrollbarWidth;
             },
-
             /**
              * Get the outerwidth of an element
              * @param {Object} n Element
@@ -1319,7 +1347,6 @@
                 }
                 return x;
             },
-
             /**
              * Get the outerheight of an Element
              * @param {Object} n Element
@@ -1341,7 +1368,6 @@
             }
 
         },
-
         /**
          * FX Functions
          * @param {Object} t
@@ -1355,8 +1381,8 @@
                 var options = {
                     speed: speed || 100,
                     callback: cb ||
-                    function() {
-                    }
+                            function() {
+                            }
 
                 };
 
@@ -1387,14 +1413,13 @@
             async: true,
             headers: {
                 //'User-Agent' 		: 'XMLHTTP/1.0',
-                'X-Requested-With' 	: 'XMLHttpRequest',
-                'Accept' 			: 'text/javascript, text/html, application/xml, text/xml, */*'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
             },
             data: null,
             encoding: 'UTF-8',
             success: function() {
             },
-
             error: function() {
             }
 
@@ -1419,11 +1444,11 @@
                 }
 
                 return x;
-            };
+            }
+            ;
 
             this.transport = window.XMLHttpRequest ? new XMLHttpRequest() : get('Microsoft.XMLHTTP') || get('Msxml2.XMLHTTP');
         },
-
         /**
          * Process return
          */
@@ -1448,7 +1473,6 @@
 
             this.transport = null;
         },
-
         /**
          * Send request
          * @param {Object} url URL
@@ -1465,10 +1489,10 @@
             this.setTransport();
             // store request method as uppercase (GET|POST)
             var method = this.options.data ? 'POST' : 'GET';
-            
+
             // set encoding
             var encoding = (this.options.encoding) ? '; charset=' + this.options.encoding.toUpperCase() : '';
-            
+
             // Set standard GET header
             var contentType = {
                 'Content-type': 'text/html' + encoding
@@ -1480,9 +1504,9 @@
                     'Content-type': 'application/x-www-form-urlencoded' + encoding
                 };
             }
-            
+
             extend(this.options.headers, contentType);
-            
+
             // Open transport
             this.transport.open(method, url, this.options.async);
             // Set readystatechange function
@@ -1491,22 +1515,23 @@
             };
 
             /*if (method == 'POST' && this.transport.overrideMimeType) {
-            extend(this.options.headers, {
-            'Connection': 'close'
-            });
-            }*/
+             extend(this.options.headers, {
+             'Connection': 'close'
+             });
+             }*/
             // set headers
             for (var type in this.options.headers) {
                 try {
                     this.transport.setRequestHeader(type, this.options.headers[type]);
                 } catch (e) {
-                };
+                }
+                ;
             }
             // send request
             this.transport.send(this.options.data);
         }
 
-    },    /**
+    }, /**
      * Core Fx Functions
      * @param {Object} el Element to animate
      * @param {Object} props A set of styles to animate
@@ -1538,31 +1563,27 @@
                 this.clearTimer();
                 this.now = this.to;
 
-                setTimeout( function() {
+                setTimeout(function() {
                     t.callback.call(t.element, t);
                 }, 10);
 
             }
             this.increase();
         },
-
         setNow: function() {
             for (p in this.from) {
                 this.now[p] = this.compute(this.from[p], this.to[p]);
             }
         },
-
         compute: function(from, to) {
             var change = to - from;
             return this.transition(this.cTime, from, change, this.speed);
         },
-
         clearTimer: function() {
             clearInterval(this.timer);
             this.timer = null;
             return this;
         },
-
         start: function(from, to) {
             var t = this;
             if (!this.wait)
@@ -1574,13 +1595,12 @@
             this.from = from;
             this.to = to;
             this.time = new Date().getTime();
-            this.timer = setInterval( function() {
+            this.timer = setInterval(function() {
                 return t.step();
             }, Math.round(1000 / this.fps));
 
             return this;
         },
-
         custom: function(o) {
             if (this.timer && this.wait)
                 return;
@@ -1592,17 +1612,14 @@
             }
             return this.start(from, to);
         },
-
         increase: function() {
             for (var p in this.now) {
                 this.setStyle(this.element, p, this.now[p]);
             }
         },
-
         transition: function(t, b, c, d) {
             return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
         },
-
         setStyle: function(e, p, v) {
             JCEMediaBox.DOM.style(e, p, v);
         }
@@ -1624,29 +1641,32 @@
             var t = this;
 
             // Load tooltip theme
-            var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
+            //var theme = JCEMediaBox.options.theme == 'custom' ? JCEMediaBox.options.themecustom : JCEMediaBox.options.theme;
 
-            this.tooltiptheme = '';
+            /*new JCEMediaBox.XHR({
+             success: function(text, xml) {
+             var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
+             if (re.test(text)) {
+             text = re.exec(text)[1];
+             }
+             t.tooltiptheme = text;
+             
+             t.create();
+             }
+             
+             }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');*/
 
-            new JCEMediaBox.XHR({
-                success: function(text, xml) {
-                    var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
-                    if (re.test(text)) {
-                        text = re.exec(text)[1];
-                    }
-                    t.tooltiptheme = text;
+            // set theme
+            this.tooltiptheme = JCEMediaBox.parseTheme(this.theme);
 
-                    t.create();
-                }
-
-            }).send(JCEMediaBox.site + JCEMediaBox.options.themepath + '/' + theme + '/tooltip.html');
+            // create tooltip
+            this.create();
         },
-
         /**
          * Create tooltips in the cuurent document or node
          * @param o Option parent node, defaults to document
          */
-        create : function(o) {
+        create: function(o) {
             var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
 
             /**
@@ -1707,7 +1727,6 @@
             });
 
         },
-
         /**
          * Create the tooltip div
          */
@@ -1725,7 +1744,6 @@
                 }
             }
         },
-
         /**
          * Show the tooltip and build the tooltip text
          * @param {Object} e  Event
@@ -1774,7 +1792,6 @@
                 'opacity': JCEMediaBox.options.tooltip.opacity
             }, JCEMediaBox.options.tooltip.speed);
         },
-
         /**
          * Fade Out and hide the tooltip
          * Restore the original element title
@@ -1791,7 +1808,6 @@
                 'opacity': 0
             });
         },
-
         /**
          * Position the tooltip
          * @param {Object} e Event trigger
@@ -1849,7 +1865,6 @@
                 left: pos.x
             });
         },
-
         /**
          * Position the tooltip
          * @param {Object} element
@@ -1867,11 +1882,13 @@
          * List of default addon media types
          */
         addons: {
-            'flash'	: {},
-            'image'	: {},
+            'flash': {},
+            'image': {},
             'iframe': {},
-            'html'	: {}
+            'html': {},
+            'pdf': {}
         },
+        theme: {},
         /**
          * Extend the addons object with a new addon
          * @param {String} n Addon name
@@ -1880,7 +1897,6 @@
         setAddons: function(n, o) {
             JCEMediaBox.extend(this.addons[n], o);
         },
-
         /**
          * Return an addon object by name or all addons
          * @param {String} n Addon name
@@ -1891,7 +1907,6 @@
             }
             return this.addons;
         },
-
         /**
          * Get / Test an addon object
          * @param {Object} v
@@ -1914,7 +1929,6 @@
 
             return cp;
         },
-
         /**
          * Clean an event removing anonymous function etc.
          * @param {String} s Event content
@@ -1923,7 +1937,6 @@
         cleanEvent: function(s) {
             return s.replace(/^function\s+anonymous\(\)\s+\{\s+(.*)\s+\}$/, '$1');
         },
-
         /**
          * Create an object from a well formed JSON string
          * @param {String} data JSON String
@@ -1932,28 +1945,34 @@
          * http://jquery.com/
          * Copyright 2010, John Resig
          */
-        parseJSON : function(data) {
-            if ( typeof data !== "string" || !data ) {
+        parseJSON: function(data) {
+            if (typeof data !== "string" || !data) {
                 return null;
             }
 
             if (/^[\],:{}\s]*$/
-                .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+                    .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
                     .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
                     .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 // Try to use the native JSON parser first
                 return window.JSON && window.JSON.parse ?
-                window.JSON.parse( data ) :
-                (new Function("return " + data))();
+                        window.JSON.parse(data) :
+                        (new Function("return " + data))();
             }
         },
-        
-        encode : function(s) {
+        encode: function(s) {
             return ('' + s).replace(/[<>&\"\']/g, function(c) {
                 return entities[c] || c;
             });
         },
+        decode: function(s) {
+            var el;
 
+            el = document.createElement("div");
+            el.innerHTML = s;
+
+            return el.textContent || el.innerText || s;
+        },
         /**
          * Get a popup parameter object
          * @param {String} s Parameter string
@@ -1961,21 +1980,28 @@
         params: function(s) {
             var a = [], x = [], self = this;
 
+            function trim(s) {
+                // trim
+                return s.replace(/:"([^"]+)"/, function(a, b) {
+                    return ':"' + b.replace(/^\s+|\s+$/, '').replace(/\s*::\s*/, '::') + '"';
+                });
+            }
+
             if (typeof s == 'string') {
                 // if a JSON string return the object
                 if (new RegExp('^{[\w\W]+}$').test(s)) {
-                    return this.parseJSON(s);
+                    return this.parseJSON(trim(s));
                 }
-                
+
                 // JCE MediaBox parameter format eg: title[title]
-                if (/\w+\[[^\]]+\]/.test(s)) {                	                	
+                if (/\w+\[[^\]]+\]/.test(s)) {
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
                         return '"' + b + '":"' + self.encode(c) + '"' + (d ? ',' : '');
                     });
 
-                    return this.parseJSON('{' + s + '}');
+                    return this.parseJSON('{' + trim(s) + '}');
                 }
-                
+
                 // if url
                 if (s.indexOf('&') != -1) {
                     x = s.split(/&(amp;)?/g);
@@ -2007,9 +2033,8 @@
                 }
             });
 
-            return this.parseJSON('{' + a.join(',') + '}');
+            return this.parseJSON('{' + trim(a.join(',')) + '}');
         },
-
         /**
          * Gets the raw data of a cookie by name.
          * Copyright 2009, Moxiecode Systems AB
@@ -2043,7 +2068,6 @@
 
             return unescape(c.substring(b + p.length, e));
         },
-
         /**
          * Sets a raw cookie string.
          * Copyright 2009, Moxiecode Systems AB
@@ -2058,12 +2082,11 @@
          */
         setCookie: function(n, v, e, p, d, s) {
             document.cookie = n + "=" + escape(v) +
-            ((e) ? "; expires=" + e.toGMTString() : "") +
-            ((p) ? "; path=" + escape(p) : "") +
-            ((d) ? "; domain=" + d : "") +
-            ((s) ? "; secure" : "");
+                    ((e) ? "; expires=" + e.toGMTString() : "") +
+                    ((p) ? "; path=" + escape(p) : "") +
+                    ((d) ? "; domain=" + d : "") +
+                    ((s) ? "; secure" : "");
         },
-
         /**
          * Convert legacy popups to new format
          */
@@ -2076,11 +2099,11 @@
                     var p, s, img;
                     var oc = DOM.attribute(el, 'onclick');
                     if (oc) {
-                        s = oc.replace(/&#39;/g, "'").split("'");                    
+                        s = oc.replace(/&#39;/g, "'").split("'");
                         p = self.params(s[1]);
 
-                        var img 	= p.img 	|| '';
-                        var title 	= p.title 	|| '';
+                        var img = p.img || '';
+                        var title = p.title || '';
                     }
 
                     if (img) {
@@ -2090,11 +2113,11 @@
                             }
                             img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
-                        
+
                         DOM.attributes(el, {
-                            'href'		: img,
-                            'title'		: title.replace(/_/, ' '),
-                            'onclick'	: ''
+                            'href': img,
+                            'title': title.replace(/_/, ' '),
+                            'onclick': ''
                         });
 
                         DOM.addClass(el, 'jcepopup');
@@ -2103,7 +2126,6 @@
             });
 
         },
-
         /**
          * Convert lightbox popups to MediaBox
          */
@@ -2113,7 +2135,7 @@
                 DOM.addClass(el, 'jcepopup');
                 r = el.rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
                     if (b) {
-                        return 'group['+ b +']';
+                        return 'group[' + b + ']';
                     }
                     return '';
                 });
@@ -2122,7 +2144,6 @@
             });
 
         },
-
         /**
          * Convert shadowbox popups to MediaBox
          */
@@ -2134,7 +2155,7 @@
                     var attribs = '', group = '';
                     // group
                     if (b) {
-                        group = 'group['+ b +']';
+                        group = 'group[' + b + ']';
                     }
                     // attributes
                     if (/;=/.test(a)) {
@@ -2153,7 +2174,6 @@
             });
 
         },
-
         /**
          * Translate popup labels
          * @param {String} s Theme HTML
@@ -2168,7 +2188,6 @@
 
             return s;
         },
-
         /**
          * Returns a styles object from a parameter
          * @param {Object} o
@@ -2188,7 +2207,6 @@
 
             return this.parseJSON('{' + x.join(',') + '}');
         },
-
         /**
          * Get the file type from the url, type attribute or className
          * @param {Object} el
@@ -2209,7 +2227,6 @@
 
             return type || el.type || 'iframe';
         },
-
         /**
          * Determine media type and properties
          * @param {Object} c
@@ -2272,7 +2289,6 @@
                 'mediatype': mt
             };
         },
-
         /**
          * Determine whether the url is local
          * @param {Object} s
@@ -2284,7 +2300,6 @@
                 return true;
             }
         },
-
         /**
          * Get the width of the container frame
          */
@@ -2297,7 +2312,6 @@
 
             return parseFloat(this.frame.clientWidth - w);
         },
-
         /**
          * Get the height of the container frame
          */
@@ -2312,14 +2326,12 @@
 
             return parseInt(DIM.getHeight()) - h;
         },
-
         /**
          * Get the width of the usable window
          */
         width: function() {
             return this.frameWidth() - JCEMediaBox.Dimensions.getScrollbarWidth();
         },
-
         /**
          * Get the height of the usable window less info divs
          */
@@ -2334,14 +2346,12 @@
 
             return this.frameHeight() - h;
         },
-
         /**
          * Print the page contents (TODO)
          */
         printPage: function() {
             return false;
         },
-
         /**
          * Create a popup zoom icon
          * @param {Object} el Popup link element
@@ -2349,6 +2359,17 @@
         zoom: function(el) {
             var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var child = el.firstChild;
+            
+            // browser should have :after support
+            if (document.querySelector) {
+                if (child && child.nodeName == 'IMG') {
+                    DOM.addClass(el, 'zoom-image');
+                } else {
+                    DOM.addClass(el, 'zoom-link');
+                }
+                return;
+            }
+            
             // Create basic zoom element
             var zoom = DOM.create('span');
 
@@ -2400,9 +2421,9 @@
                     });
                 }
 
-                var w 	= child.getAttribute('width');
-                var h 	= child.getAttribute('height');
-                var ws 	= DOM.style(child, 'width');
+                var w = child.getAttribute('width');
+                var h = child.getAttribute('height');
+                var ws = DOM.style(child, 'width');
 
                 // get 'real' width and height
                 var rh = child.height, rw = child.width;
@@ -2416,7 +2437,7 @@
                     // pixel value
                     if (/([0-9]+)(px)?$/.test(ws)) {
                         w = parseFloat(ws);
-                    // other value
+                        // other value
                     } else {
                         w = child.width;
                     }
@@ -2425,9 +2446,9 @@
 
                 // Add style alignment
                 extend(styles, {
-                    'float'		: DOM.style(child, 'float'),
+                    'float': DOM.style(child, 'float'),
                     'text-align': child.style.textAlign,
-                    'width' 	: w
+                    'width': w
                 });
 
                 /**
@@ -2441,8 +2462,8 @@
                 function _buildIcon(el, zoom, child, styles) {
                     // Clone image as span element
                     var span = DOM.add(el, 'span', {
-                        'class'	: 'jcemediabox-zoom-span',
-                        'style'	: child.style.cssText	 
+                        'class': 'jcemediabox-zoom-span',
+                        'style': child.style.cssText
                     });
 
                     // Set styles
@@ -2493,21 +2514,21 @@
             // Return zoom icon element
             return zoom;
         },
-
         /**
          * Process autopopups
          */
         auto: function() {
             var t = this, expires = JCEMediaBox.options.popup.cookie_expiry;
             // use the current page URL for unique key
-            var url = document.location;
+            var url = document.location.href;
+
             // base64 encode key
-            var key = window.btoa(url);            
+            var key = window.btoa(url);
             // remove non-word characters
             key = key.replace(/[^\w]/g, '');
             // keep it short
             key = key.substr(0, 24);
-            
+
             JCEMediaBox.each(this.popups, function(el, i) {
                 if (el.auto) {
                     if (el.auto == 'single') {
@@ -2517,7 +2538,7 @@
                         if (!cookie) {
                             var dts = new Date();
                             dts.setHours(expires * 24);
-                            
+
                             t.setCookie('jcemediabox_' + key + '_' + i, 1, dts);
                             t.start(el);
                         }
@@ -2528,7 +2549,6 @@
             });
 
         },
-
         /**
          * Initilise popup and create global jcepopup variable
          * @param {Object} elements Optional array of popup elements
@@ -2537,27 +2557,25 @@
             window.jcepopup = this;
             this.create();
         },
-
         /**
          * Get popup objects
          * @param {String} s Optional selector
          * @param {Object} p Optional parent element popups contained within
          */
-        getPopups : function(s, p) {
+        getPopups: function(s, p) {
             var selector = 'a.jcebox, a.jcelightbox, a.jcepopup, area.jcebox, area.jcelightbox, area.jcepopup';
             return JCEMediaBox.DOM.select(s || selector, p);
         },
-
-        getData : function(n) {
+        getData: function(n) {
             var DOM = JCEMediaBox.DOM, o = {}, data;
             var re = /\w+\[[^\]]+\]/;
-			
+
             data = DOM.attribute(n, 'data-mediabox') || DOM.attribute(n, 'data-json');
 
             // try title or rel attributes
             if (!data) {
-                var title 	= DOM.attribute(n, 'title');
-                var rel 	= DOM.attribute(n, 'rel');
+                var title = DOM.attribute(n, 'title');
+                var rel = DOM.attribute(n, 'rel');
 
                 if (title && re.test(title)) {
                     // convert to object
@@ -2576,7 +2594,7 @@
                         args.push(b);
                         return '';
                     });
-                    
+
                     o = this.params(args) || {};
 
                     // restore rel attribute
@@ -2591,15 +2609,14 @@
 
                 return this.params(data);
             }
-            
+
             return o;
         },
-
         /**
          * Process a popup link and return properties object
          * @param {Object} el Popup link element
          */
-        process : function(el) {
+        process: function(el) {
             var DOM = JCEMediaBox.DOM, data, o = {}, group = '', auto = false;
 
             // Simplify class identifier for css
@@ -2618,8 +2635,8 @@
             }
 
             // Fix title and rel and move parameters
-            var title 	= el.title 	|| '';
-            var rel 	= el.rel 	|| '';
+            var title = el.title || '';
+            var rel = el.rel || '';
 
             var src = el.href;
 
@@ -2631,14 +2648,14 @@
             });
 
             data = this.getData(el) || {};
-            
+
             // Process rel attribute
             if (!/\w+\[[^\]]+\]/.test(rel)) {
-                var rx 	= 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
-                var lb 	= '(lightbox(\[(.*?)\])?)';
-                var lt 	= '(lyte(box|frame|show)(\[(.*?)\])?)';
+                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
+                var lb = '(lightbox(\[(.*?)\])?)';
+                var lt = '(lyte(box|frame|show)(\[(.*?)\])?)';
 
-                group 	= JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
+                group = JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
             }
 
             // Get AREA parameters from URL if not set
@@ -2662,19 +2679,19 @@
                 auto = /(multiple)/.test(el.className) ? 'multiple' : 'single';
             }
             //}
-            
+
             // get group from data object
             group = group || data.group || '';
 
             // Popup object
             JCEMediaBox.extend(o, {
-                'src'	: src,
-                'title'	: data.title || title,
-                'group'	: DOM.hasClass(el, 'nogroup') ? '' : group,
-                'type'	: data.type || el.type || '',
+                'src': src,
+                'title': data.title || title,
+                'group': DOM.hasClass(el, 'nogroup') ? '' : group,
+                'type': data.type || el.type || '',
                 'params': data,
                 //'id'	: el.id || '',
-                'auto'	: auto
+                'auto': auto
             });
 
             // Remove type
@@ -2682,7 +2699,6 @@
 
             return o;
         },
-
         /**
          * Create a popup from identifiable link or area elements
          * Load the popup theme
@@ -2693,7 +2709,7 @@
 
             // set pageload marker
             if (!elements) {
-                pageload 	= true;
+                pageload = true;
                 this.popups = [];
 
                 // Converts a legacy (window) popup into an inline popup
@@ -2737,29 +2753,37 @@
             // if no elements are specified, must be a pageload
             if (pageload) {
                 // set theme
-                this.popuptheme = '';
+                this.popuptheme = JCEMediaBox.parseTheme(this.theme);
+
+                this.auto();
+
+                /*if (!auto) {
+                 this.auto();
+                 auto = true;
+                 }*/
 
                 // Load the popup theme
-                var theme = JCEMediaBox.options.theme;
+                /*var theme = JCEMediaBox.options.theme;
+                 
+                 new JCEMediaBox.XHR({
+                 success: function(text, xml) {
+                 var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
+                 if (re.test(text)) {
+                 text = re.exec(text)[1];
+                 }
+                 t.popuptheme = text;
+                 // Process auto popups
+                 if (!auto) {
+                 t.auto();
+                 auto = true;
+                 }
+                 }
+                 
+                 }).send(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html');*/
 
-                new JCEMediaBox.XHR({
-                    success: function(text, xml) {
-                        var re = /<!-- THEME START -->([\s\S]*?)<!-- THEME END -->/;
-                        if (re.test(text)) {
-                            text = re.exec(text)[1];
-                        }
-                        t.popuptheme = text;
-                        // Process auto popups
-                        if (!auto) {
-                            t.auto();
-                            auto = true;
-                        }
-                    }
 
-                }).send(JCEMediaBox.site + 'plugins/system/jcemediabox/themes/' + theme + '/popup.html');
             }
         },
-
         /**
          * Public popup method
          * @param {String / Object} data Popup URL string or data object
@@ -2771,17 +2795,16 @@
         open: function(data, title, group, type, params) {
             if (typeof data == 'string') {
                 data = {
-                    'src'	: data,
-                    'title'	: title,
-                    'group'	: group,
-                    'type'	: type,
+                    'src': data,
+                    'title': title,
+                    'group': group,
+                    'type': type,
                     'params': params
                 };
             }
 
             return this.start(data);
         },
-
         /**
          * Start a popup
          * @param {Object} o The popup link object
@@ -2813,7 +2836,6 @@
                 return this.show(items, n);
             }
         },
-
         /**
          * Build Popup structure
          */
@@ -2866,7 +2888,7 @@
                 each(DOM.select('*[id]', this.frame), function(el) {
                     var s = el.id.replace('jcemediabox-popup-', '');
                     t[s] = el;
-                    DOM.hide(el);
+                    //DOM.hide(el);
                 });
 
                 if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
@@ -2936,7 +2958,6 @@
             }
             return true;
         },
-
         /**
          * Show the popup window
          * @param {Array} items Array of popup objects
@@ -2970,7 +2991,6 @@
 
             return this.change(n);
         },
-
         /**
          * Create event / key bindings
          * @param {Boolean} open Whether popup is opened or closed
@@ -3024,7 +3044,6 @@
                 Event.remove(document, 'keydown');
             }
         },
-
         /**
          * Keyboard listener
          * @param {Object} e Event
@@ -3042,7 +3061,6 @@
                     break;
             }
         },
-
         /**
          * Process a popup in the group queue
          * @param {Object} n Queue position
@@ -3074,7 +3092,6 @@
             });
 
         },
-
         /**
          * Process the next popup in the group
          */
@@ -3088,7 +3105,6 @@
             }
             return this.queue(n);
         },
-
         /**
          * Process the previous popup in the group
          */
@@ -3102,7 +3118,6 @@
             }
             return this.queue(n);
         },
-
         /**
          * Set the popup information (caption, title, numbers)
          */
@@ -3125,19 +3140,19 @@
 
                 if (/::/.test(title)) {
                     var parts = title.split('::');
-                    title   = JCEMediaBox.trim(parts[0]);
-                    text    = JCEMediaBox.trim(parts[1]);
+                    title = JCEMediaBox.trim(parts[0]);
+                    text = JCEMediaBox.trim(parts[1]);
                 }
 
                 if (title) {
-                    h += '<h4>' + title + '</h4>';
+                    h += '<h4>' + this.decode(title) + '</h4>';
                 }
-                
+
                 if (text) {
-                    h += '<p>' + text + '</p>';
+                    h += '<p>' + this.decode(text) + '</p>';
                 }
-                
-                this.caption.innerHTML = h || '&nbsp;';
+
+                this.caption.innerHTML = h || ''; // if no caption set as blank to collapse div
 
                 // Process e-mail and urls
                 each(DOM.select('*', this.caption), function(el) {
@@ -3226,7 +3241,6 @@
                 }
             }
         },
-
         /**
          * Change the popup
          * @param {Integer} n Popup number
@@ -3244,9 +3258,8 @@
             // Show Container
             DOM.show(this.container);
             // Show Loader
-            if (this.loader) {
-                DOM.show(this.loader);
-            }
+            DOM.addClass(this.body, 'loading');
+            
             // Show Cancel
             if (this.cancellink) {
                 DOM.show(this.cancellink);
@@ -3262,32 +3275,32 @@
 
             // Get parameters from addon
             extend(p, this.getAddon(o.src, o.type));
-            
+
             // delete alternate src
             delete o.params.src;
-            
+
             // Get set parameters
             extend(p, o.params);
-            
-            var width 	= p.width 	|| JCEMediaBox.options.popup.width 	|| 0;
-            var height	= p.height 	|| JCEMediaBox.options.popup.height || 0;
-            
+
+            var width   = p.width || JCEMediaBox.options.popup.width    || 0;
+            var height  = p.height || JCEMediaBox.options.popup.height  || 0;
+
             if (/%/.test(width)) {
                 width = DIM.getWidth() * parseInt(width) / 100;
             }
-            
+
             if (/%/.test(height)) {
                 height = DIM.getHeight() * parseInt(height) / 100;
             }
-            
+
             extend(this.active, {
-                'src'		: p.src || o.src,
-                'title'		: o.title || p.title || '',
-                'caption'	: p.caption || '',
-                'type'		: p.type || this.getType(o),
-                'params'	: p || {},
-                'width'		: width,
-                'height'	: height
+                'src': p.src || o.src,
+                'title': o.title || p.title || '',
+                'caption': p.caption || '',
+                'type': p.type || this.getType(o),
+                'params': p || {},
+                'width': width,
+                'height': height
             });
 
             // Setup info
@@ -3307,7 +3320,7 @@
                     this.img.onload = function() {
                         return t.setup();
                     };
-                    
+
                     this.img.onerror = function() {
                         t.img.error = true;
                         return t.setup();
@@ -3331,6 +3344,7 @@
                 case 'real':
                 case 'divx':
                 case 'pdf':
+                case 'application/pdf':
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
@@ -3364,13 +3378,14 @@
                     p.height = this.active.height || this.height();
 
                     var flash = /flash/i.test(this.active.type);
+                    var pdf = /pdf/i.test(this.active.type);
 
                     // Create single object for IE / Flash
 
-                    if (flash || isIE) {
+                    if (flash || pdf || isIE) {
                         this.object = '<object id="jcemediabox-popup-object"';
                         // Add type and data attribute
-                        if (flash && !isIE) {
+                        if ((flash || pdf) && !isIE) {
                             this.object += ' type="' + mt.mediatype + '" data="' + p.src + '"';
                         } else {
                             this.object += ' classid="clsid:' + mt.classid + '"';
@@ -3396,7 +3411,7 @@
                         }
                         // Add closing object element
                         this.object += '</object>';
-                    // Use embed for non-IE browsers
+                        // Use embed for non-IE browsers
                     } else {
                         this.object = '<embed type="' + mt.mediatype + '"';
                         for (n in p) {
@@ -3414,26 +3429,26 @@
                     break;
                 case 'video/x-flv':
                     this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
-            		
+
                     var src = this.active.src;
-                    
+
                     if (!/:\/\//.test(src)) {
                         src = JCEMediaBox.site + src;
                     }
-                    
+
                     var map = {
-                        'loop' 		: 'loop',
-                        'autoplay' 	: 'autoPlay',
-                        'controls' 	: 'controlBarAutoHide'
+                        'loop': 'loop',
+                        'autoplay': 'autoPlay',
+                        'controls': 'controlBarAutoHide'
                     };
-                    
+
                     var v, flashvars = ['src=' + src], params = {
-                        wmode : 'opaque', 
-                        allowfullscreen : true
+                        wmode: 'opaque',
+                        allowfullscreen: true
                     };
-            		
+
                     for (n in p) {
-                        if (p[n] !== '') {                                
+                        if (p[n] !== '') {
                             if (/(id|width|height|style)$/.test(n)) {
                                 t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                             } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
@@ -3447,12 +3462,12 @@
                                 } else {
                                     v = p[n];
                                 }
-                            	
+
                                 flashvars.push(n + '=' + v);
                             }
                         }
                     }
-                    
+
                     this.object += '>';
 
                     this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
@@ -3460,9 +3475,9 @@
                     for (n in params) {
                         this.object += '<param name="' + n + '" value="' + params[n] + '" />';
                     }
-                   	
+
                     this.object += '</object>';
-                   	
+
                     // set global media type
                     this.active.type = 'media';
 
@@ -3472,83 +3487,83 @@
                 case 'audio/mp3':
                 case 'video/webm':
                 case 'audio/webm':
-                    var type = this.active.type;               	
+                    var type = this.active.type;
                     var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
                     var tag = /video/.test(type) ? 'video' : 'audio';
-					
+
                     if (hasSupport) {
-                        p.width     = p.width   || this.active.width;
-                        p.height    = p.height  || this.active.height;  
-                        
+                        p.width = p.width || this.active.width;
+                        p.height = p.height || this.active.height;
+
                         this.object = '<' + tag;
-                		
+
                         for (n in p) {
                             if (p[n] !== '') {
                                 if (/(loop|autoplay|controls|preload)$/.test(n)) {
                                     t.object += ' ' + n + '="' + n + '"';
                                 }
-                                
+
                                 if (/(id|width|height|style|poster|audio)$/.test(n)) {
                                     t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                                 }
                             }
                         }
-                        
+
                         this.object += '>';
-                        
+
                         this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
-                       	
+
                         this.object += '</' + tag + '>';
-                		
-                    } else { 
+
+                    } else {
                         if (type == 'video/mp4' || type == 'audio/mp3') {
                             this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
-                		
-                            p.width     = p.width   || this.active.width;
-                            p.height    = p.height  || this.active.height;
-                            
+
+                            p.width = p.width || this.active.width;
+                            p.height = p.height || this.active.height;
+
                             var src = this.active.src;
-	                        
+
                             if (!/:\/\//.test(src)) {
                                 src = JCEMediaBox.site + src;
                             }
-	                        
+
                             var map = {
-                                'loop' 		: 'loop',
-                                'autoplay' 	: 'autoPlay',
-                                'controls' 	: 'controlBarAutoHide'
+                                'loop': 'loop',
+                                'autoplay': 'autoPlay',
+                                'controls': 'controlBarAutoHide'
                             };
-	                        
+
                             var flashvars = ['src=' + src];
-	                		
+
                             for (n in p) {
-                                if (p[n] !== '') {                                
+                                if (p[n] !== '') {
                                     if (/(loop|autoplay|controls|preload)$/.test(n)) {
                                         if (map[n]) {
                                             var v = (n == 'controls') ? !p[n] : !!p[n];
                                             flashvars.push(map[n] + '=' + v);
                                         }
                                     }
-	                                
+
                                     if (/(id|width|height|style)$/.test(n)) {
                                         t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                                     }
                                 }
                             }
-	                        
+
                             this.object += '>';
-	
+
                             this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
                             this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
                             this.object += '<param name="allowfullscreen" value="true" />';
                             this.object += '<param name="wmode" value="transparent" />';
-	                       	
+
                             this.object += '</object>';
                         } else {
                             DOM.addClass(this.content, 'broken-media');
                         }
                     }
-                	
+
                     // set global media type
                     this.active.type = 'media';
 
@@ -3561,8 +3576,8 @@
                         this.print.style.visibility = 'visible';
                     }
 
-                    this.active.width 	= this.active.width 	|| this.width();
-                    this.active.height 	= this.active.height 	|| this.height();
+                    this.active.width = this.active.width || this.width();
+                    this.active.height = this.active.height || this.height();
 
                     if (this.islocal(this.active.src)) {
                         if (!/tmpl=component/i.test(this.active.src)) {
@@ -3598,19 +3613,19 @@
                     if (this.loader) {
                         DOM.show(this.loader);
                     }
-                    
+
                     // create an iframe to load internal content in rather than using ajax so that javascript in the article is processed
                     var iframe = DOM.add(document.body, 'iframe', {
-                        src 	: this.active.src,
-                        style 	: 'display:none;'
+                        src: this.active.src,
+                        style: 'display:none;'
                     });
-                    
+
                     // transfer data and delete iframe when loaded
                     Event.add(iframe, 'load', function() {
                         //iframe.onload = function() {
                         // transfer data
                         t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
-                    	
+
                         window.setTimeout(function() {
                             // remove iframe
                             DOM.remove(iframe);
@@ -3637,7 +3652,7 @@
                         // setup
                         return t.setup();
                     });
-                    
+
                     iframe.onerror = function() {
                         DOM.addClass(this.content, 'broken-page');
                         return t.setup();
@@ -3650,7 +3665,7 @@
                         this.print.style.visibility = 'hidden';
                     }
 
-                    if (this.islocal(this.active.src)) {
+                    if (this.islocal(this.active.src) && !/\.[a-z0-9]{2,4}$/i.test(this.active.src)) {
                         if (!/tmpl=component/i.test(this.active.src)) {
                             this.active.src += /\?/.test(this.active.src) ? '&tmpl=component' : '?tmpl=component';
                         }
@@ -3666,7 +3681,6 @@
             }
             return false;
         },
-
         /**
          * Proportional resizing method
          * @param {Object} w
@@ -3698,7 +3712,6 @@
                 height: Math.round(h)
             };
         },
-
         /**
          * Pre-animation setup. Resize images, set width / height
          */
@@ -3714,7 +3727,7 @@
                     w = 300;
                     h = 300;
                 }
-                
+
                 var x = this.img.width;
                 var y = this.img.height;
 
@@ -3729,7 +3742,7 @@
             }
 
             // Resize to fit screen
-            if (JCEMediaBox.options.popup.resize == 1 || JCEMediaBox.options.popup.scrolling == 'fixed') {
+            /*if (JCEMediaBox.options.popup.resize == 1 || JCEMediaBox.options.popup.scrolling == 'fixed') {
                 var x = this.width();
                 var y = this.height();
 
@@ -3737,12 +3750,15 @@
 
                 w = dim.width;
                 h = dim.height;
-            }
+            }*/
 
-            DOM.styles(this.content, {
-                width: w,
-                height: h
-            });
+            /*DOM.styles(this.body, {
+                'max-width' : w + "px",
+                'max-height': h + "px"
+            });*/
+            
+            this.active.width   = w;
+            this.active.height  = h;
 
             DOM.hide(this.content);
 
@@ -3750,7 +3766,7 @@
                 if (this.img.error) {
                     DOM.addClass(this.content, 'broken-image');
                 } else {
-                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" />';
                 }
 
                 // fix resized images in IE
@@ -3765,7 +3781,6 @@
             // Animate box
             return this.animate();
         },
-
         /**
          * Animate the Popup
          */
@@ -3773,8 +3788,8 @@
             var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, FX = JCEMediaBox.FX, DIM = JCEMediaBox.Dimensions, Event = JCEMediaBox.Event;
             var ss = JCEMediaBox.options.popup.scalespeed, fs = JCEMediaBox.options.popup.fadespeed;
 
-            var cw = DIM.outerWidth(this.content);
-            var ch = DIM.outerHeight(this.content);
+            var cw = this.active.width;//DIM.outerWidth(this.content);
+            var ch = this.active.height;//DIM.outerHeight(this.content);
             var ih = 0;
 
             each(['top', 'bottom'], function(v, i) {
@@ -3795,56 +3810,52 @@
 
             // Animate width
             FX.animate(this.body, {
-                'height': ch,
+                'max-height': ch + "px",
                 'top': top,
-                'width': cw
+                'max-width': cw + "px"
             }, ss, function() {
                 // Iframe
                 if (t.active.type == 'iframe') {
                     // Create IFrame
                     var iframe = DOM.add(t.content, 'iframe', {
-                        id					: 'jcemediabox-popup-iframe',
-                        frameborder			: 0,
-                        allowTransparency	: true,
-                        scrolling			: t.active.params.scrolling || 'auto',
-                        'style'				: {
-                            width	: '100%',
-                            height	: '100%'
+                        id: 'jcemediabox-popup-iframe',
+                        frameborder: 0,
+                        allowTransparency: true,
+                        scrolling: t.active.params.scrolling || 'auto',
+                        'style': {
+                            width: '100%',
+                            height: '100%'
                         }/*,
-                        seamless 			: "seamless"*/
+                         seamless 			: "seamless"*/
                     });
-                    
+
                     Event.add(iframe, 'load', function() {
                         //iframe.onload = function() {
                         // Hide loader
-                        if (t.loader) {
-                            DOM.hide(t.loader);
-                        }
+                        DOM.removeClass(t.body, "loading");
                     });
-                    
+
                     // Set src
                     iframe.setAttribute('src', t.active.src);
-                    
+
                     t.iframe = iframe;
                 } else {
                     // Hide loader
-                    if (t.loader) {
-                        DOM.hide(t.loader);
-                    }
-                    
+                    DOM.removeClass(t.body, "loading");
+
                     // If media
                     if (t.active.type == 'media' && t.object) {
                         t.content.innerHTML = t.object;
                     }
-                    
+
                     if (t.active.type == 'ajax') {
                         DOM.show(t.ajax);
                     }
                 }
- 
+
                 DOM.show(t.content);
                 t.content.focus();
-                
+
                 /**
                  * Private internal function
                  * Show info areas of popup
@@ -3914,7 +3925,6 @@
             });
 
         },
-
         /**
          * Close the popup window. Destroy all objects
          */
@@ -3979,6 +3989,6 @@
     };
 })(window);
 // Cleanup events
-JCEMediaBox.Event.addUnload( function() {
+JCEMediaBox.Event.addUnload(function() {
     JCEMediaBox.Event.destroy();
 });

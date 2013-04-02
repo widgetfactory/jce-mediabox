@@ -291,7 +291,7 @@ class plgSystemJCEMediabox extends JPlugin {
             //'protect'			=>	$params->get('protect', 1),
             'close' => $params->get('close', 2),
             'labels' => '{' . $this->getLabels() . '}',
-            'cookie_expiry' => $params->get('cookie_expiry', 7),
+            'cookie_expiry' => $params->get('cookie_expiry', ''),
         );
 
         $tooltip = array(

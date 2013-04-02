@@ -2498,7 +2498,7 @@
          * Process autopopups
          */
         auto: function() {
-            var t = this, expires = JCEMediaBox.options.popup.cookie_expiry;
+            var t = this, expires = JCEMediaBox.options.popup.cookie_expiry, dts;
             // use the current page URL for unique key
             var url = document.location;
             // base64 encode key
@@ -2515,9 +2515,11 @@
                         var cookie = t.getCookie('jcemediabox_' + key + '_' + i);
                         // create cookie with base64 key and expiry
                         if (!cookie) {
-                            var dts = new Date();
-                            dts.setHours(expires * 24);
-                            
+                            if (expires) {
+                                dts = new Date();
+                                dts.setHours(expires * 24);
+                            }
+
                             t.setCookie('jcemediabox_' + key + '_' + i, 1, dts);
                             t.start(el);
                         }

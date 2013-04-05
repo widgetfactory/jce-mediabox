@@ -235,7 +235,7 @@
         pdf: function(v) {
             if (/\.(pdf)$/i.test(v)) {
                 return {
-                    type: 'application/pdf'
+                    type: 'iframe'
                 };
             }
         }

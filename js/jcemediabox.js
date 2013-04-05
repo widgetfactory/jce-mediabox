@@ -1961,17 +1961,22 @@
          */
         params: function(s) {
             var a = [], x = [], self = this;
+            
+            function trim(s) {
+                return s = s.replace(/^\s+/, '').replace(/\s+$/, '');
+            }
 
             if (typeof s == 'string') {
                 // if a JSON string return the object
-                if (new RegExp('^{[\w\W]+}$').test(s)) {
+                if (/^\{[\w\W]+\}$/.test(s)) {                                        
                     return this.parseJSON(s);
                 }
                 
                 // JCE MediaBox parameter format eg: title[title]
-                if (/\w+\[[^\]]+\]/.test(s)) {                	                	
+                if (/\w+\[[^\]]+\]/.test(s)) {                	                	                                        
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
-                        return '"' + b + '":"' + self.encode(c) + '"' + (d ? ',' : '');
+
+                        return '"' + b + '":"' + self.encode(trim(c)) + '"' + (d ? ',' : '');
                     });
 
                     return this.parseJSON('{' + s + '}');
@@ -1997,7 +2002,8 @@
                             if (!/[^0-9]/.test(d)) {
                                 return '"' + b + '":' + parseInt(d);
                             }
-                            return '"' + b + '":"' + self.encode(d) + '"';
+                            
+                            return '"' + b + '":"' + self.encode(trim(d)) + '"';
                         }
                         return '';
                     });
@@ -3333,7 +3339,6 @@
                 case 'realaudio':
                 case 'real':
                 case 'divx':
-                case 'pdf':
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
@@ -3367,8 +3372,7 @@
                     p.height = this.active.height || this.height();
 
                     var flash = /flash/i.test(this.active.type);
-
-                    // Create single object for IE / Flash
+                    // Create single object for IE / Flash / PDF
 
                     if (flash || isIE) {
                         this.object = '<object id="jcemediabox-popup-object"';
@@ -3654,7 +3658,8 @@
                     }
 
                     if (this.islocal(this.active.src)) {
-                        if (!/tmpl=component/i.test(this.active.src)) {
+                        // add tmpl=component to internal links, skip pdf
+                        if (!/tmpl=component/i.test(this.active.src) && !/\.pdf\b/i.test(this.active.src)) {
                             this.active.src += /\?/.test(this.active.src) ? '&tmpl=component' : '?tmpl=component';
                         }
                     }
@@ -3806,29 +3811,33 @@
                 if (t.active.type == 'iframe') {
                     // Create IFrame
                     var iframe = DOM.add(t.content, 'iframe', {
-                        id					: 'jcemediabox-popup-iframe',
-                        frameborder			: 0,
-                        allowTransparency	: true,
-                        scrolling			: t.active.params.scrolling || 'auto',
-                        'style'				: {
-                            width	: '100%',
-                            height	: '100%'
-                        }/*,
-                        seamless 			: "seamless"*/
+                        id		: 'jcemediabox-popup-iframe',
+                        frameborder	: 0,
+                        allowTransparency : true,
+                        scrolling	: t.active.params.scrolling || 'auto',
+                        width	: '100%',
+                        height	: '100%'
                     });
-                    
-                    Event.add(iframe, 'load', function() {
-                        //iframe.onload = function() {
+                    // use pdf loader
+                    if (/\.pdf\b/.test(t.active.src)) {
                         // Hide loader
                         if (t.loader) {
                             DOM.hide(t.loader);
                         }
-                    });
+                    } else {
+                        Event.add(iframe, 'load', function() {
+                            // Hide loader
+                            if (t.loader) {
+                                DOM.hide(t.loader);
+                            }
+                        });
+                    }
                     
                     // Set src
                     iframe.setAttribute('src', t.active.src);
                     
                     t.iframe = iframe;
+                
                 } else {
                     // Hide loader
                     if (t.loader) {

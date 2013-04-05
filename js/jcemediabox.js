@@ -1869,8 +1869,9 @@
         addons: {
             'flash'	: {},
             'image'	: {},
-            'iframe': {},
-            'html'	: {}
+            'iframe'    : {},
+            'html'	: {},
+            'pdf'       : {}
         },
         /**
          * Extend the addons object with a new addon

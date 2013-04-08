@@ -2744,13 +2744,10 @@
                 var o = this.process(data);
 
                 // add to array
-                this.popups.push(o);
-
-                // get index
-                var i = this.popups.indexOf(o);
+                var x = this.popups.push(o);
 
                 // start
-                return this.start(o, i);
+                return this.start(o, x - 1);
             }
 
             return this.start(data);

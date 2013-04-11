@@ -2452,23 +2452,33 @@
          * Process autopopups
          */
         auto: function() {
-            var t = this, expires = JCEMediaBox.options.popup.cookie_expiry, dts;
-            // use the current page URL for unique key
-            var url = document.location;
-            // base64 encode key
-            var key = window.btoa(url);
-            // remove non-word characters
-            key = key.replace(/[^\w]/g, '');
-            // keep it short
-            key = key.substr(0, 24);
+            var t = this, expires = JCEMediaBox.options.popup.cookie_expiry, dts, key;
+            
+            function makeID() {
+                // use the current page URL for unique key
+                var url = document.location.href;
+                // base64 encode key
+                var key = window.btoa(url);
+                // remove non-word characters
+                key = key.replace(/[^\w]/g, '');
+                // keep it short
+                key = key.substr(0, 24);
+                
+                return key;
+            }
 
             JCEMediaBox.each(this.popups, function(el, i) {
                 if (el.auto) {
                     if (el.auto == 'single') {
+                        // use element ID or base64 key
+                        key = el.id || makeID();
+                        
                         // get cookie
                         var cookie = t.getCookie('jcemediabox_' + key + '_' + i);
+                        
                         // create cookie with base64 key and expiry
                         if (!cookie) {
+                            // create data if expiry set
                             if (expires) {
                                 dts = new Date();
                                 dts.setHours(expires * 24);

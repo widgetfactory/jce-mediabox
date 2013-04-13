@@ -901,6 +901,21 @@
                         });
                     }
                 }
+            },
+                    
+            encode: function(s) {
+                return ('' + s).replace(/[<>&\"\']/g, function(c) {
+                    return entities[c] || c;
+                });
+            },
+                    
+            decode: function(s) {
+                var el;
+
+                el = document.createElement("div");
+                el.innerHTML = s;
+
+                return el.textContent || el.innerText || s;
             }
 
         },
@@ -1912,17 +1927,13 @@
                         (new Function("return " + data))();
             }
         },
-        encode: function(s) {
-            return ('' + s).replace(/[<>&\"\']/g, function(c) {
-                return entities[c] || c;
-            });
-        },
+
         /**
          * Get a popup parameter object
          * @param {String} s Parameter string
          */
         params: function(s) {
-            var a = [], x = [], self = this;
+            var a = [], x = [], self = this, DOM = JCEMediaBox.DOM;
 
             function trim(s) {
                 return s = s.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -1938,7 +1949,7 @@
                 if (/\w+\[[^\]]+\]/.test(s)) {
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
 
-                        return '"' + b + '":"' + self.encode(trim(c)) + '"' + (d ? ',' : '');
+                        return '"' + b + '":"' + DOM.encode(trim(c)) + '"' + (d ? ',' : '');
                     });
 
                     return this.parseJSON('{' + s + '}');
@@ -1965,7 +1976,7 @@
                                 return '"' + b + '":' + parseInt(d);
                             }
 
-                            return '"' + b + '":"' + self.encode(trim(d)) + '"';
+                            return '"' + b + '":"' + DOM.encode(trim(d)) + '"';
                         }
                         return '';
                     });
@@ -3102,11 +3113,11 @@
                 }
 
                 if (title) {
-                    h += '<h4>' + title + '</h4>';
+                    h += '<h4>' + DOM.decode(title) + '</h4>';
                 }
 
                 if (text) {
-                    h += '<p>' + text + '</p>';
+                    h += '<p>' + DOM.decode(text) + '</p>';
                 }
 
                 this.caption.innerHTML = h || '&nbsp;';

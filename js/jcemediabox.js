@@ -3901,6 +3901,14 @@
          */
         close: function(keepopen) {
             var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
+            
+            if (this.iframe) {
+                DOM.attribute(this.iframe, 'src', '');
+            }
+            
+            if (this.object) {
+                DOM.attribute(this.object, 'data', '');
+            }
 
             // Destroy objects
             each(['img', 'object', 'iframe', 'ajax'], function(i, v) {

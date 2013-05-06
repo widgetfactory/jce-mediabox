@@ -232,10 +232,26 @@
          * PDF
          * @param {String} v URL
          */
-        pdf: function(v) {
+        pdf: function(v) {            
             if (/\.(pdf)$/i.test(v)) {
+                //var mobile = mediabox.isAndroid || mediabox.isIDevice;
+                
+                var type    = mediabox.isAndroid && mediabox.isChrome ? 'pdf' : 'iframe';
+                var src     = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
+                
+                if (mediabox.options.popup.google_viewer) {
+                    type    = 'iframe';
+                    
+                    if (!/:\/\//.test(v)) {
+                        v = mediabox.site + v.replace('?tmpl=component', '');
+                    }
+                    
+                    src = 'http://docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
+                }
+                
                 return {
-                    type: 'iframe'
+                    'type'  : type,
+                    'src'   : src
                 };
             }
         }

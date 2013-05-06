@@ -253,7 +253,8 @@
                     'numbers': '{$current} of {$total}',
                     'cancel': 'Cancel'
                 },
-                cookie_expiry: 7
+                cookie_expiry: 7,
+                google_viewer : 0
             },
             tooltip: {
                 speed: 150,
@@ -378,6 +379,7 @@
             this.domLoaded = true;
 
             var t = this, na = navigator, ua = na.userAgent;
+            
             /**
              * Constant that is true if the browser is Opera.
              *
@@ -395,6 +397,10 @@
              * @final
              */
             t.isWebKit = /WebKit/.test(ua);
+            
+            t.isChrome = /Chrome\//.test(ua);
+            
+            t.isSafari = /Safari\//.test(ua);
 
             /**
              * Constant that is true if the browser is IE.
@@ -431,6 +437,8 @@
              * @final
              */
             t.isIDevice = /(iPad|iPhone)/.test(ua);
+            
+            t.isAndroid = /Android/.test(ua);
 
             /**
              * Get the Site URL
@@ -2313,6 +2321,7 @@
         zoom: function(el) {
             var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var children = el.childNodes;
+            
             // Create basic zoom element
             var zoom = DOM.create('span');
 
@@ -3119,8 +3128,8 @@
                 if (text) {
                     h += '<p>' + DOM.decode(text) + '</p>';
                 }
-
-                this.caption.innerHTML = h || '&nbsp;';
+                // set caption html (may be empty)
+                this.caption.innerHTML = h;
 
                 // Process e-mail and urls
                 each(DOM.select('*', this.caption), function(el) {
@@ -3312,6 +3321,7 @@
                 case 'realaudio':
                 case 'real':
                 case 'divx':
+                case 'pdf':
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
@@ -3344,7 +3354,8 @@
                     p.width = this.active.width || this.width();
                     p.height = this.active.height || this.height();
 
-                    var flash = /flash/i.test(this.active.type);
+                    var flash   = /flash/i.test(this.active.type);
+                    var pdf     = /pdf/i.test(this.active.type);
                     // Create single object for IE / Flash / PDF
 
                     if (flash || isIE) {
@@ -3440,6 +3451,8 @@
                     for (n in params) {
                         this.object += '<param name="' + n + '" value="' + params[n] + '" />';
                     }
+                    
+                    this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
 
                     this.object += '</object>';
 
@@ -3522,7 +3535,7 @@
                             this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
                             this.object += '<param name="allowfullscreen" value="true" />';
                             this.object += '<param name="wmode" value="transparent" />';
-
+                            this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
                             this.object += '</object>';
                         } else {
                             DOM.addClass(this.content, 'broken-media');
@@ -3904,10 +3917,6 @@
             
             if (this.iframe) {
                 DOM.attribute(this.iframe, 'src', '');
-            }
-            
-            if (this.object) {
-                DOM.attribute(this.object, 'data', '');
             }
 
             // Destroy objects

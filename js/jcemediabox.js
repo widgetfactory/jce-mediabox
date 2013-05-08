@@ -3130,24 +3130,26 @@
                 }
                 // set caption html (may be empty)
                 this.caption.innerHTML = h;
-
-                // Process e-mail and urls
-                each(DOM.select('*', this.caption), function(el) {
-                    if (el.nodeName != 'A') {
-                        each(el.childNodes, function(n, i) {
-                            if (n.nodeType == 3) {
-                                var s = n.innerText || n.textContent || n.data || null;
-                                if (s && /(@|:\/\/)/.test(s)) {
-                                    if (s = processRe(s)) {
-                                        n.parentNode.innerHTML = s;
+                
+                // hide caption container if empty
+                if (h != '') {
+                    // Process e-mail and urls
+                    each(DOM.select('*', this.caption), function(el) {
+                        if (el.nodeName != 'A') {
+                            each(el.childNodes, function(n, i) {
+                                if (n.nodeType == 3) {
+                                    var s = n.innerText || n.textContent || n.data || null;
+                                    if (s && /(@|:\/\/)/.test(s)) {
+                                        if (s = processRe(s)) {
+                                            n.parentNode.innerHTML = s;
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
 
-                    }
-                });
-
+                        }
+                    });
+                }
             }
             // Optional Element
             var t = this, len = this.items.length;

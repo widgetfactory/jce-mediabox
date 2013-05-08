@@ -117,6 +117,10 @@ span#jcemediabox-popup-numbers a.active {
 	padding: 10px 35px 0px 10px;
 	background-color: #ffffff;
 }
+#jcemediabox-popup-caption:empty {
+	padding: 0;
+        min-height : 10px;
+}
 #jcemediabox-popup-caption h4 a:active, #jcemediabox-popup-caption p a:active, 
 #jcemediabox-popup-caption h4 a:hover, #jcemediabox-popup-caption p a:hover, 
 #jcemediabox-popup-caption h4 a:visited, #jcemediabox-popup-caption p a:visited,

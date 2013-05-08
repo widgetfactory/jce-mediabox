@@ -86,6 +86,10 @@ span#jcemediabox-popup-numbers {
 	padding: 0px 10px;
 	min-height: 20px;
 }
+#jcemediabox-popup-caption:empty {
+	padding: 0;
+        min-height : 0;
+}
 #jcemediabox-popup-caption h4, #jcemediabox-popup-caption p {
 	color: #666666;
 }

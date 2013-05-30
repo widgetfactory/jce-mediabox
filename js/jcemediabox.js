@@ -13,7 +13,6 @@
  *
  */
 (function(window) {
-
     /**
      *
      *  Base64 encode / decode
@@ -254,7 +253,7 @@
                     'cancel': 'Cancel'
                 },
                 cookie_expiry: 7,
-                google_viewer : 0
+                google_viewer: 0
             },
             tooltip: {
                 speed: 150,
@@ -379,7 +378,7 @@
             this.domLoaded = true;
 
             var t = this, na = navigator, ua = na.userAgent;
-            
+
             /**
              * Constant that is true if the browser is Opera.
              *
@@ -397,9 +396,9 @@
              * @final
              */
             t.isWebKit = /WebKit/.test(ua);
-            
+
             t.isChrome = /Chrome\//.test(ua);
-            
+
             t.isSafari = /Safari\//.test(ua);
 
             /**
@@ -437,7 +436,7 @@
              * @final
              */
             t.isIDevice = /(iPad|iPhone)/.test(ua);
-            
+
             t.isAndroid = /Android/.test(ua);
 
             /**
@@ -526,7 +525,6 @@
         trim: function(s) {
             return (s ? '' + s : '').replace(/^\s*|\s*$/g, '');
         },
-                
         /**
          * Find index of item in array
          * @param {array} a Array to look in
@@ -535,7 +533,7 @@
          */
         inArray: function(a, s) {
             var i, l;
-            
+
             if (a) {
                 for (i = 0, l = a.length; i < l; i++) {
                     if (a[i] === s) {
@@ -910,13 +908,11 @@
                     }
                 }
             },
-                    
             encode: function(s) {
                 return ('' + s).replace(/[<>&\"\']/g, function(c) {
                     return entities[c] || c;
                 });
             },
-                    
             decode: function(s) {
                 var el;
 
@@ -1935,7 +1931,6 @@
                         (new Function("return " + data))();
             }
         },
-
         /**
          * Get a popup parameter object
          * @param {String} s Parameter string
@@ -2321,7 +2316,7 @@
         zoom: function(el) {
             var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var children = el.childNodes;
-            
+
             // Create basic zoom element
             var zoom = DOM.create('span');
 
@@ -2473,17 +2468,17 @@
          */
         auto: function() {
             var t = this, expires = JCEMediaBox.options.popup.cookie_expiry, dts, key;
-            
-            function makeID() {
+
+            function makeID(src) {
                 // use the current page URL for unique key
                 var url = document.location.href;
-                // base64 encode key
-                var key = window.btoa(url);
+                // base64 encode key and popup src
+                var key = window.btoa(url + src);
                 // remove non-word characters
                 key = key.replace(/[^\w]/g, '');
                 // keep it short
                 key = key.substr(0, 24);
-                
+
                 return key;
             }
 
@@ -2491,11 +2486,11 @@
                 if (el.auto) {
                     if (el.auto == 'single') {
                         // use element ID or base64 key
-                        key = el.id || makeID();
-                        
+                        key = el.id || makeID(el.src);
+
                         // get cookie
                         var cookie = t.getCookie('jcemediabox_' + key + '_' + i);
-                        
+
                         // create cookie with base64 key and expiry
                         if (!cookie) {
                             // create data if expiry set
@@ -2751,7 +2746,7 @@
          */
         open: function(data, title, group, type, params) {
             var i, o = {};
-            
+
             if (typeof data == 'string') {
                 data = {
                     'src': data,
@@ -2765,11 +2760,11 @@
             // process as an element
             if (typeof (data == 'object') && data.nodeName && (data.nodeName == 'A' || data.nodeName == 'AREA')) {
                 i = JCEMediaBox.inArray(this.elements, data);
-                
-                if (i >= 0) {                    
+
+                if (i >= 0) {
                     return this.start(this.popups[i], i);
                 }
-                
+
                 // process element
                 var o = this.process(data);
 
@@ -2941,14 +2936,17 @@
          * @param {Int} n Index of current popup
          */
         show: function(items, n) {
-            var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions;
+            var DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions, top = 0;
             this.items = items;
             this.bind(true);
 
             // Show popup
             DOM.show(this.body);
+
             // Get top position
-            var top = (DIM.getHeight() - DIM.outerHeight(this.body)) / 2;
+            if (!/\d/.test(this.body.style.top)) {
+                top = (DIM.getHeight() - DIM.outerHeight(this.body)) / 2;
+            }
 
             // Set top position
             DOM.style(this.body, 'top', top);
@@ -3130,7 +3128,7 @@
                 }
                 // set caption html (may be empty)
                 this.caption.innerHTML = h;
-                
+
                 // hide caption container if empty
                 if (h != '') {
                     // Process e-mail and urls
@@ -3283,9 +3281,6 @@
                 'height': height
             });
 
-            // Setup info
-            this.info();
-
             switch (this.active.type) {
                 case 'image':
                 case 'image/jpeg':
@@ -3356,8 +3351,8 @@
                     p.width = this.active.width || this.width();
                     p.height = this.active.height || this.height();
 
-                    var flash   = /flash/i.test(this.active.type);
-                    var pdf     = /pdf/i.test(this.active.type);
+                    var flash = /flash/i.test(this.active.type);
+                    var pdf = /pdf/i.test(this.active.type);
                     // Create single object for IE / Flash / PDF
 
                     if (flash || isIE) {
@@ -3453,7 +3448,7 @@
                     for (n in params) {
                         this.object += '<param name="' + n + '" value="' + params[n] + '" />';
                     }
-                    
+
                     this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
 
                     this.object += '</object>';
@@ -3573,12 +3568,6 @@
                         display: 'none'
                     });
 
-                    // Create ajax container
-                    this.ajax = DOM.add(this.content, 'div', {
-                        id: 'jcemediabox-popup-ajax',
-                        'style': styles
-                    });
-
                     // Corrective stuff for IE6 and IE7
                     if (JCEMediaBox.isIE6) {
                         DOM.style(this.ajax, 'margin-right', JCEMediaBox.Dimensions.getScrollbarWidth());
@@ -3602,7 +3591,13 @@
 
                     // transfer data and delete iframe when loaded
                     Event.add(iframe, 'load', function() {
-                        //iframe.onload = function() {
+
+                        // Create ajax container
+                        t.ajax = DOM.add(t.content, 'div', {
+                            id: 'jcemediabox-popup-ajax',
+                            'style': styles
+                        });
+
                         // transfer data
                         t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
 
@@ -3616,18 +3611,6 @@
 
                         // process any tooltips in loaded content
                         JCEMediaBox.ToolTip.create(t.content);
-
-                        each(DOM.select('a, area', t.content), function(el) {
-                            JCEMediaBox.Event.add(el, 'click', function(e) {
-                                if (el.href && el.href.indexOf('#') == -1) {
-                                    if (/jce(popup|box|lightbox)/.test(el.className)) {
-                                        Event.cancel(e);
-                                        t.close(true);
-                                    }
-                                }
-                            });
-
-                        });
 
                         // setup
                         return t.setup();
@@ -3702,6 +3685,9 @@
             w = this.active.width;
             h = this.active.height;
 
+            // Setup info
+            this.info();
+
             // Get image dimensions and resize if necessary
             if (this.active.type == 'image') {
                 if (t.img.error) {
@@ -3758,6 +3744,58 @@
 
             // Animate box
             return this.animate();
+        },
+        showInfo: function() {
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, FX = JCEMediaBox.FX, DIM = JCEMediaBox.Dimensions, Event = JCEMediaBox.Event;
+            var ss = JCEMediaBox.options.popup.scalespeed, fs = JCEMediaBox.options.popup.fadespeed;
+
+            // Set Information
+            var itop = t['info-top'];
+            if (itop) {
+                each(DOM.select('*[id]', itop), function(el) {
+                    if (/jcemediabox-popup-(next|prev)/.test(DOM.attribute(el, 'id'))) {
+                        return;
+                    }
+                    DOM.show(el);
+                });
+
+                var h = DIM.outerHeight(itop);
+                DOM.styles(itop, {
+                    'z-index': -1,
+                    'top': h,
+                    'visibility': 'visible'
+                });
+
+                FX.animate(itop, {
+                    'top': 0
+                }, ss);
+            }
+
+            if (t.closelink) {
+                DOM.show(t.closelink);
+            }
+
+            var ibottom = t['info-bottom'];
+            if (ibottom) {
+                each(DOM.select('*[id]', ibottom), function(el) {
+                    if (/jcemediabox-popup-(next|prev)/.test(DOM.attribute(el, 'id'))) {
+                        return;
+                    }
+                    DOM.show(el);
+                });
+
+                var h = DIM.outerHeight(ibottom);
+
+                DOM.styles(ibottom, {
+                    'z-index': -1,
+                    'top': -h,
+                    'visibility': 'visible'
+                });
+
+                FX.animate(ibottom, {
+                    'top': 0
+                }, ss);
+            }
         },
         /**
          * Animate the Popup
@@ -3842,71 +3880,17 @@
                 DOM.show(t.content);
                 t.content.focus();
 
-                /**
-                 * Private internal function
-                 * Show info areas of popup
-                 */
-                function showInfo() {
-                    // Set Information
-                    var itop = t['info-top'];
-                    if (itop) {
-                        each(DOM.select('*[id]', itop), function(el) {
-                            if (/jcemediabox-popup-(next|prev)/.test(DOM.attribute(el, 'id'))) {
-                                return;
-                            }
-                            DOM.show(el);
-                        });
-
-                        var h = DIM.outerHeight(itop);
-                        DOM.styles(itop, {
-                            'z-index': -1,
-                            'top': h,
-                            'visibility': 'visible'
-                        });
-
-                        FX.animate(itop, {
-                            'top': 0
-                        }, ss);
-                    }
-
-                    if (t.closelink) {
-                        DOM.show(t.closelink);
-                    }
-
-                    var ibottom = t['info-bottom'];
-                    if (ibottom) {
-                        each(DOM.select('*[id]', ibottom), function(el) {
-                            if (/jcemediabox-popup-(next|prev)/.test(DOM.attribute(el, 'id'))) {
-                                return;
-                            }
-                            DOM.show(el);
-                        });
-
-                        var h = DIM.outerHeight(ibottom);
-
-                        DOM.styles(ibottom, {
-                            'z-index': -1,
-                            'top': -h,
-                            'visibility': 'visible'
-                        });
-
-                        FX.animate(ibottom, {
-                            'top': 0
-                        }, ss);
-                    }
-                }
-
                 // Animate fade in for images only and not on IE6!
                 if (t.active.type == 'image' && !JCEMediaBox.isIE6) {
                     FX.animate(t.content, {
                         'opacity': 1
                     }, fs, function() {
-                        showInfo();
+                        t.showInfo();
                     });
 
                 } else {
                     DOM.style(t.content, 'opacity', 1);
-                    showInfo();
+                    t.showInfo();
                 }
             });
 
@@ -3915,8 +3899,10 @@
          * Close the popup window. Destroy all objects
          */
         close: function(keepopen) {
-            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM;
-            
+            var t = this, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, DIM = JCEMediaBox.Dimensions, FX = JCEMediaBox.FX;
+
+            var ss = JCEMediaBox.options.popup.scalespeed;
+
             if (this.iframe) {
                 DOM.attribute(this.iframe, 'src', '');
             }
@@ -3930,16 +3916,19 @@
             if (this.closelink) {
                 DOM.hide(this.closelink);
             }
+
             // Empty content div
             this.content.innerHTML = '';
-            // Hide info div
-            each(['top', 'bottom'], function(i, v) {
-                if (t['info-' + v]) {
-                    DOM.hide(t['info-' + v]);
-                }
-            });
 
             if (!keepopen) {
+                // Hide info div
+                each(['top', 'bottom'], function(v, i) {
+                    var el = t['info-' + v];
+                    if (el) {
+                        DOM.hide(el);
+                    }
+                });
+
                 // reset popups
                 var popups = this.getPopups();
                 while (this.popups.length > popups.length) {

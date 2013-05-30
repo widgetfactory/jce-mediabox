@@ -3193,7 +3193,7 @@
                     each(DOM.select('*[id]', el), function(s) {
                         DOM.show(s);
                     });
-
+                    DOM.style(el, 'visibility', 'hidden');
                 }
             });
 

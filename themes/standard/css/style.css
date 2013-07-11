@@ -119,7 +119,7 @@ span#jcemediabox-popup-numbers a.active {
 	font-size: 1.2em;
 }
 #jcemediabox-popup-caption {
-	padding: 10px 35px 0px 10px;
+	padding: 10px 35px 10px 10px;
 	background-color: #ffffff;
 }
 #jcemediabox-popup-caption:empty {

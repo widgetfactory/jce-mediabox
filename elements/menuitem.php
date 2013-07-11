@@ -104,8 +104,13 @@ class WFElementMenuItem extends WFElement {
                             $item->type = $currentItemType;
                         }
                     }
+                    
+                    $disable = false;
+                    
+                    if ($item->type) {
+                        $disable = strpos((string) $node->attributes()->disable, $item->type) !== false ? true : false;
+                    }
 
-                    $disable = strpos((string) $node->attributes()->disable, $item->type) !== false ? true : false;
                     $options[] = JHtml::_('select.option', $item->id, '&#160;&#160;&#160;' . $item->treename, 'value', 'text', $disable);
                 }
             }

@@ -431,11 +431,11 @@
             /**
              * Constant that tells if the current browser is an iPhone or iPad.
              *
-             * @property isIDevice
+             * @property isiOS
              * @type Boolean
              * @final
              */
-            t.isIDevice = /(iPad|iPhone)/.test(ua);
+            t.isiOS = /(iPad|iPhone)/.test(ua);
 
             t.isAndroid = /Android/.test(ua);
 
@@ -2828,7 +2828,7 @@
                     DOM.addClass(this.page, 'ie7');
                 }
 
-                if (JCEMediaBox.isIDevice) {
+                if (JCEMediaBox.isiOS) {
                     DOM.addClass(this.page, 'idevice');
                 }
 
@@ -2863,7 +2863,7 @@
                     DOM.hide(el);
                 });
 
-                if (JCEMediaBox.isIDevice && JCEMediaBox.isWebKit) {
+                if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
                     // add iPad scroll fix
                     DOM.style(this.content, 'webkitOverflowScrolling', 'touch');
                 }
@@ -2951,7 +2951,7 @@
             // Set top position
             DOM.style(this.body, 'top', top);
             // Changes if IE6 or scrollpopup
-            if (JCEMediaBox.isIE6 || JCEMediaBox.isIDevice || JCEMediaBox.options.popup.scrolling == 'scroll') {
+            if (JCEMediaBox.isIE6 || JCEMediaBox.isiOS || JCEMediaBox.options.popup.scrolling == 'scroll') {
                 DOM.style(this.page, 'position', 'absolute');
                 DOM.style(this.overlay, 'height', DIM.getScrollHeight());
                 DOM.style(this.body, 'top', DIM.getScrollTop() + top);
@@ -3680,7 +3680,7 @@
          * Pre-animation setup. Resize images, set width / height
          */
         setup: function() {
-            var t = this, DOM = JCEMediaBox.DOM, w, h;
+            var t = this, DOM = JCEMediaBox.DOM, w, h, o = JCEMediaBox.options.popup;
 
             w = this.active.width;
             h = this.active.height;
@@ -3709,7 +3709,7 @@
             }
 
             // Resize to fit screen
-            if (JCEMediaBox.options.popup.resize == 1 || JCEMediaBox.options.popup.scrolling == 'fixed') {
+            if (parseInt(o.resize) === 1 || (parseInt(o.resize) === 0 && o.scrolling == 'fixed')) {
                 var x = this.width();
                 var y = this.height();
 

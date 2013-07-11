@@ -40,7 +40,7 @@
          * @param {String} v URL
          */
         flv: function(v) {
-            if (/\.flv\b/.test(v)) {
+            if (/\.(flv|f4v)\b/.test(v)) {
                 return {
                     type: 'video/x-flv'
                 };
@@ -236,7 +236,7 @@
             if (/\.(pdf)$/i.test(v)) {
                 //var mobile = mediabox.isAndroid || mediabox.isIDevice;
                 
-                var type    = mediabox.isAndroid && mediabox.isChrome ? 'pdf' : 'iframe';
+                var type    = mediabox.isAndroid || mediabox.isiOS ? 'pdf' : 'iframe';
                 var src     = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
                 
                 if (mediabox.options.popup.google_viewer) {

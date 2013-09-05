@@ -3634,6 +3634,8 @@
 
                     break;
                 case 'iframe':
+                case 'video/youtube':
+                case 'video/vimeo':
                 default:
                     if (this.print) {
                         this.print.style.visibility = 'hidden';

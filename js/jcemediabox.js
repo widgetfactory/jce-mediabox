@@ -3260,8 +3260,8 @@
             // Get set parameters
             extend(p, o.params);
 
-            var width = p.width || JCEMediaBox.options.popup.width || 0;
-            var height = p.height || JCEMediaBox.options.popup.height || 0;
+            var width   = p.width || JCEMediaBox.options.popup.width || 0;
+            var height  = p.height || JCEMediaBox.options.popup.height || 0;
 
             if (/%/.test(width)) {
                 width = DIM.getWidth() * parseInt(width) / 100;
@@ -3306,6 +3306,13 @@
                     // fix for resize / transparency issues in IE
                     if (isIE) {
                         DOM.style(this.content, 'background-color', DOM.style(this.content, 'background-color'));
+                    }
+                    
+                    // allow image to be resized
+                    if (p.width && !p.height) {
+                        this.active.height = 0;
+                    } else if (p.height && !p.width) {
+                        this.active.width = 0;
                     }
 
                     break;

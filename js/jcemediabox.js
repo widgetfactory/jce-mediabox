@@ -708,6 +708,10 @@
              */
             style: function(n, na, v) {
                 var isIE = JCEMediaBox.isIE, r, s;
+                
+                if (!n) {
+                    return;
+                }
 
                 // Camelcase it, if needed
                 na = na.replace(/-(\D)/g, function(a, b) {

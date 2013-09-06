@@ -3579,14 +3579,6 @@
                         display: 'none'
                     });
 
-                    // Corrective stuff for IE6 and IE7
-                    if (JCEMediaBox.isIE6) {
-                        DOM.style(this.ajax, 'margin-right', JCEMediaBox.Dimensions.getScrollbarWidth());
-                    }
-
-                    if (JCEMediaBox.isIE7) {
-                        DOM.style(this.ajax, 'padding-right', JCEMediaBox.Dimensions.getScrollbarWidth());
-                    }
                     this.active.src = this.active.src.replace(/\&type=(ajax|text\/html|text\/xml)/, '');
 
                     // show loader
@@ -3611,6 +3603,15 @@
 
                         // transfer data
                         t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
+                        
+                        // Corrective stuff for IE6 and IE7
+                        if (JCEMediaBox.isIE6) {
+                            DOM.style(t.ajax, 'margin-right', JCEMediaBox.Dimensions.getScrollbarWidth());
+                        }
+
+                        if (JCEMediaBox.isIE7) {
+                            DOM.style(t.ajax, 'padding-right', JCEMediaBox.Dimensions.getScrollbarWidth());
+                        }
 
                         window.setTimeout(function() {
                             // remove iframe

@@ -1317,10 +1317,11 @@
 
                 x = n.offsetWidth;
 
-                if (!x) {
+                if (!x) {                    
                     JCEMediaBox.each(['padding-left', 'padding-right', 'border-left', 'border-right', 'width'], function(s) {
                         v = parseFloat(JCEMediaBox.DOM.style(n, s));
                         v = /[0-9]/.test(v) ? v : 0;
+                        
                         x = x + v;
                     });
 
@@ -3407,7 +3408,9 @@
                     }
 
                     // set global media type
-                    this.active.type = 'media';
+                    this.active.type    = 'media';
+                    this.active.width   = p.width;
+                    this.active.height  = p.height;
 
                     this.setup();
                     break;
@@ -3820,8 +3823,8 @@
 
             var cw = DIM.outerWidth(this.content);
             var ch = DIM.outerHeight(this.content);
+            
             var ih = 0;
-
             each(['top', 'bottom'], function(v, i) {
                 var el = t['info-' + v];
                 if (el) {

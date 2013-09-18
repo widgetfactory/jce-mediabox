@@ -1244,6 +1244,17 @@
              * Get client window height
              */
             getHeight: function() {
+                if (JCEMediaBox.isiOS || JCEMediaBox.isAndroid) {
+                    // Get zoom level of mobile Safari
+                    // Note, that such zoom detection might not work correctly in other browsers
+                    // We use width, instead of height, because there are no vertical toolbars :)
+                    var zoomLevel = document.documentElement.clientWidth / window.innerWidth;
+
+                    // window.innerHeight returns height of the visible area. 
+                    // We multiply it by zoom and get out real height.
+                    return window.innerHeight * zoomLevel;
+                }
+                
                 return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight || 0;
             },
             /**
@@ -2834,7 +2845,11 @@
                 }
 
                 if (JCEMediaBox.isiOS) {
-                    DOM.addClass(this.page, 'idevice');
+                    DOM.addClass(this.page, 'ios');
+                }
+                
+                if (JCEMediaBox.isAndroid) {
+                    DOM.addClass(this.page, 'android');
                 }
 
                 if (JCEMediaBox.options.popup.overlay == 1) {
@@ -2868,7 +2883,7 @@
                     DOM.hide(el);
                 });
 
-                if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
+                if ((JCEMediaBox.isiOS || JCEMediaBox.isAndroid) && JCEMediaBox.isWebKit) {
                     // add iPad scroll fix
                     DOM.style(this.content, 'webkitOverflowScrolling', 'touch');
                 }
@@ -3926,6 +3941,12 @@
 
             // Destroy objects
             each(['img', 'object', 'iframe', 'ajax'], function(i, v) {
+                //t[v] = null;
+                
+                if (t[v]) {
+                    DOM.remove(t[v]);
+                }
+                
                 t[v] = null;
             });
 

@@ -226,29 +226,29 @@ div.jcemediabox-tooltip .jcemediabox-tooltip-bottom-right {
 }	
 
 /** IPhone / IPad **/
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tc, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tr, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bc, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-br {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tc, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-tr, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-bc, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-br {
 	display: none;
 } 
 
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tl, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tl, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-bl {
 	background: #ffffff none;
 	width: auto;
 	margin: 0;
 	height: 11px;
 }
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tl {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	margin-bottom: -1px;
 }
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-bl {
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	margin-top: -1px;
 }
-#jcemediabox-popup-page.idevice #jcemediabox-popup-caption {
+#jcemediabox-popup-page.ios #jcemediabox-popup-caption {
 	margin: -1px 0;
 }
-#jcemediabox-popup-page.idevice #jcemediabox-popup-nav {
+#jcemediabox-popup-page.ios #jcemediabox-popup-nav {
 	margin-bottom: -1px;
 }

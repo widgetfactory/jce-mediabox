@@ -234,7 +234,7 @@
          */
         pdf: function(v) {            
             if (/\.(pdf)$/i.test(v)) {
-                //var mobile = mediabox.isAndroid || mediabox.isIDevice;
+                //var mobile = mediabox.isAndroid || mediabox.isiOS;
                 
                 var type    = mediabox.isAndroid || mediabox.isiOS ? 'pdf' : 'iframe';
                 var src     = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
@@ -246,7 +246,7 @@
                         v = mediabox.site + v.replace('?tmpl=component', '');
                     }
                     
-                    src = 'http://docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
+                    src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
                 }
                 
                 return {

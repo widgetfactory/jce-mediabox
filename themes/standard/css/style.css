@@ -225,39 +225,77 @@ div.jcemediabox-tooltip.ie6 .jcemediabox-popup-corner-br {
 }
 
 /** IPhone / IPad **/
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tc, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tr, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bc, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-br {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tc, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-tr, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-bc, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-br {
 	display: none;
 } 
 
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tl, #jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tl, #jcemediabox-popup-page.ios .jcemediabox-popup-corner-bl {
 	background: #ffffff none;
 	width: auto;
 	margin: 0;
 	height: 11px;
 }
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-tl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-tl {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	margin-bottom: -1px;
 }
-#jcemediabox-popup-page.idevice .jcemediabox-popup-corner-bl {
+#jcemediabox-popup-page.ios .jcemediabox-popup-corner-bl {
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-	margin-top: -1px;
+	margin-top: -5px;
 }
 
-#jcemediabox-popup-page.idevice #jcemediabox-popup-closelink {
+#jcemediabox-popup-page.ios #jcemediabox-popup-closelink {
 	top: 10px;
 }
-#jcemediabox-popup-page.idevice #jcemediabox-popup-prev, #jcemediabox-popup-page.idevice #jcemediabox-popup-next {
+#jcemediabox-popup-page.ios #jcemediabox-popup-prev, #jcemediabox-popup-page.ios #jcemediabox-popup-next {
 	margin: 0;
 }
-#jcemediabox-popup-page.idevice #jcemediabox-popup-caption {
+#jcemediabox-popup-page.ios #jcemediabox-popup-caption {
 	margin: -1px 0;
 }
-#jcemediabox-popup-page.idevice #jcemediabox-popup-nav {
+#jcemediabox-popup-page.ios #jcemediabox-popup-nav {
 	margin-bottom: -1px;
 }
-#jcemediabox-popup-page.idevice span#jcemediabox-popup-numbers {
+#jcemediabox-popup-page.ios span#jcemediabox-popup-numbers {
 	margin-top: 5px;
-}	
+}
+
+/** Android **/
+#jcemediabox-popup-page.android .jcemediabox-popup-corner-tc, #jcemediabox-popup-page.android .jcemediabox-popup-corner-tr, #jcemediabox-popup-page.android .jcemediabox-popup-corner-bc, #jcemediabox-popup-page.android .jcemediabox-popup-corner-br {
+	display: none;
+} 
+
+#jcemediabox-popup-page.android .jcemediabox-popup-corner-tl, #jcemediabox-popup-page.android .jcemediabox-popup-corner-bl {
+	background: #ffffff none;
+	width: auto;
+	margin: 0;
+	height: 11px;
+}
+#jcemediabox-popup-page.android .jcemediabox-popup-corner-tl {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-bottom: -1px;
+}
+#jcemediabox-popup-page.android .jcemediabox-popup-corner-bl {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-top: -6px;
+}
+
+#jcemediabox-popup-page.android #jcemediabox-popup-closelink {
+	top: 10px;
+}
+#jcemediabox-popup-page.android #jcemediabox-popup-prev, #jcemediabox-popup-page.android #jcemediabox-popup-next {
+	margin: 0;
+}
+#jcemediabox-popup-page.android #jcemediabox-popup-caption {
+	margin: -1px 0;
+}
+#jcemediabox-popup-page.android #jcemediabox-popup-nav {
+	margin-bottom: -1px;
+}
+#jcemediabox-popup-page.android span#jcemediabox-popup-numbers {
+	margin-top: 5px;
+}

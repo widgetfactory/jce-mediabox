@@ -177,6 +177,6 @@ div.jcemediabox-tooltip .jcemediabox-tooltip-bottom-right {
 }	
 
 /** IPhone / IPad **/
-#jcemediabox-popup-page.idevice #jcemediabox-popup-container {
+#jcemediabox-popup-page.ios #jcemediabox-popup-container {
 	margin-bottom: -1px;
 }

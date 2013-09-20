@@ -3499,7 +3499,7 @@
                         p.width = p.width || this.active.width;
                         p.height = p.height || this.active.height;
 
-                        this.object = '<' + tag;
+                        this.object = '<' + tag + ' type="' + type + '"';
 
                         for (n in p) {
                             if (p[n] !== '') {

@@ -243,7 +243,7 @@ div.jcemediabox-tooltip.ie6 .jcemediabox-popup-corner-br {
 #jcemediabox-popup-page.ios .jcemediabox-popup-corner-bl {
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-	margin-top: -5px;
+	margin-top: -6px;
 }
 
 #jcemediabox-popup-page.ios #jcemediabox-popup-closelink {

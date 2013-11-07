@@ -553,7 +553,7 @@
              * @param {Object} s ID
              */
             get: function(s) {
-                if (typeof(s) == 'string')
+                if (typeof (s) == 'string')
                     return document.getElementById(s);
 
                 return s;
@@ -708,7 +708,7 @@
              */
             style: function(n, na, v) {
                 var isIE = JCEMediaBox.isIE, r, s;
-                
+
                 if (!n) {
                     return;
                 }
@@ -1254,7 +1254,7 @@
                     // We multiply it by zoom and get out real height.
                     return window.innerHeight * zoomLevel;
                 }
-                
+
                 return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight || 0;
             },
             /**
@@ -1328,11 +1328,11 @@
 
                 x = n.offsetWidth;
 
-                if (!x) {                    
+                if (!x) {
                     JCEMediaBox.each(['padding-left', 'padding-right', 'border-left', 'border-right', 'width'], function(s) {
                         v = parseFloat(JCEMediaBox.DOM.style(n, s));
                         v = /[0-9]/.test(v) ? v : 0;
-                        
+
                         x = x + v;
                     });
 
@@ -1939,8 +1939,8 @@
 
             if (/^[\],:{}\s]*$/
                     .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+                            .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                            .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 // Try to use the native JSON parser first
                 return window.JSON && window.JSON.parse ?
                         window.JSON.parse(data) :
@@ -2411,10 +2411,15 @@
 
                 // Add style alignment
                 extend(styles, {
-                    'float': DOM.style(child, 'float'),
                     'text-align': child.style.textAlign,
                     'width': w
                 });
+                
+                var float = DOM.style(child, 'float');
+                
+                if (float === "left" || float === "right") {
+                    styles.float = float;
+                }
 
                 /**
                  * Private Internal function
@@ -2847,7 +2852,7 @@
                 if (JCEMediaBox.isiOS) {
                     DOM.addClass(this.page, 'ios');
                 }
-                
+
                 if (JCEMediaBox.isAndroid) {
                     DOM.addClass(this.page, 'android');
                 }
@@ -3280,8 +3285,8 @@
             // Get set parameters
             extend(p, o.params);
 
-            var width   = p.width || JCEMediaBox.options.popup.width || 0;
-            var height  = p.height || JCEMediaBox.options.popup.height || 0;
+            var width = p.width || JCEMediaBox.options.popup.width || 0;
+            var height = p.height || JCEMediaBox.options.popup.height || 0;
 
             if (/%/.test(width)) {
                 width = DIM.getWidth() * parseInt(width) / 100;
@@ -3327,7 +3332,7 @@
                     if (isIE) {
                         DOM.style(this.content, 'background-color', DOM.style(this.content, 'background-color'));
                     }
-                    
+
                     // allow image to be resized
                     if (p.width && !p.height) {
                         this.active.height = 0;
@@ -3397,7 +3402,13 @@
                         for (n in p) {
                             if (p[n] !== '') {
                                 if (/(id|name|width|height|style)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    var v = decodeURIComponent(p[n]);
+
+                                    if (pdf && (n == 'width' || n == 'height')) {
+                                        v = '100%';
+                                    }
+
+                                    t.object += ' ' + n + '="' + v + '"';
                                 }
                             }
                         }
@@ -3415,17 +3426,23 @@
                     } else {
                         this.object = '<embed type="' + mt.mediatype + '"';
                         for (n in p) {
-                            if (p[n] !== '') {
-                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                            var v = decodeURIComponent(p[n]);
+                            
+                            if (pdf && (n == 'width' || n == 'height')) {
+                                v = '100%';
+                            }
+
+                            if (v !== '') {
+                                t.object += ' ' + n + '="' + v + '"';
                             }
                         }
                         this.object += '></embed>';
                     }
 
                     // set global media type
-                    this.active.type    = 'media';
-                    this.active.width   = p.width;
-                    this.active.height  = p.height;
+                    this.active.type = 'media';
+                    this.active.width = p.width;
+                    this.active.height = p.height;
 
                     this.setup();
                     break;
@@ -3535,17 +3552,24 @@
                             var map = {
                                 'loop': 'loop',
                                 'autoplay': 'autoPlay',
-                                'controls': 'controlBarAutoHide'
+                                'controls': 'controlBarMode'
                             };
 
                             var flashvars = ['src=' + src];
 
                             for (n in p) {
                                 if (p[n] !== '') {
-                                    if (/(loop|autoplay|controls|preload)$/.test(n)) {
+                                    if (/(loop|autoplay|preload|controls)$/.test(n)) {
                                         if (map[n]) {
-                                            var v = (n == 'controls') ? !p[n] : !!p[n];
-                                            flashvars.push(map[n] + '=' + v);
+                                            var v = !!p[n];
+
+                                            if (n == 'controls') {
+                                                if (!v) {
+                                                    flashvars.push('controlBarMode=none');
+                                                }
+                                            } else {
+                                                flashvars.push(map[n] + '=' + v);
+                                            }
                                         }
                                     }
 
@@ -3621,7 +3645,7 @@
 
                         // transfer data
                         t.ajax.innerHTML = iframe.contentWindow.document.body.innerHTML;
-                        
+
                         // Corrective stuff for IE6 and IE7
                         if (JCEMediaBox.isIE6) {
                             DOM.style(t.ajax, 'margin-right', JCEMediaBox.Dimensions.getScrollbarWidth());
@@ -3838,7 +3862,7 @@
 
             var cw = DIM.outerWidth(this.content);
             var ch = DIM.outerHeight(this.content);
-            
+
             var ih = 0;
             each(['top', 'bottom'], function(v, i) {
                 var el = t['info-' + v];
@@ -3942,11 +3966,11 @@
             // Destroy objects
             each(['img', 'object', 'iframe', 'ajax'], function(i, v) {
                 //t[v] = null;
-                
+
                 if (t[v]) {
                     DOM.remove(t[v]);
                 }
-                
+
                 t[v] = null;
             });
 

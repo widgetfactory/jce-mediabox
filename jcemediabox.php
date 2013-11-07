@@ -225,13 +225,16 @@ class plgSystemJCEMediabox extends JPlugin {
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop = JRequest::getVar('pop', 0, 'int');
-        $task = JRequest::getVar('task');
-        $tmpl = JRequest::getVar('tmpl');
-
-        if ($pop || ($task == 'new' || $task == 'edit') || $tmpl == 'component') {
+        $pop    = JRequest::getInt('pop');
+        $print  = JRequest::getInt('print');
+        $task   = JRequest::getVar('task');
+        $tmpl   = JRequest::getWord('tmpl');
+        
+        // don't load mediabox on certain pages
+        if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
             return;
         }
+        
         $params = $this->params;
 
         $components = $params->get('components', '');

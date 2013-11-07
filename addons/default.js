@@ -236,7 +236,7 @@
             if (/\.(pdf)$/i.test(v)) {
                 //var mobile = mediabox.isAndroid || mediabox.isiOS;
                 
-                var type    = mediabox.isAndroid || mediabox.isiOS ? 'pdf' : 'iframe';
+                var type    = mediabox.isiOS && mediabox.isSafari ? 'pdf' : 'iframe';
                 var src     = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
                 
                 if (mediabox.options.popup.google_viewer) {

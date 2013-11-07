@@ -12,7 +12,7 @@
 
     <params addpath="/plugins/system/jcemediabox/elements">
         <param name="theme" type="folderlist" directory="plugins/system/jcemediabox/themes" hide_none="true" hide_default="true" exclude="(css|img)" default="standard" label="JCEMEDIABOX_THEME" description="JCEMEDIABOX_THEMEDESC" />
-		<!--param name="themepath" type="text" size="50" default="plugins/system/jcemediabox/themes" label="JCEMEDIABOX_THEMEPATH" description="JCEMEDIABOX_THEMEPATHDESC"/ -->
+        <!--param name="themepath" type="text" size="50" default="plugins/system/jcemediabox/themes" label="JCEMEDIABOX_THEMEPATH" description="JCEMEDIABOX_THEMEPATHDESC"/ -->
         <param name="imgpath" type="text" size="50" default="plugins/system/jcemediabox/img" label="JCEMEDIABOX_IMAGEPATH" description="JCEMEDIABOX_IMAGEPATHDESC"/>
         <param type="spacer" default="JCEMEDIABOX_POPUP" />
         <param name="fadespeed" type="text" default="500" label="JCEMEDIABOX_FADESPEED" description="JCEMEDIABOX_FADESPEEDDESC"/>
@@ -76,6 +76,11 @@
             <option value="0">JCEMEDIABOX_NO</option>
         </param>
         <param name="cookie_expiry" type="text" size="5" default="" label="JCEMEDIABOX_COOKIE_EXPIRY" description="JCEMEDIABOX_COOKIE_EXPIRYDESC" />
+        
+        <param name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
+            <option value="1">JCEMEDIABOX_YES</option>
+            <option value="0">JCEMEDIABOX_NO</option>
+        </param>
                 
         <param type="spacer" default="JCEMEDIABOX_TOOLTIP" />
         <param name="tipclass" type="text" default="tooltip" label="JCEMEDIABOX_TOOLTIPCLASS" description="JCEMEDIABOX_TOOLTIPCLASSDESC"/>

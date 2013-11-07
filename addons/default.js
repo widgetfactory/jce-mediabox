@@ -256,4 +256,32 @@
             }
         }
     });
+    
+    /**
+     * Word addon
+     */
+    popup.setAddons('word', {
+        /**
+         * PDF
+         * @param {String} v URL
+         */
+        word: function(v) {            
+            if (/\.(doc|docx|xls|xlsx)$/i.test(v)) {                
+                var type = 'iframe', src = v;
+                
+                if (mediabox.options.popup.google_viewer) {                    
+                    if (!/:\/\//.test(v)) {
+                        v = mediabox.site + v.replace('?tmpl=component', '');
+                    }
+                    
+                    src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
+                }
+                
+                return {
+                    'type'  : type,
+                    'src'   : src
+                };
+            }
+        }
+    });
 })(JCEMediaBox);

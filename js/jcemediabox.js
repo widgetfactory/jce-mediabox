@@ -253,7 +253,8 @@
                     'cancel': 'Cancel'
                 },
                 cookie_expiry: 7,
-                google_viewer: 0
+                google_viewer: 0,
+                pdfjs : 0
             },
             tooltip: {
                 speed: 150,
@@ -3424,7 +3425,7 @@
                         this.object += '</object>';
                         // Use embed for non-IE browsers
                     } else {
-                        this.object = '<embed type="' + mt.mediatype + '"';
+                        this.object = '<embed id="jcemediabox-popup-object" type="' + mt.mediatype + '"';
                         for (n in p) {
                             var v = decodeURIComponent(p[n]);
                             
@@ -3894,15 +3895,16 @@
                         frameborder: 0,
                         allowTransparency: true,
                         scrolling: t.active.params.scrolling || 'auto',
-                        width: '100%',
-                        height: '100%'
+                        width   : '100%',
+                        height  : '100%'
                     });
+                    
                     // use pdf loader
                     if (/\.pdf\b/.test(t.active.src)) {
                         // Hide loader
                         if (t.loader) {
                             DOM.hide(t.loader);
-                        }
+                        }  
                     } else {
                         Event.add(iframe, 'load', function() {
                             // Hide loader
@@ -3911,9 +3913,29 @@
                             }
                         });
                     }
-
-                    // Set src
-                    iframe.setAttribute('src', t.active.src);
+                    
+                    if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {
+                        iframe.setAttribute('src', 'javascript:;');
+                        
+                        var doc     = iframe.contentWindow.document;
+                        var html    = '<!doctype html><html><head>';
+                        
+                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.js"></script>';
+                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.compatibility.js"></script>';
+                        html += '<script type="text/javascript">var pdffile = "' + t.active.src + '";</script>';
+                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.loader.js"></script>';
+                        html += '</head>';
+                        html += '<body><canvas id="pdf-canvas" width="100%" height="100%" /></body>';
+                        html += '</html>';
+                        
+                        doc.open();
+                        doc.write(html);
+                        doc.close();
+                        
+                    } else {
+                        // Set src
+                        iframe.setAttribute('src', t.active.src);
+                    }
 
                     t.iframe = iframe;
 
@@ -3926,6 +3948,10 @@
                     // If media
                     if (t.active.type == 'media' && t.object) {
                         t.content.innerHTML = t.object;
+                        
+                        if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.isiOS) {
+                            DOM.style(DOM.get('jcemediabox-popup-object'), 'height', '1000%');
+                        }
                     }
 
                     if (t.active.type == 'ajax') {

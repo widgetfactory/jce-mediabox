@@ -293,7 +293,8 @@ class plgSystemJCEMediabox extends JPlugin {
             'close' => $params->get('close', 2),
             'labels' => '{' . $this->getLabels() . '}',
             'cookie_expiry' => $params->get('cookie_expiry', ''),
-            'google_viewer' => $params->get('google_viewer', 0)
+            'google_viewer' => $params->get('google_viewer', 0),
+            'pdfjs' => $params->get('pdfjs', 0),
         );
 
         $tooltip = array(

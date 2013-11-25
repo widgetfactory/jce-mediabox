@@ -193,6 +193,28 @@
                     })
                 };
             }
+        },
+        /**
+         * Word
+         * @param {String} v URL
+         */
+        word: function(v) {            
+            if (/\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(v)) {                
+                var src = v;
+                
+                if (mediabox.options.popup.google_viewer) {                    
+                    if (!/:\/\//.test(v)) {
+                        v = mediabox.site + v.replace('?tmpl=component', '');
+                    }
+                    
+                    src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
+                }
+                
+                return {
+                    'type'  : 'iframe',
+                    'src'   : src
+                };
+            }
         }
     });
 
@@ -236,40 +258,17 @@
             if (/\.(pdf)$/i.test(v)) {
                 //var mobile = mediabox.isAndroid || mediabox.isiOS;
                 
-                var type    = mediabox.isiOS && mediabox.isSafari ? 'pdf' : 'iframe';
-                var src     = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
+                var type    = 'iframe';
+                
+                if (mediabox.isiOS && !mediabox.options.popup.pdfjs) {
+                    type = 'pdf';
+                }
+
+                var src = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
                 
                 if (mediabox.options.popup.google_viewer) {
                     type    = 'iframe';
                     
-                    if (!/:\/\//.test(v)) {
-                        v = mediabox.site + v.replace('?tmpl=component', '');
-                    }
-                    
-                    src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
-                }
-                
-                return {
-                    'type'  : type,
-                    'src'   : src
-                };
-            }
-        }
-    });
-    
-    /**
-     * Word addon
-     */
-    popup.setAddons('word', {
-        /**
-         * PDF
-         * @param {String} v URL
-         */
-        word: function(v) {            
-            if (/\.(doc|docx|xls|xlsx)$/i.test(v)) {                
-                var type = 'iframe', src = v;
-                
-                if (mediabox.options.popup.google_viewer) {                    
                     if (!/:\/\//.test(v)) {
                         v = mediabox.site + v.replace('?tmpl=component', '');
                     }

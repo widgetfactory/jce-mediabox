@@ -81,10 +81,10 @@
                 
                 <field name="cookie_expiry" type="text" size="5" default="" label="JCEMEDIABOX_COOKIE_EXPIRY" description="JCEMEDIABOX_COOKIE_EXPIRYDESC" />
                 
-                <field name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
+                <!--field name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
                     <option value="1">JCEMEDIABOX_YES</option>
                     <option value="0">JCEMEDIABOX_NO</option>
-                </field>
+                </field-->
                 
             </fieldset>
             <fieldset name="tooltip" group="tooltip">
@@ -135,6 +135,6 @@
     </languages>
     
     <updateservers>
-	<server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&id=3]]></server>
+	<server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&id=3&file=extension.xml]]></server>
     </updateservers>
 </extension>

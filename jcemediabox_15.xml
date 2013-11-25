@@ -77,10 +77,10 @@
         </param>
         <param name="cookie_expiry" type="text" size="5" default="" label="JCEMEDIABOX_COOKIE_EXPIRY" description="JCEMEDIABOX_COOKIE_EXPIRYDESC" />
         
-        <param name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
+        <!--param name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
             <option value="1">JCEMEDIABOX_YES</option>
             <option value="0">JCEMEDIABOX_NO</option>
-        </param>
+        </param-->
                 
         <param type="spacer" default="JCEMEDIABOX_TOOLTIP" />
         <param name="tipclass" type="text" default="tooltip" label="JCEMEDIABOX_TOOLTIPCLASS" description="JCEMEDIABOX_TOOLTIPCLASSDESC"/>

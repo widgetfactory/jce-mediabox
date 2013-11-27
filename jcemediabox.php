@@ -58,7 +58,7 @@ class plgSystemJCEMediabox extends JPlugin {
     }
     
     protected function getEtag($file) {
-        return 'etag=' . md5($file . $this->getVersion());
+        return md5($file . $this->getVersion());
     }
 
     /**
@@ -135,16 +135,16 @@ class plgSystemJCEMediabox extends JPlugin {
 
         if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 8) {
             if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css' . $this->getEtag($theme . '/style_ie6.css'));
+                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css?' . $this->getEtag($theme . '/style_ie6.css'));
             }
             if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css' . $this->getEtag($theme . '/style_ie7.css'));
+                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css?' . $this->getEtag($theme . '/style_ie7.css'));
             }
         }
 
         if (preg_match('#(ipad|iphone)#i', $browser->getAgentString())) {
             if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css' . $this->getEtag($theme . '/style_mobile.css'));
+                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css?' . $this->getEtag($theme . '/style_mobile.css'));
             }
         }
         return true;

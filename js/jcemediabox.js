@@ -3914,7 +3914,7 @@
                         });
                     }
                     
-                    if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {
+                    /*if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {
                         iframe.setAttribute('src', 'javascript:;');
                         
                         var doc     = iframe.contentWindow.document;
@@ -3935,7 +3935,9 @@
                     } else {
                         // Set src
                         iframe.setAttribute('src', t.active.src);
-                    }
+                    }*/
+                
+                    iframe.setAttribute('src', t.active.src);
 
                     t.iframe = iframe;
 
@@ -3950,7 +3952,7 @@
                         t.content.innerHTML = t.object;
                         
                         if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.isiOS) {
-                            DOM.style(DOM.get('jcemediabox-popup-object'), 'height', '1000%');
+                            DOM.styles(DOM.get('jcemediabox-popup-object'), {'height' : '1000%', 'width' : '150%'});
                         }
                     }
 

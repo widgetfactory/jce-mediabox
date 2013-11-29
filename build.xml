@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JCE MediaBox" basedir="." default="build">
-    <property description="Package Version" name="version" value="1.1.12" />
-    <property description="File Version" name="file_version" value="1112" />
+    <property description="Package Version" name="version" value="1.1.13" />
+    <property description="File Version" name="file_version" value="1113" />
+    <property description="Name" name="name" value="JCE MediaBox" />
     <property description="Export directory" name="export_dir" value="/Users/ryandemmer/Releases/jcemediabox/${file_version}" />
     <property description="Language" name="lang" value="../../../administrator/language/en-GB/" />
     <property description="E-mail" name="e-mail" value="info@joomlacontenteditor.net" />
@@ -10,9 +11,20 @@
 
     <target name="ant" description="Builds the project">
 
-        <taskdef name="jsmin"
-                 classname="net.matthaynes.jsmin.JSMin_Task"
-                 classpath="../../../../../ant-tools/jsmin.jar"/>
+        
+        <!-- Setup classpath for js-build-tools ant tasks -->
+        <path id="tasks.classpath">
+            <pathelement location="."/>
+
+            <fileset dir="../../../../../ant-tools">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+        
+        <taskdef name="jsmin" classname="net.matthaynes.jsmin.JSMin_Task" classpathref="tasks.classpath" />
+        <taskdef name="yuicompressor-moxiecode" classname="com.moxiecode.ant.tasks.YuiCompressTask" classpathref="tasks.classpath" loaderref="tasks.classpath.loader" />
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="tasks.classpath" loaderref="tasks.classpath.loader" />
+        <taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask" classpathref="tasks.classpath" />
         
         <tstamp>
             <format property="DATE" pattern="dd MMMM yyyy" />
@@ -41,6 +53,8 @@
                 <exclude name="README" />
                 <exclude name="**/nbproject" />
                 <exclude name="**/nbproject/**" />
+                
+                <exclude name="**/pdfjs/**" />
             </fileset>
         </copy>
         <!-- Joomla! 1.5 -->
@@ -83,6 +97,9 @@
             <replacefilter 
                 token="@@copyright@@" 
                 value="${copyright}"/>
+            <replacefilter 
+                token="@@name@@" 
+                value="${name}"/>
         </replace>
 
         <concat destfile="${export_dir}/plugins/system/jcemediabox/js/jcemediabox.js">           
@@ -92,7 +109,7 @@
         
         <!-- Load Header file -->
         
-        <loadfile property="header" srcFile="${export_dir}/plugins/system/jcemediabox/header.txt"/>
+        <loadfile property="header" srcFile="${export_dir}/plugins/system/jcemediabox/header.js.txt"/>
         
         <!-- JSMin -->
         
@@ -102,12 +119,42 @@
             </fileset>
         </jsmin>
         
+        <yui-compressor warn="false" charset="UTF-8" fromdir="${export_dir}" todir="${export_dir}">
+           <include name="**/**.css" />
+       </yui-compressor>
+        
+        <!-- Prepend header -->
+      <for param="file">
+        <path>
+            <fileset dir="${export_dir}">
+                <include name="**/**-min.css" />
+            </fileset>
+        </path>
+        <sequential>
+            <concat destfile="@{file}.tmp">
+                <fileset file="${export_dir}/header.css.txt" />
+                <fileset file="@{file}" />
+            </concat>
+        </sequential>
+      </for>
+      
+      <move todir="${export_dir}" includeemptydirs="false">
+           <fileset dir="${export_dir}">
+               <include name="**/**-min.css.tmp" />
+           </fileset>
+           <mapper type="regexp" from="^(.*)-min\.css\.tmp$" to="\1.css" />
+      </move>
+      
+      <delete dir="${export_dir}" quiet="true">
+            <include name="**/header.**.txt" />
+            <include name="**/**-min.css" />
+       </delete>
+
         <copy todir="${export_dir}/joomla15">
             <fileset dir="${export_dir}">
                 <include name="**" />
                 <exclude name="**/*.xml" />
-                <exclude name="administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini" />
-                <exclude name="header.txt" />               
+                <exclude name="administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini" />              
             </fileset>
         </copy>
 		
@@ -117,7 +164,6 @@
                 <include name="plugins/**" />
                 <exclude name="plugins/system/jcemediabox.php" />
                 <exclude name="plugins/system/jcemediabox_15.xml" />
-                <exclude name="header.txt" />
             </fileset>
         </copy>
         <copy todir="${export_dir}/joomla25">

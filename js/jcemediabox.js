@@ -2268,7 +2268,7 @@
          * @param {Object} s
          */
         islocal: function(s) {
-            if (/^(\w+):\/\//.test(s)) {
+            if (/^http(s):\/\//.test(s) || /^\/\//.test(s)) {
                 return new RegExp('^(' + JCEMediaBox.site + ')').test(s);
             } else {
                 return true;

@@ -2,7 +2,7 @@
 
 /**
  * @package JCE MediaBox
- * @copyright Copyright (C) 2006-2012 Ryan Demmer. All rights reserved.
+ * @copyright Copyright (C) 2006-2013 Ryan Demmer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see licence.txt
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

@@ -129,24 +129,6 @@ class plgSystemJCEMediabox extends JPlugin {
         } else {
             $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/standard/css/style.css?' . $this->getEtag('standard/style.css'));
         }
-        // Load any ie6 variation
-        jimport('joomla.environment.browser');
-        $browser = JBrowser::getInstance();
-
-        if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 8) {
-            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css?' . $this->getEtag($theme . '/style_ie6.css'));
-            }
-            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css?' . $this->getEtag($theme . '/style_ie7.css'));
-            }
-        }
-
-        if (preg_match('#(ipad|iphone)#i', $browser->getAgentString())) {
-            if (JFile::exists(JPATH_ROOT . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css?' . $this->getEtag($theme . '/style_mobile.css'));
-            }
-        }
         return true;
     }
 
@@ -326,15 +308,6 @@ class plgSystemJCEMediabox extends JPlugin {
         
         $document->addStyleSheet($url . '/css/jcemediabox.css?' . $this->getEtag('jcemediabox.css'));
 
-        // Load any ie6 variation
-        jimport('joomla.environment.browser');
-        $browser = JBrowser::getInstance();
-
-        if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 7) {
-            if (JFile::exists(dirname(__FILE__) . '/jcemediabox/css/jcemediabox_ie6.css')) {
-                $document->addStyleSheet($url . '/css/jcemediabox_ie6.css?' . $this->getEtag('jcemediabox_ie6.css'));
-            }
-        }
         $this->getThemeCss($standard);
 
         $html = "JCEMediaBox.init({";

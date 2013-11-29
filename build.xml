@@ -132,7 +132,7 @@
         </path>
         <sequential>
             <concat destfile="@{file}.tmp">
-                <fileset file="${export_dir}/header.css.txt" />
+                <fileset file="${export_dir}/plugins/system/jcemediabox/header.css.txt" />
                 <fileset file="@{file}" />
             </concat>
         </sequential>

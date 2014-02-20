@@ -254,7 +254,7 @@
                 },
                 cookie_expiry: 7,
                 google_viewer: 0,
-                pdfjs : 0
+                pdfjs: 0
             },
             tooltip: {
                 speed: 150,
@@ -276,12 +276,12 @@
         init: function(options) {
             this.extend(this.options, options);
             // Clear IE6 background cache
-            if (this.isIE6)
+            if (this.isIE6) {
                 try {
                     document.execCommand("BackgroundImageCache", false, true);
                 } catch (e) {
                 }
-            ;
+            }
             this.ready();
         },
         /**
@@ -336,7 +336,6 @@
             JCEMediaBox.Event.add(window, "load", function() {
                 return JCEMediaBox._init();
             });
-
         },
         /**
          * Get the Site Base URL
@@ -446,9 +445,11 @@
              * @type String
              */
             this.site = this.getSite();
+
             // Can't get reliable site URL
-            if (!this.site)
+            if (!this.site) {
                 return false;
+            }
 
             // Initialize Popup / Tooltip creation
             this.Popup.init();
@@ -1379,7 +1380,7 @@
 
                 };
 
-                var styles = {};
+                var styles = {}, sv;
 
                 JCEMediaBox.each(props, function(v, s) {
                     // Find start value
@@ -1429,7 +1430,7 @@
          */
         setTransport: function() {
             function get(s) {
-                x = 0;
+                var x = 0;
 
                 try {
                     x = new ActiveXObject(s);
@@ -1438,7 +1439,6 @@
 
                 return x;
             }
-            ;
 
             this.transport = window.XMLHttpRequest ? new XMLHttpRequest() : get('Microsoft.XMLHTTP') || get('Msxml2.XMLHTTP');
         },
@@ -1518,7 +1518,6 @@
                     this.transport.setRequestHeader(type, this.options.headers[type]);
                 } catch (e) {
                 }
-                ;
             }
             // send request
             this.transport.send(this.options.data);
@@ -1564,6 +1563,8 @@
             this.increase();
         },
         setNow: function() {
+            var p;
+
             for (p in this.from) {
                 this.now[p] = this.compute(this.from[p], this.to[p]);
             }
@@ -1597,8 +1598,8 @@
         custom: function(o) {
             if (this.timer && this.wait)
                 return;
-            var from = {};
-            var to = {};
+            var from = {}, to = {}, property;
+
             for (property in o) {
                 from[property] = o[property][0];
                 to[property] = o[property][1];
@@ -2342,6 +2343,11 @@
                 DOM.addClass(el, 'ie6');
             }
 
+            var cls = DOM.attribute(el, 'class');
+            // replace icon- with zoom- to avoid bootstrap etc. conflicts
+            cls = cls.replace('icon-', 'zoom-', 'g');
+            DOM.attribute(el, 'class', cls);
+
             // If child is an image (thumbnail)
             if (children && children.length == 1 && children[0].nodeName == 'IMG') {
                 var child = children[0];
@@ -2362,7 +2368,6 @@
                     each(['width', 'style', 'color'], function(prop) {
                         styles['border-' + pos + '-' + prop] = DOM.style(child, 'border-' + pos + '-' + prop);
                     });
-
                 });
 
                 // Correct from deprecated align attribute
@@ -2415,9 +2420,9 @@
                     'text-align': child.style.textAlign,
                     'width': w
                 });
-                
+
                 var float = DOM.style(child, 'float');
-                
+
                 if (float === "left" || float === "right") {
                     styles.float = float;
                 }
@@ -2472,7 +2477,7 @@
 
             } else {
                 DOM.addClass(zoom, 'jcemediabox-zoom-link');
-                if (DOM.hasClass(el, 'icon-left')) {
+                if (DOM.hasClass(el, 'zoom-left')) {
                     DOM.addBefore(el, zoom);
                 } else {
                     DOM.add(el, zoom);
@@ -3428,7 +3433,7 @@
                         this.object = '<embed id="jcemediabox-popup-object" type="' + mt.mediatype + '"';
                         for (n in p) {
                             var v = decodeURIComponent(p[n]);
-                            
+
                             if (pdf && (n == 'width' || n == 'height')) {
                                 v = '100%';
                             }
@@ -3787,7 +3792,13 @@
                 if (this.img.error) {
                     DOM.addClass(this.content, 'broken-image');
                 } else {
-                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+                    var title = this.active.title;
+
+                    if (/::/.test(title)) {
+                        title = title.split('::')[0];
+                    }
+
+                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + title + '" width="' + w + '" height="' + h + '" />';
                 }
 
                 // fix resized images in IE
@@ -3895,16 +3906,16 @@
                         frameborder: 0,
                         allowTransparency: true,
                         scrolling: t.active.params.scrolling || 'auto',
-                        width   : '100%',
-                        height  : '100%'
+                        width: '100%',
+                        height: '100%'
                     });
-                    
+
                     // use pdf loader
                     if (/\.pdf\b/.test(t.active.src)) {
                         // Hide loader
                         if (t.loader) {
                             DOM.hide(t.loader);
-                        }  
+                        }
                     } else {
                         Event.add(iframe, 'load', function() {
                             // Hide loader
@@ -3913,30 +3924,30 @@
                             }
                         });
                     }
-                    
+
                     /*if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {
-                        iframe.setAttribute('src', 'javascript:;');
-                        
-                        var doc     = iframe.contentWindow.document;
-                        var html    = '<!doctype html><html><head>';
-                        
-                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.js"></script>';
-                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.compatibility.js"></script>';
-                        html += '<script type="text/javascript">var pdffile = "' + t.active.src + '";</script>';
-                        html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.loader.js"></script>';
-                        html += '</head>';
-                        html += '<body><canvas id="pdf-canvas" width="100%" height="100%" /></body>';
-                        html += '</html>';
-                        
-                        doc.open();
-                        doc.write(html);
-                        doc.close();
-                        
-                    } else {
-                        // Set src
-                        iframe.setAttribute('src', t.active.src);
-                    }*/
-                
+                     iframe.setAttribute('src', 'javascript:;');
+                     
+                     var doc     = iframe.contentWindow.document;
+                     var html    = '<!doctype html><html><head>';
+                     
+                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.js"></script>';
+                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.compatibility.js"></script>';
+                     html += '<script type="text/javascript">var pdffile = "' + t.active.src + '";</script>';
+                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.loader.js"></script>';
+                     html += '</head>';
+                     html += '<body><canvas id="pdf-canvas" width="100%" height="100%" /></body>';
+                     html += '</html>';
+                     
+                     doc.open();
+                     doc.write(html);
+                     doc.close();
+                     
+                     } else {
+                     // Set src
+                     iframe.setAttribute('src', t.active.src);
+                     }*/
+
                     iframe.setAttribute('src', t.active.src);
 
                     t.iframe = iframe;
@@ -3950,9 +3961,9 @@
                     // If media
                     if (t.active.type == 'media' && t.object) {
                         t.content.innerHTML = t.object;
-                        
+
                         if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.isiOS) {
-                            DOM.styles(DOM.get('jcemediabox-popup-object'), {'height' : '1000%', 'width' : '150%'});
+                            DOM.styles(DOM.get('jcemediabox-popup-object'), {'height': '1000%', 'width': '150%'});
                         }
                     }
 

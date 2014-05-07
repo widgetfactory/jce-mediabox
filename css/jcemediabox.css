@@ -120,6 +120,7 @@ a.jcepopup span.jcemediabox-zoom-span {
     display: inline-block;
     overflow: hidden;
     position: relative;
+    float: none;
 }
 a.jcepopup span.jcemediabox-zoom-image {
     margin: 0;
@@ -239,9 +240,4 @@ a.jcepopup.ie6.icon-top span.jcemediabox-zoom-image, a.jcepopup.icon-top-right s
 a.jcepopup.ie6.icon-left span.jcemediabox-zoom-image {
     left: 0;
     right: auto;
-}
-
-/* hover */
-a.jcepopup:hover, a.jcepopup:active {
-    background: transparent none !important;
 }

@@ -107,6 +107,9 @@
 a.jcepopup[type="image"], a.jcepopup[href$=".jpg"], a.jcepopup[href$=".png"], a.jcepopup[href$=".gif"], a.jcepopup[href$=".tiff"], a.jcepopup[href$=".bmp"] {
     line-height : 0;
 }
+/* JCE Captions fix */
+.wf_caption a.jcepopup {display:inline-block;}
+
 a.jcepopup span.jcemediabox-zoom-span {
     margin: 0;
     padding: 0;

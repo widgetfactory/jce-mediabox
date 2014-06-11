@@ -235,7 +235,7 @@ class plgSystemJCEMediabox extends JPlugin {
         // is there a menu assignment?
         if (!empty($menuitems) && !empty($menuitems[0])) {
             // get active menu
-            $menus = JSite::getMenu();
+            $menus = $app->getMenu();
             $menu = $menus->getActive();
 
             if (is_string($menuitems)) {

@@ -2,8 +2,8 @@
 
 /**
  * @package JCE MediaBox
- * @copyright Copyright (C) 2006-2012 Ryan Demmer. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see licence.txt
+ * @copyright Copyright (C) 2006-2014 Ryan Demmer. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL 3, see LICENCE
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -32,19 +32,21 @@ jimport('joomla.plugin.plugin');
 class plgSystemJCEMediabox extends JPlugin {
 
     private $version = '@@version@@';
+    
+    private static $theme;
 
     /**
      * Constructor
      */
-    function plgSystemJCEMediabox(&$subject, $config) {
+    public function plgSystemJCEMediabox(&$subject, $config) {
         parent::__construct($subject, $config);
     }
 
-    function getPath() {
-        return JPATH_PLUGINS . DS . 'system' . DS . 'jcemediabox';
+    protected function getPath() {
+        return JPATH_PLUGINS . '/system/jcemediabox';
     }
 
-    function getURL() {
+    protected function getURL() {
         return JURI::base(true) . '/plugins/system/jcemediabox';
     }
 
@@ -53,8 +55,12 @@ class plgSystemJCEMediabox extends JPlugin {
      *
      * @see plgSystemJCEMediabox::$version
      */
-    function getVersion() {
+    protected function getVersion() {
         return preg_replace('/[^\d]+/', '', $this->version);
+    }
+    
+    protected function getEtag($file) {
+        return md5($file . $this->getVersion());
     }
 
     /**
@@ -63,7 +69,7 @@ class plgSystemJCEMediabox extends JPlugin {
      * @param object $version
      * @see plgSystemJCEMediabox::$version
      */
-    function setVersion($version) {
+    protected function setVersion($version) {
         $this->version = $version;
     }
 
@@ -74,7 +80,7 @@ class plgSystemJCEMediabox extends JPlugin {
      * @param Boolean $end If end parameters
      * @return JSON Object String
      */
-    function renderParams($name, $params, $end) {
+    protected function renderParams($name, $params, $end) {
         $html = '';
         if ($name) {
             $html .= $name . ":{";
@@ -112,42 +118,17 @@ class plgSystemJCEMediabox extends JPlugin {
      * @param object $vars Parameter variables
      * @return Boolean true
      */
-    function getThemeCSS($vars) {
+    protected function getThemeCSS($vars) {
         jimport('joomla.environment.browser');
         jimport('joomla.filesystem.file');
 
         $document = JFactory::getDocument();
-        $theme = $vars['theme'] == 'custom' ? $vars['themecustom'] : $vars['theme'];
-
-        $version = $this->getVersion();
-
-        if ($version) {
-            $version = '?version=' . $version;
-        }
 
         // Load template css file
-        if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style.css')) {
-            $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style.css' . $version);
+        if (JFile::exists(JPATH_ROOT . '/' . $vars['theme'] . '/css/style.css')) {
+            $document->addStyleSheet(JURI::base(true) . '/' . $vars['theme'] . '/css/style.css?' . $this->getEtag($vars['theme'] . '/style.css'));
         } else {
-            $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/standard/css/style.css' . $version);
-        }
-        // Load any ie6 variation
-        jimport('joomla.environment.browser');
-        $browser = &JBrowser::getInstance();
-
-        if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 8) {
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie6.css' . $version);
-            }
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_ie7.css' . $version);
-            }
-        }
-
-        if (preg_match('#(ipad|iphone)#i', $browser->getAgentString())) {
-            if (JFile::exists(JPATH_ROOT . DS . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css')) {
-                $document->addStyleSheet(JURI::base(true) . '/' . $vars['themepath'] . '/' . $theme . '/css/style_mobile.css' . $version);
-            }
+            $document->addStyleSheet($this->getURL() . '/themes/standard/css/style.css?' . $this->getEtag('standard/style.css'));
         }
         return true;
     }
@@ -156,7 +137,7 @@ class plgSystemJCEMediabox extends JPlugin {
      * Create a list of translated labels for popup window
      * @return Key : Value labels string
      */
-    function getLabels() {
+    protected function getLabels() {
         JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers');
@@ -177,13 +158,13 @@ class plgSystemJCEMediabox extends JPlugin {
      * Load Addons
      * @return Boolean true
      */
-    function getAddons() {
+    protected function getAddons() {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
         $document = JFactory::getDocument();
 
-        $path = $this->getPath() . DS . 'addons';
+        $path = $this->getPath() . '/addons';
         $filter = array('default-src.js');
 
         if ($this->getVersion()) {
@@ -207,7 +188,7 @@ class plgSystemJCEMediabox extends JPlugin {
      * OnAfterRoute function
      * @return Boolean true
      */
-    function onAfterDispatch() {
+    public function onAfterDispatch() {
         $app = JFactory::getApplication();
 
         if ($app->isAdmin()) {
@@ -222,25 +203,21 @@ class plgSystemJCEMediabox extends JPlugin {
             return;
         }
 
-        // check for mediabox classes in content
-        /* $buffer = JResponse::getBody();
-
-          if (!preg_match('#<(a|area)([^>]+)class="([^"]+?)(jcepopup|jcebox|jcelightbox|jcetooltip|jce_tooltip)([^"]+?)"([^>]+)>#i', $buffer) || !preg_match('#<a([^>]+)rel="(lightbox|shadowbox)"([^>]+)>#i', $buffer)) {
-          return;
-          } */
-
         $dev = true;
 
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop = JRequest::getVar('pop', 0, 'int');
-        $task = JRequest::getVar('task');
-        $tmpl = JRequest::getVar('tmpl');
-
-        if ($pop || ($task == 'new' || $task == 'edit') || $tmpl == 'component') {
+        $pop    = JRequest::getInt('pop');
+        $print  = JRequest::getInt('print');
+        $task   = JRequest::getVar('task');
+        $tmpl   = JRequest::getWord('tmpl');
+        
+        // don't load mediabox on certain pages
+        if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
             return;
         }
+        
         $params = $this->params;
 
         $components = $params->get('components', '');
@@ -253,11 +230,30 @@ class plgSystemJCEMediabox extends JPlugin {
                 }
             }
         }
+        // get menu items from parameter
+        $menuitems = (array) $params->get('menu');
+        
+        // is there a menu assignment?
+        if (!empty($menuitems) && !empty($menuitems[0])) {
+            // get active menu
+            $menus = JSite::getMenu();
+            $menu = $menus->getActive();
 
-        $theme = $params->get('theme', 'standard');
+            if (is_string($menuitems)) {
+                $menuitems = explode(',', $menuitems);
+            }
+
+            if ($menu) {
+                if (!in_array($menu->id, (array) $menuitems)) {
+                    return;
+                }
+            }
+        }
+
+        self::$theme = $params->get('theme', 'standard');
 
         if ($params->get('dynamic_themes', 0)) {
-            $theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
+            self::$theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
         }
 
         $popup = array(
@@ -268,7 +264,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'shadowbox' => $params->get('shadowbox', 0),
             //'convert'			=>	$params->get('convert', 0),
             'resize' => $params->get('resize', 0),
-            'icons' => $params->get('icons', 1),
+            'icons' => (int) $params->get('icons', 1),
             'overlay' => $params->get('overlay', 1),
             'overlayopacity' => $params->get('overlayopacity', 0.8),
             'overlaycolor' => $params->get('overlaycolor', '#000000'),
@@ -291,83 +287,63 @@ class plgSystemJCEMediabox extends JPlugin {
 
         $standard = array(
             'base' => JURI::base(true) . '/',
-            'imgpath' => $params->get('imgpath', 'plugins/system/jcemediabox/img'),
-            'theme' => $theme,
+            'theme' => self::$theme,
             'themecustom' => $params->get('themecustom', ''),
-            'themepath' => $params->get('themepath', 'plugins/system/jcemediabox/themes')
+            'mediaelement' => $params->get('mediaelement', 1),
+            'popup' => $popup
         );
-
-        $media_versions = array(
-            'flash' => $params->get('flash', '10,0,22,87'),
-            'windowmedia' => $params->get('windowmedia', '5,1,52,701'),
-            'quicktime' => $params->get('quicktime', '6,0,2,0'),
-            'realmedia' => $params->get('realmedia', '7,0,0,0'),
-            'shockwave' => $params->get('shockwave', '8,5,1,0')
-        );
-
-        jimport('joomla.environment.browser');
-        jimport('joomla.filesystem.file');
-
-        // Mediaobject plugin loaded?
-        $mediaobject = JPluginHelper::isEnabled('system', 'mediaobject');
-
-        $version = $this->getVersion();
-        $scripts = $this->getScripts();
-
-        if ($version) {
-            $version = '?version=' . $version;
+        
+        if ($this->params->get('jquery', 1)) {
+            $version = new JVersion;
+        
+            if ($version->isCompatible('3.0')) {
+                // Include jQuery
+                JHtml::_('jquery.framework');
+            } else {
+                // check if loaded
+                if (!$app->get('jquery')) {
+                    $document->addScript(JURI::root() . 'plugins/system/jcemediabox/vendor/jquery/jquery-1.11.1.min.js');
+                    $document->addScriptDeclaration('jQuery.noConflict();');
+                    // flag as loaded
+                    $app->set('jquery', true);
+                }
+            }
         }
+
+        $scripts = $this->getScripts();
 
         $url = $this->getURL();
 
-        foreach ($scripts as $script) {
-            $document->addScript($url . '/' . $script . $version);
+        foreach ($scripts as $script) {            
+            $document->addScript($url . '/' . $script . '?' . $this->getEtag(basename($script)));
         }
+        
+        $document->addStyleSheet($url . '/css/jcemediabox.css?' . $this->getEtag('jcemediabox.css'));
 
-        $document->addStyleSheet($url . '/css/jcemediabox.css' . $version);
-
-        // Load any ie6 variation
-        jimport('joomla.environment.browser');
-        $browser = &JBrowser::getInstance();
-
-        if ($browser->getBrowser() == 'msie' && intval($browser->getMajor()) < 7) {
-            if (JFile::exists(dirname(__FILE__) . DS . 'jcemediabox' . DS . 'css' . DS . 'jcemediabox_ie6.css')) {
-                $document->addStyleSheet($url . '/css/jcemediabox_ie6.css' . $version);
-            }
-        }
         $this->getThemeCss($standard);
-
-        $html = "";
-
-        if (!$mediaobject) {
-            $html .= "JCEMediaObject.init('" . JURI::base(true) . "/', {";
-            $html .= $this->renderParams('', $media_versions, true);
-            $html .= "});";
+        
+        // mediaelement
+        if ($params->get('mediaelement', 1)) {
+            $document->addStyleSheet($url . '/vendor/mediaelement/css/mediaelementplayer.min.css');
         }
-
-        $html .= 'JCEMediaBox.init({';
-        $html .= $this->renderParams('popup', $popup, false);
-        $html .= $this->renderParams('tooltip', $tooltip, false);
-        $html .= $this->renderParams('', $standard, true);
-        $html .= "});";
-
-        $document->addScriptDeclaration($html);
+        
+        $document->addScriptDeclaration('WFMediaBox.init(' . json_encode($standard) . ');');
+        
         return true;
     }
 
-    function getScripts() {
-        $scripts = array('js/jcemediabox.js');
+    protected function getScripts() {
+        $scripts = array('js/mediabox.js');
 
-        // only for development
-        if (!$this->getVersion() && is_file($this->getPath() . DS . 'js' . DS . 'mediaobject.js')) {
-            $scripts[] = 'js/mediaobject.js';
+        // development
+        if (is_dir(__DIR__ . '/js/lib')) {
+            $scripts = array('js/mediabox.dev.js');
         }
-
-        $scripts = array_merge($scripts, $this->getAddons());
+        
+        if (is_dir(__DIR__ . 'themes/' . self::$theme)) {
+            //$scripts = array('themes/' . self::$theme . '/js/popup.js');
+        }
 
         return $scripts;
     }
-
 }
-
-?>

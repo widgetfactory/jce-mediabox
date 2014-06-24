@@ -1,0 +1,36 @@
+{
+    "name": "mediabox",
+    "title": "JCE MediaBox",
+    "description": "A lightbox plugin for Joomla.",
+    "version": "2.0.0",
+    "homepage": "http://www.joomlacontenteditor.net",
+    "author": {
+        "name": "Ryan Demmer",
+        "email": "info@joomlacontenteditor.net",
+        "url": "http://www.joomlacontenteditor.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/widgetfactory/jce-mediabox"
+    },
+    "licenses": [
+        {
+            "type": "GNU/GPL 3",
+            "url": "https://github.com/widgetfactory/jce-mediabox/blob/master/LICENSE.md"
+        }
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "grunt-contrib-less": "0.11.0",
+        "grunt-contrib-copy": "0.5.0",
+        "grunt-contrib-concat": "0.4.0",
+        "grunt-contrib-compress": "0.7.0",
+        "grunt-contrib-jshint": "0.10.0",
+        "grunt-contrib-uglify": "0.4.0",
+        "grunt-contrib-watch": "0.6.1",
+        "grunt-banner": "0.2.2",
+        "grunt": "~0.4.0"
+    },
+    "keywords": [],
+    "main": "server.js"
+}

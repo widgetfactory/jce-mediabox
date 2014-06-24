@@ -2,60 +2,57 @@ WFMediaBox.Theme.add("standard", function() {
     return [
         {
             "div": {
-                "id": "jcemediabox-popup-container",
+                "class": "wf-mediabox-container",
                 "content": [
                     {
                         "div": {
-                            "id": "jcemediabox-popup-loader"
+                            "class": "wf-mediabox-loader"
                         }
                     },
                     {
                         "div": {
-                            "id": "jcemediabox-popup-content",
+                            "class": "wf-mediabox-content",
                             "content": [
                                 {
                                     "div": {
-                                        "id": "jcemediabox-popup-info-bottom",
+                                        "class": "wf-mediabox-info-bottom",
                                         "content": [
                                             {
                                                 "a": {
-                                                    "id": "jcemediabox-popup-closelink",
+                                                    "class": "wf-mediabox-closelink wf-icon-close",
                                                     "href": "#",
                                                     "title": "{#close}",
-                                                    "class": "wf-icon-close",
-                                                    "text" : ""
+                                                    "text": ""
                                                 }
                                             },
                                             {
                                                 "div": {
-                                                    "id": "jcemediabox-popup-caption"
+                                                    "class": "wf-mediabox-caption"
                                                 }
                                             },
                                             {
                                                 "div": {
-                                                    "id": "jcemediabox-popup-nav",
+                                                    "class": "wf-mediabox-nav",
                                                     "content": [
                                                         {
                                                             "a": {
-                                                                "id": "jcemediabox-popup-prev",
+                                                                "class": "wf-mediabox-prev wf-icon-prev",
                                                                 "href": "#",
                                                                 "title": "{#close}",
-                                                                "class": "wf-icon-prev",         
-                                                                "text" : ""
+                                                                "text": ""
                                                             }
                                                         },
                                                         {
                                                             "a": {
-                                                                "id": "jcemediabox-popup-next",
+                                                                "class": "wf-mediabox-next wf-icon-next",
                                                                 "href": "#",
                                                                 "title": "{#close}",
-                                                                "class": "wf-icon-next",
                                                                 "text": ""
                                                             }
                                                         },
                                                         {
                                                             "span": {
-                                                                "id": "jcemediabox-popup-numbers",
+                                                                "class": "wf-mediabox-numbers",
                                                                 "text": "{$numbers}"
                                                             }
                                                         }

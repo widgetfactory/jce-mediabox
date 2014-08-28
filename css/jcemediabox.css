@@ -108,7 +108,7 @@ a.jcepopup[type="image"], a.jcepopup[href$=".jpg"], a.jcepopup[href$=".png"], a.
     line-height : 0;
 }
 /* JCE Captions fix */
-.wf_caption a.jcepopup {display:inline-block;}
+.wf_caption a.jcepopup {display:block;}
 
 a.jcepopup span.jcemediabox-zoom-span {
     margin: 0;

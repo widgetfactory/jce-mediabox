@@ -2347,10 +2347,13 @@
             // replace icon- with zoom- to avoid bootstrap etc. conflicts
             cls = cls.replace('icon-', 'zoom-', 'g');
             DOM.attribute(el, 'class', cls);
+            
+            var img = DOM.select('img', el);
 
             // If child is an image (thumbnail)
-            if (children && children.length == 1 && children[0].nodeName == 'IMG') {
-                var child = children[0];
+            if (img && img.length) {
+                // get first img tag
+                var child = img[0];
 
                 var align = child.getAttribute('align');
                 var vspace = child.getAttribute('vspace');
@@ -2444,6 +2447,11 @@
 
                     // Set styles
                     DOM.styles(span, styles);
+                    
+                    if (DOM.hasClass(el.parentNode, 'wf_caption')) {
+                        span.style.width = null;                    
+                        DOM.style(span, 'max-width', DOM.style(el.parentNode, 'max-width'));
+                    }
 
                     // Move the image into the parent SPAN
                     DOM.add(span, child);

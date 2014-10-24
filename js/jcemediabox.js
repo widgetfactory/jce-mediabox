@@ -2347,7 +2347,7 @@
             // replace icon- with zoom- to avoid bootstrap etc. conflicts
             cls = cls.replace('icon-', 'zoom-', 'g');
             DOM.attribute(el, 'class', cls);
-            
+
             var img = DOM.select('img', el);
 
             // If child is an image (thumbnail)
@@ -2447,9 +2447,9 @@
 
                     // Set styles
                     DOM.styles(span, styles);
-                    
+
                     if (DOM.hasClass(el.parentNode, 'wf_caption')) {
-                        span.style.width = null;                    
+                        span.style.width = null;
                         DOM.style(span, 'max-width', DOM.style(el.parentNode, 'max-width'));
                     }
 
@@ -3925,12 +3925,25 @@
                             DOM.hide(t.loader);
                         }
                     } else {
-                        Event.add(iframe, 'load', function() {
-                            // Hide loader
-                            if (t.loader) {
-                                DOM.hide(t.loader);
-                            }
-                        });
+                        var doc = iframe.contentWindow.document;
+
+                        if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
+                            var _timer = setInterval(function() {
+                                if (doc.readyState === 'complete') {
+                                    clearInterval(_timer);
+                                    if (t.loader) {
+                                        DOM.hide(t.loader);
+                                    }
+                                }
+                            }, 1000);
+                        } else {
+                            Event.add(iframe, 'load', function() {
+                                // Hide loader
+                                if (t.loader) {
+                                    DOM.hide(t.loader);
+                                }
+                            });
+                        }
                     }
 
                     /*if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {

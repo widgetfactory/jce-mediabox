@@ -104,7 +104,8 @@
     background-color: #ffffff;
     position: relative;
 }
-a.jcepopup[type="image"], a.jcepopup[type="image/jpeg"], a.jcepopup[href$=".jpg"], a.jcepopup[href$=".png"], a.jcepopup[href$=".gif"], a.jcepopup[href$=".tiff"], a.jcepopup[href$=".bmp"] {
+/* set line height to 0 if link contains an image */
+a.jcemediabox-image {
     line-height : 0 !important;
 }
 /* JCE Captions fix */

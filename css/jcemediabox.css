@@ -107,6 +107,7 @@
 /* set line height to 0 if link contains an image */
 a.jcemediabox-image {
     line-height : 0 !important;
+    font-size: 0 !important;
 }
 /* JCE Captions fix */
 .wf_caption a.jcepopup {display:block;}

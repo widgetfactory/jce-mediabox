@@ -478,19 +478,19 @@
                 // Indexed arrays, needed for Safari
                 for (n = 0, l = o.length; n < l; n++) {
                     if (cb.call(s, o[n], n, o) === false)
-                        return 0;
+                        break;
                 }
             } else {
                 // Hashtables
                 for (n in o) {
                     if (o.hasOwnProperty(n)) {
                         if (cb.call(s, o[n], n, o) === false)
-                            return 0;
+                            break;
                     }
                 }
             }
 
-            return 1;
+            return o;
         },
         /**
          * Extends an object with the specified other object(s).
@@ -2725,8 +2725,8 @@
 
             // Iterate through all found or specified popup links
             each(this.elements, function (el, i) {
-                // add image class if only child is an image
-                if (el.childNodes.length === 1 && el.childNodes[0].nodeName === "IMG") {
+                
+                if (el.childNodes.length === 1 && el.firstChild.nodeName === "IMG") {
                     DOM.addClass(el, 'jcemediabox-image');
                 }
                 

@@ -3438,20 +3438,20 @@
 
                         for (n in p) {
                             if (p[n] !== '') {
-                                if (/(id|name|style)$/.test(n)) {
-                                    var v = decodeURIComponent(p[n]);
-                                    
-                                    t.object += ' ' + n + '="' + v + '"';
+                                if (/^(id|name|style|width|height)$/.test(n)) {
+                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    delete p[n];
                                 }
                             }
                         }
+                        
+                        delete p.type;
+                        
                         // Close object
                         this.object += '>';
                         // Create param elements
                         for (n in p) {
-                            if (p[n] !== '' && !/(id|name|width|height|style|type)/.test(n)) {
-                                t.object += '<param name="' + n + '" value="' + decodeURIComponent(p[n]) + '" />';
-                            }
+                            t.object += '<param name="' + n + '" value="' + decodeURIComponent(p[n]) + '" />';
                         }
                         // Add closing object element
                         this.object += '</object>';
@@ -3459,12 +3459,6 @@
                     } else {
                         this.object = '<embed id="jcemediabox-popup-object" type="' + mt.mediatype + '"';
                         for (n in p) {
-                            if (n === "width" || n === "height") {
-                                continue;
-                            }
-                            
-                            var v = decodeURIComponent(p[n]);
-
                             if (v !== '') {
                                 t.object += ' ' + n + '="' + v + '"';
                             }
@@ -3498,10 +3492,12 @@
                         wmode: 'opaque',
                         allowfullscreen: true
                     };
+                    
+                    delete p.type;
 
                     for (n in p) {
                         if (p[n] !== '') {
-                            if (/(id|style)$/.test(n)) {
+                            if (/^(id|name|style|width|height)$/.test(n)) {
                                 t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                             } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
                                 params[n] = p[n];

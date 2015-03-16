@@ -104,6 +104,10 @@
     height: auto;
 }
 
+#jcemediabox-popup-content object[type="application/x-shockwave-flash"] {
+    height: inherit;
+}
+
 #jcemediabox-popup-page.ios #jcemediabox-popup-content, #jcemediabox-popup-page.android #jcemediabox-popup-content {
     overflow: scroll;
 }

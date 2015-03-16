@@ -12,6 +12,9 @@
         background: none !important;	
     }
 }
+/* hide link */
+.jcepopup.hide, .jcepopup.noshow {display:none;}
+
 #jcemediabox-popup-page, #jcemediabox-popup-overlay, #jcemediabox-popup-body, #jcemediabox-popup-loader, #jcemediabox-popup-container, 
 #jcemediabox-popup-content, #jcemediabox-popup-content, #jcemediabox-popup-object, #jcemediabox-popup-iframe, #jcemediabox-popup-img {
     left: 0;
@@ -65,8 +68,11 @@
 #jcemediabox-popup-container {
     overflow: hidden;
 }
-#jcemediabox-popup-content {}
-
+#jcemediabox-popup-content {
+    width: 100%;
+    height: auto;
+}
+    
 #jcemediabox-popup-content.broken-image {
     background : url('../img/broken-image.png') no-repeat center;
 }
@@ -88,6 +94,14 @@
 }
 #jcemediabox-popup-img, #jcemediabox-popup-object, #jcemediabox-popup-iframe {
     text-align: center;
+}
+
+#jcemediabox-popup-content video,
+#jcemediabox-popup-content object, 
+#jcemediabox-popup-content embed,
+#jcemediabox-popup-content img {
+    width: 100%;
+    height: auto;
 }
 
 #jcemediabox-popup-page.ios #jcemediabox-popup-content, #jcemediabox-popup-page.android #jcemediabox-popup-content {

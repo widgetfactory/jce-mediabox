@@ -768,7 +768,7 @@
                             na = isIE ? 'styleFloat' : 'cssFloat';
                             break;
                         default:
-                            if (v && /(margin|padding|width|height|top|bottom|left|right)/.test(na)) {
+                            if (v && /(margin|padding|width|height|top|bottom|left|right)/i.test(na)) {
                                 // Add pixel value if number
                                 v = /^[\-0-9\.]+$/.test(v) ? v + 'px' : v;
                             }
@@ -2725,18 +2725,14 @@
 
             // Iterate through all found or specified popup links
             each(this.elements, function (el, i) {
-                
+
                 if (el.childNodes.length === 1 && el.firstChild.nodeName === "IMG") {
                     DOM.addClass(el, 'jcemediabox-image');
                 }
-                
+
                 // Create zoom icon
                 if (JCEMediaBox.options.popup.icons == 1 && el.nodeName == 'A' && !/(noicon|icon-none|noshow)/.test(el.className) && el.style.display != 'none') {
                     t.zoom(el);
-                }
-                // Hide popup link if specified in class
-                if (DOM.hasClass(el, 'noshow')) {
-                    DOM.hide(el);
                 }
 
                 // Simplify class identifier for css
@@ -3029,7 +3025,7 @@
 
         // TODO - Resize popup when browser window resizes
         bind: function (open) {
-            var t = this, isIE6 = JCEMediaBox.isIE6, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event;
+            var t = this, isIE6 = JCEMediaBox.isIE6, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, DIM = JCEMediaBox.Dimensions;
 
             if (isIE6) {
                 each(DOM.select('select'), function (el) {
@@ -3066,7 +3062,7 @@
                         DOM.style(t.overlay, 'width', JCEMediaBox.Dimensions.getScrollWidth());
                     });
 
-                }
+                }                
             } else {
                 if (isIE6 || !scroll) {
                     Event.remove(window, 'scroll');
@@ -3209,14 +3205,14 @@
                     this.numbers.innerHTML = '';
                     for (var i = 0; i < len; i++) {
                         var n = i + 1;
-                        
+
                         var title = decodeURIComponent(this.items[i].title || n);
-                        
+
                         // Craete Numbers link
                         var link = DOM.add(this.numbers, 'a', {
-                            'href'  : 'javascript:;',
-                            'title' : title,
-                            'class' : (this.index == i) ? 'active' : ''
+                            'href': 'javascript:;',
+                            'title': title,
+                            'class': (this.index == i) ? 'active' : ''
                         }, n);
                         // add click event
                         Event.add(link, 'click', function (e) {
@@ -3329,15 +3325,15 @@
 
             if (/::/.test(title)) {
                 var parts = title.split('::');
-                title   = JCEMediaBox.trim(parts[0]);
+                title = JCEMediaBox.trim(parts[0]);
                 caption = JCEMediaBox.trim(parts[1]);
             }
-            
+
             // decode title
             title = decodeURIComponent(title);
             // decode caption
             caption = decodeURIComponent(caption);
-            
+
             extend(this.active, {
                 'src': p.src || o.src,
                 'title': title,
@@ -3442,13 +3438,9 @@
 
                         for (n in p) {
                             if (p[n] !== '') {
-                                if (/(id|name|width|height|style)$/.test(n)) {
+                                if (/(id|name|style)$/.test(n)) {
                                     var v = decodeURIComponent(p[n]);
-
-                                    if (pdf && (n == 'width' || n == 'height')) {
-                                        v = '100%';
-                                    }
-
+                                    
                                     t.object += ' ' + n + '="' + v + '"';
                                 }
                             }
@@ -3467,11 +3459,11 @@
                     } else {
                         this.object = '<embed id="jcemediabox-popup-object" type="' + mt.mediatype + '"';
                         for (n in p) {
-                            var v = decodeURIComponent(p[n]);
-
-                            if (pdf && (n == 'width' || n == 'height')) {
-                                v = '100%';
+                            if (n === "width" || n === "height") {
+                                continue;
                             }
+                            
+                            var v = decodeURIComponent(p[n]);
 
                             if (v !== '') {
                                 t.object += ' ' + n + '="' + v + '"';
@@ -3509,7 +3501,7 @@
 
                     for (n in p) {
                         if (p[n] !== '') {
-                            if (/(id|width|height|style)$/.test(n)) {
+                            if (/(id|style)$/.test(n)) {
                                 t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                             } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
                                 params[n] = p[n];
@@ -3550,22 +3542,66 @@
                 case 'video/webm':
                 case 'audio/webm':
                     var type = this.active.type;
-                    var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
                     var tag = /video/.test(type) ? 'video' : 'audio';
 
-                    if (hasSupport) {
+                    p.width = p.width || this.active.width;
+                    p.height = p.height || this.active.height;
+
+                    this.object = '<' + tag + ' type="' + type + '"';
+
+                    for (n in p) {
+                        if (p[n] !== '') {
+                            if (/(loop|autoplay|controls|preload)$/.test(n)) {
+                                t.object += ' ' + n + '="' + n + '"';
+                            }
+
+                            if (/(id|style|poster|audio)$/.test(n)) {
+                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                            }
+                        }
+                    }
+
+                    this.object += '>';
+
+                    this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
+
+                    if (type == 'video/mp4' || type == 'audio/mp3') {
+                        this.object += '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+
                         p.width = p.width || this.active.width;
                         p.height = p.height || this.active.height;
 
-                        this.object = '<' + tag + ' type="' + type + '"';
+                        var src = this.active.src;
+
+                        if (!/:\/\//.test(src)) {
+                            src = JCEMediaBox.site + src;
+                        }
+
+                        var map = {
+                            'loop': 'loop',
+                            'autoplay': 'autoPlay',
+                            'controls': 'controlBarMode'
+                        };
+
+                        var flashvars = ['src=' + src];
 
                         for (n in p) {
                             if (p[n] !== '') {
-                                if (/(loop|autoplay|controls|preload)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + n + '"';
+                                if (/(loop|autoplay|preload|controls)$/.test(n)) {
+                                    if (map[n]) {
+                                        var v = !!p[n];
+
+                                        if (n == 'controls') {
+                                            if (!v) {
+                                                flashvars.push('controlBarMode=none');
+                                            }
+                                        } else {
+                                            flashvars.push(map[n] + '=' + v);
+                                        }
+                                    }
                                 }
 
-                                if (/(id|width|height|style|poster|audio)$/.test(n)) {
+                                if (/(id|style)$/.test(n)) {
                                     t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
                                 }
                             }
@@ -3573,65 +3609,17 @@
 
                         this.object += '>';
 
-                        this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
-
-                        this.object += '</' + tag + '>';
-
-                    } else {
-                        if (type == 'video/mp4' || type == 'audio/mp3') {
-                            this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
-
-                            p.width = p.width || this.active.width;
-                            p.height = p.height || this.active.height;
-
-                            var src = this.active.src;
-
-                            if (!/:\/\//.test(src)) {
-                                src = JCEMediaBox.site + src;
-                            }
-
-                            var map = {
-                                'loop': 'loop',
-                                'autoplay': 'autoPlay',
-                                'controls': 'controlBarMode'
-                            };
-
-                            var flashvars = ['src=' + src];
-
-                            for (n in p) {
-                                if (p[n] !== '') {
-                                    if (/(loop|autoplay|preload|controls)$/.test(n)) {
-                                        if (map[n]) {
-                                            var v = !!p[n];
-
-                                            if (n == 'controls') {
-                                                if (!v) {
-                                                    flashvars.push('controlBarMode=none');
-                                                }
-                                            } else {
-                                                flashvars.push(map[n] + '=' + v);
-                                            }
-                                        }
-                                    }
-
-                                    if (/(id|width|height|style)$/.test(n)) {
-                                        t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
-                                    }
-                                }
-                            }
-
-                            this.object += '>';
-
-                            this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
-                            this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
-                            this.object += '<param name="allowfullscreen" value="true" />';
-                            this.object += '<param name="wmode" value="transparent" />';
-                            this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
-                            this.object += '</object>';
-                        } else {
-                            DOM.addClass(this.content, 'broken-media');
-                        }
+                        this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+                        this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+                        this.object += '<param name="allowfullscreen" value="true" />';
+                        this.object += '<param name="wmode" value="transparent" />';
+                        this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
+                        this.object += '</object>';
                     }
+
+                    this.object += '</' + tag + '>';
+
+                    //DOM.addClass(this.content, 'broken-media');
 
                     // set global media type
                     this.active.type = 'media';
@@ -3722,6 +3710,12 @@
                 case 'video/youtube':
                 case 'video/vimeo':
                 default:
+                    // iOS Safari cannot open PDF files properly
+                    if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit && this.active.type === "pdf") {
+                        this.close();
+                        return window.open(this.active.src);
+                    }
+                    
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
@@ -3816,10 +3810,11 @@
                 w = dim.width;
                 h = dim.height;
             }
-
+            
+            // set content dimensions
             DOM.styles(this.content, {
-                width: w,
-                height: h
+                width   : w,
+                height  : h
             });
 
             DOM.hide(this.content);
@@ -3828,7 +3823,7 @@
                 if (this.img.error) {
                     DOM.addClass(this.content, 'broken-image');
                 } else {
-                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" width="' + w + '" height="' + h + '" />';
+                    this.content.innerHTML = '<img id="jcemediabox-popup-img" src="' + this.active.src + '" title="' + this.active.title + '" />';
                 }
 
                 // fix resized images in IE
@@ -3919,7 +3914,7 @@
             if (top < 0) {
                 top = 0;
             }
-
+            
             DOM.style(this.content, 'opacity', 0);
 
             // Animate width

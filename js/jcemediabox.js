@@ -2281,6 +2281,22 @@
                 return true;
             }
         },
+        
+        protocolRelative : function(url) {
+            if (JCEMediaBox.isIE6) {
+                return url;
+            }
+            
+            var local = document.location.href;
+            
+            // both ssl
+            if (url.indexOf('https://') !== -1 && local.indexOf('https://') !== -1) {
+                return url;
+            }
+            
+            return url.replace(/http(s)?:\/\//i, '//');
+        },
+        
         /**
          * Get the width of the container frame
          */
@@ -3723,8 +3739,8 @@
                     }
                     
                     // make URL protocol relative
-                    this.active.src = this.active.src.replace(/http(s)?:\/\//i, '//');
-
+                    this.active.src = this.protocolRelative(this.active.src);
+                    
                     if (this.islocal(this.active.src)) {
                         // add tmpl=component to internal links, skip pdf
                         if (!/tmpl=component/i.test(this.active.src) && !/\.pdf\b/i.test(this.active.src)) {
@@ -3742,6 +3758,7 @@
             }
             return false;
         },
+
         /**
          * Proportional resizing method
          * @param {Object} w

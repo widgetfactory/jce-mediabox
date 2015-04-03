@@ -258,16 +258,11 @@
             if (/\.(pdf)$/i.test(v)) {
                 //var mobile = mediabox.isAndroid || mediabox.isiOS;
                 
-                var type    = 'iframe';
-                
-                if (mediabox.isiOS && !mediabox.options.popup.pdfjs) {
-                    type = 'pdf';
-                }
-
+                var type = 'pdf';
                 var src = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
                 
                 if (mediabox.options.popup.google_viewer) {
-                    type    = 'iframe';
+                    type = 'iframe';
                     
                     if (!/:\/\//.test(v)) {
                         v = mediabox.site + v.replace('?tmpl=component', '');

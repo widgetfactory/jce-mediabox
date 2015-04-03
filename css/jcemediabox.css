@@ -96,10 +96,10 @@
     text-align: center;
 }
 
-#jcemediabox-popup-content video,
-#jcemediabox-popup-content object, 
-#jcemediabox-popup-content embed,
-#jcemediabox-popup-content img {
+#jcemediabox-popup-content > video,
+#jcemediabox-popup-content > object, 
+#jcemediabox-popup-content > embed,
+#jcemediabox-popup-content > img {
     width: 100%;
     height: auto;
 }

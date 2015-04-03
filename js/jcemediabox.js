@@ -469,23 +469,26 @@
         each: function (o, cb, s) {
             var n, l;
 
-            if (!o)
+            if (!o) {
                 return 0;
+            }
 
             s = s || o;
 
             if (o.length !== undefined) {
                 // Indexed arrays, needed for Safari
                 for (n = 0, l = o.length; n < l; n++) {
-                    if (cb.call(s, o[n], n, o) === false)
+                    if (cb.call(s, o[n], n, o) === false) {
                         break;
+                    }
                 }
             } else {
                 // Hashtables
                 for (n in o) {
                     if (o.hasOwnProperty(n)) {
-                        if (cb.call(s, o[n], n, o) === false)
+                        if (cb.call(s, o[n], n, o) === false) {
                             break;
+                        }
                     }
                 }
             }
@@ -501,20 +504,23 @@
          * @return {Object} o New extended object, same reference as the input object.
          * @copyright	Copyright 2009, Moxiecode Systems AB
          */
-        extend: function (o, e) {
-            var t = JCEMediaBox, i, l, a = arguments;
+        extend: function (obj, ext) {
+            var i, l, name, args = arguments, value;
 
-            for (i = 1, l = a.length; i < l; i++) {
-                e = a[i];
+            for (i = 1, l = args.length; i < l; i++) {
+                ext = args[i];
+                for (name in ext) {
+                    if (ext.hasOwnProperty(name)) {
+                        value = ext[name];
 
-                t.each(e, function (v, n) {
-                    if (v !== undefined)
-                        o[n] = v;
-                });
-
+                        if (value !== undefined) {
+                            obj[name] = value;
+                        }
+                    }
+                }
             }
 
-            return o;
+            return obj;
         },
         /**
          * Removes whitespace from the beginning and end of a string.
@@ -3062,7 +3068,7 @@
                         DOM.style(t.overlay, 'width', JCEMediaBox.Dimensions.getScrollWidth());
                     });
 
-                }                
+                }
             } else {
                 if (isIE6 || !scroll) {
                     Event.remove(window, 'scroll');
@@ -3312,11 +3318,11 @@
             var width = p.width || JCEMediaBox.options.popup.width || 0;
             var height = p.height || JCEMediaBox.options.popup.height || 0;
 
-            if (/%/.test(width)) {
+            if (width.indexOf('%') !== -1) {
                 width = DIM.getWidth() * parseInt(width) / 100;
             }
 
-            if (/%/.test(height)) {
+            if (height.indexOf('%') !== -1) {
                 height = DIM.getHeight() * parseInt(height) / 100;
             }
 
@@ -3424,6 +3430,11 @@
                     var pdf = /pdf/i.test(this.active.type);
                     // Create single object for IE / Flash / PDF
 
+                    // set global media type
+                    this.active.type = 'media';
+                    this.active.width = p.width;
+                    this.active.height = p.height;
+
                     if (flash || isIE) {
                         this.object = '<object id="jcemediabox-popup-object"';
                         // Add type and data attribute
@@ -3444,9 +3455,9 @@
                                 }
                             }
                         }
-                        
+
                         delete p.type;
-                        
+
                         // Close object
                         this.object += '>';
                         // Create param elements
@@ -3465,11 +3476,6 @@
                         }
                         this.object += '></embed>';
                     }
-
-                    // set global media type
-                    this.active.type = 'media';
-                    this.active.width = p.width;
-                    this.active.height = p.height;
 
                     this.setup();
                     break;
@@ -3492,7 +3498,7 @@
                         wmode: 'opaque',
                         allowfullscreen: true
                     };
-                    
+
                     delete p.type;
 
                     for (n in p) {
@@ -3707,14 +3713,17 @@
                 case 'video/vimeo':
                 default:
                     // iOS Safari cannot open PDF files properly
-                    if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit && this.active.type === "pdf") {
+                    if (JCEMediaBox.isiOS || JCEMediaBox.isAndroid && this.active.type === "pdf") {
                         this.close();
                         return window.open(this.active.src);
                     }
-                    
+
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
+                    
+                    // make URL protocol relative
+                    this.active.src = this.active.src.replace(/http(s)?:\/\//i, '//');
 
                     if (this.islocal(this.active.src)) {
                         // add tmpl=component to internal links, skip pdf
@@ -3806,11 +3815,11 @@
                 w = dim.width;
                 h = dim.height;
             }
-            
+
             // set content dimensions
             DOM.styles(this.content, {
-                width   : w,
-                height  : h
+                width: w,
+                height: h
             });
 
             DOM.hide(this.content);
@@ -3910,7 +3919,7 @@
             if (top < 0) {
                 top = 0;
             }
-            
+
             DOM.style(this.content, 'opacity', 0);
 
             // Animate width
@@ -3940,47 +3949,26 @@
                     } else {
                         var doc = iframe.contentWindow.document;
 
-                        if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
-                            var _timer = setInterval(function () {
-                                if (doc.readyState === 'complete') {
-                                    clearInterval(_timer);
-                                    if (t.loader) {
-                                        DOM.hide(t.loader);
-                                    }
-                                }
-                            }, 1000);
-                        } else {
-                            Event.add(iframe, 'load', function () {
-                                // Hide loader
+                        var _timer = setInterval(function () {
+                            if (doc.readyState === 'complete') {
+                                clearInterval(_timer);
+
                                 if (t.loader) {
                                     DOM.hide(t.loader);
                                 }
-                            });
-                        }
+                            }
+                        }, 1000);
+
+                        Event.add(iframe, 'load', function () {
+                            clearInterval(_timer);
+
+                            // Hide loader
+                            if (t.loader) {
+                                DOM.hide(t.loader);
+                            }
+                        });
                     }
 
-                    /*if (/\.pdf\b/.test(t.active.src) && JCEMediaBox.options.popup.pdfjs) {
-                     iframe.setAttribute('src', 'javascript:;');
-                     
-                     var doc     = iframe.contentWindow.document;
-                     var html    = '<!doctype html><html><head>';
-                     
-                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.js"></script>';
-                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.compatibility.js"></script>';
-                     html += '<script type="text/javascript">var pdffile = "' + t.active.src + '";</script>';
-                     html += '<script type="text/javascript" src="' + JCEMediaBox.site + 'plugins/system/jcemediabox/js/pdfjs/pdf.loader.js"></script>';
-                     html += '</head>';
-                     html += '<body><canvas id="pdf-canvas" width="100%" height="100%" /></body>';
-                     html += '</html>';
-                     
-                     doc.open();
-                     doc.write(html);
-                     doc.close();
-                     
-                     } else {
-                     // Set src
-                     iframe.setAttribute('src', t.active.src);
-                     }*/
                     iframe.setAttribute('src', t.active.src);
 
                     t.iframe = iframe;

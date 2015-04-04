@@ -3334,11 +3334,11 @@
             var width = p.width || JCEMediaBox.options.popup.width || 0;
             var height = p.height || JCEMediaBox.options.popup.height || 0;
 
-            if (width && width.indexOf('%') !== -1) {
+            if (width && /%/.test(width)) {
                 width = DIM.getWidth() * parseInt(width) / 100;
             }
 
-            if (height && height.indexOf('%') !== -1) {
+            if (height && /%/.test(height)) {
                 height = DIM.getHeight() * parseInt(height) / 100;
             }
 

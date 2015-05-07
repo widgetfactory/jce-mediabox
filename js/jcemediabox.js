@@ -438,6 +438,8 @@
             t.isiOS = /(iPad|iPhone)/.test(ua);
 
             t.isAndroid = /Android/.test(ua);
+            
+            t.isMobile = t.isiOS || t.isAndroid;
 
             /**
              * Get the Site URL
@@ -3729,7 +3731,7 @@
                 case 'video/vimeo':
                 default:
                     // iOS Safari cannot open PDF files properly
-                    if (JCEMediaBox.isiOS || JCEMediaBox.isAndroid && this.active.type === "pdf") {
+                    if (JCEMediaBox.isMobile && this.active.type === "pdf") {
                         this.close();
                         return window.open(this.active.src);
                     }
@@ -3738,15 +3740,15 @@
                         this.print.style.visibility = 'hidden';
                     }
                     
-                    // make URL protocol relative
-                    this.active.src = this.protocolRelative(this.active.src);
-                    
                     if (this.islocal(this.active.src)) {
                         // add tmpl=component to internal links, skip pdf
                         if (!/tmpl=component/i.test(this.active.src) && !/\.pdf\b/i.test(this.active.src)) {
                             this.active.src += /\?/.test(this.active.src) ? '&tmpl=component' : '?tmpl=component';
                         }
                     }
+                    
+                    // make URL protocol relative
+                    this.active.src = this.protocolRelative(this.active.src);
 
                     this.active.width = this.active.width || this.width();
                     this.active.height = this.active.height || this.height();
@@ -3964,26 +3966,28 @@
                             DOM.hide(t.loader);
                         }
                     } else {
-                        var doc = iframe.contentWindow.document;
+                        var win = iframe.contentWindow, doc = win.document, _timer;
 
-                        var _timer = setInterval(function () {
-                            if (doc.readyState === 'complete') {
-                                clearInterval(_timer);
+                        if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
+                            _timer = setInterval(function () {
+                                if (doc.readyState === 'complete') {
+                                    clearInterval(_timer);
 
-                                if (t.loader) {
-                                    DOM.hide(t.loader);
+                                    if (t.loader) {
+                                        DOM.hide(t.loader);
+                                    }
                                 }
-                            }
-                        }, 1000);
-
-                        Event.add(iframe, 'load', function () {
+                            }, 1000);  
+                        }
+                        
+                        iframe.onload = function() {
                             clearInterval(_timer);
-
+                            
                             // Hide loader
                             if (t.loader) {
                                 DOM.hide(t.loader);
                             }
-                        });
+                        };
                     }
 
                     iframe.setAttribute('src', t.active.src);

@@ -1172,7 +1172,6 @@
                                 CollectGarbage();
                         }
                     }
-                    ;
 
                     function fakeUnload() {
                         var d = document;
@@ -1189,7 +1188,6 @@
 
                                 d = 0;
                             }
-                            ;
 
                             // Fire unload when the currently loading page is stopped
                             if (d)
@@ -1205,7 +1203,6 @@
 
                         }
                     }
-                    ;
 
                     // Attach unload handler
                     if (window.attachEvent) {
@@ -1283,7 +1280,7 @@
              * Get client window scroll top
              */
             getScrollTop: function () {
-                return document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop || 0;
+                return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
             },
             /**
              * Get the page scrollbar width

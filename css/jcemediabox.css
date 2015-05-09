@@ -30,7 +30,7 @@
     width: 100%;
 }
 #jcemediabox-popup-page {
-    position: fixed;
+    position: fixed !important;
     z-index: 10000;
 }
 #jcemediabox-popup-overlay {

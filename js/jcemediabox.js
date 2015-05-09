@@ -3964,10 +3964,11 @@
                         }
                     } else {
                         var win = iframe.contentWindow, doc = win.document, _timer;
-
+                        
+                        // fallback iframe load for iOS WebKit
                         if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
                             _timer = setInterval(function () {
-                                if (doc.readyState === 'complete') {
+                                if (doc.readyState === 'complete') {                                    
                                     clearInterval(_timer);
 
                                     if (t.loader) {
@@ -3978,7 +3979,9 @@
                         }
                         
                         iframe.onload = function() {
-                            clearInterval(_timer);
+                            if (_timer) {
+                                clearInterval(_timer);
+                            }
                             
                             // Hide loader
                             if (t.loader) {

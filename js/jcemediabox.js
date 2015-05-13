@@ -1262,7 +1262,7 @@
                     return window.innerHeight * zoomLevel;
                 }
 
-                return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight || 0;
+                return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
             },
             /**
              * Get client window scroll height

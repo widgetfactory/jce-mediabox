@@ -166,20 +166,18 @@
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.video = (function () {
-        var el = document.createElement('video');
-        var bool = false;
+        var elem = document.createElement('video'), bool = false;
+
         // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
         try {
-            if (bool = !!el.canPlayType) {
+            if (bool = !!elem.canPlayType) {
                 bool = new Boolean(bool);
-                bool.ogg = el.canPlayType('video/ogg; codecs="theora"');
+                bool.ogg = elem.canPlayType('video/ogg; codecs="theora"').replace(/^no$/, '');
 
-                // Workaround required for IE9, which doesn't report video support without audio codec specified.
-                //   bug 599718 @ msft connect
-                var h264 = 'video/mp4; codecs="avc1.42E01E';
-                bool.mp4 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
+                // Without QuickTime, this value will be `undefined`. github.com/Modernizr/Modernizr/issues/546
+                bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/^no$/, '');
 
-                bool.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
+                bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/, '');
             }
 
         } catch (e) {
@@ -202,20 +200,20 @@
      * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
      */
     support.audio = (function () {
-        var el = document.createElement('audio');
+        var elem = document.createElement('audio'), bool = false;
 
         try {
-            if (bool = !!el.canPlayType) {
+            if (bool = !!elem.canPlayType) {
                 bool = new Boolean(bool);
-                bool.ogg = el.canPlayType('audio/ogg; codecs="vorbis"');
-                bool.mp3 = el.canPlayType('audio/mpeg;');
+                bool.ogg = elem.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, '');
+                bool.mp3 = elem.canPlayType('audio/mpeg;').replace(/^no$/, '');
 
                 // Mimetypes accepted:
-                //   https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
-                //   http://bit.ly/iphoneoscodecs
-                bool.wav = el.canPlayType('audio/wav; codecs="1"');
-                bool.m4a = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
-                bool.webm = el.canPlayType('audio/webm; codecs="vp8, vorbis"');
+                //   developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
+                //   bit.ly/iphoneoscodecs
+                bool.wav = elem.canPlayType('audio/wav; codecs="1"').replace(/^no$/, '');
+                bool.m4a = (elem.canPlayType('audio/x-m4a;') ||
+                        elem.canPlayType('audio/aac;')).replace(/^no$/, '');
             }
         } catch (e) {
         }
@@ -438,7 +436,7 @@
             t.isiOS = /(iPad|iPhone)/.test(ua);
 
             t.isAndroid = /Android/.test(ua);
-            
+
             t.isMobile = t.isiOS || t.isAndroid;
 
             /**
@@ -2280,22 +2278,20 @@
                 return true;
             }
         },
-        
-        protocolRelative : function(url) {
+        protocolRelative: function (url) {
             if (JCEMediaBox.isIE6) {
                 return url;
             }
-            
+
             var local = document.location.href;
-            
+
             // both ssl
             if (url.indexOf('https://') !== -1 && local.indexOf('https://') !== -1) {
                 return url;
             }
-            
+
             return url.replace(/http(s)?:\/\//i, '//');
         },
-        
         /**
          * Get the width of the container frame
          */
@@ -3559,29 +3555,34 @@
                 case 'video/webm':
                 case 'audio/webm':
                     var type = this.active.type;
+
+                    var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
+
                     var tag = /video/.test(type) ? 'video' : 'audio';
+                    
+                    this.object = '';
+                    // create <audio> / <video> tag if suported
+                    if (hasSupport) {
+                        p.width = p.width || this.active.width;
+                        p.height = p.height || this.active.height;
 
-                    p.width = p.width || this.active.width;
-                    p.height = p.height || this.active.height;
+                        this.object += '<' + tag + ' type="' + type + '"';
 
-                    this.object = '<' + tag + ' type="' + type + '"';
+                        for (n in p) {
+                            if (p[n] !== '') {
+                                if (/(loop|autoplay|controls|preload)$/.test(n)) {
+                                    t.object += ' ' + n + '="' + n + '"';
+                                }
 
-                    for (n in p) {
-                        if (p[n] !== '') {
-                            if (/(loop|autoplay|controls|preload)$/.test(n)) {
-                                t.object += ' ' + n + '="' + n + '"';
-                            }
-
-                            if (/(id|style|poster|audio)$/.test(n)) {
-                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                if (/(id|style|poster|audio)$/.test(n)) {
+                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                }
                             }
                         }
+
+                        this.object += '>';
+                        this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
                     }
-
-                    this.object += '>';
-
-                    this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
-
                     if (type == 'video/mp4' || type == 'audio/mp3') {
                         this.object += '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
 
@@ -3634,7 +3635,9 @@
                         this.object += '</object>';
                     }
 
-                    this.object += '</' + tag + '>';
+                    if (hasSupport) {
+                        this.object += '</' + tag + '>';
+                    }
 
                     //DOM.addClass(this.content, 'broken-media');
 
@@ -3736,14 +3739,14 @@
                     if (this.print) {
                         this.print.style.visibility = 'hidden';
                     }
-                    
+
                     if (this.islocal(this.active.src)) {
                         // add tmpl=component to internal links, skip pdf
                         if (!/tmpl=component/i.test(this.active.src) && !/\.pdf\b/i.test(this.active.src)) {
                             this.active.src += /\?/.test(this.active.src) ? '&tmpl=component' : '?tmpl=component';
                         }
                     }
-                    
+
                     // make URL protocol relative
                     this.active.src = this.protocolRelative(this.active.src);
 
@@ -3757,7 +3760,6 @@
             }
             return false;
         },
-
         /**
          * Proportional resizing method
          * @param {Object} w
@@ -3964,25 +3966,25 @@
                         }
                     } else {
                         var win = iframe.contentWindow, doc = win.document, _timer;
-                        
+
                         // fallback iframe load for iOS WebKit
                         if (JCEMediaBox.isiOS && JCEMediaBox.isWebKit) {
                             _timer = setInterval(function () {
-                                if (doc.readyState === 'complete') {                                    
+                                if (doc.readyState === 'complete') {
                                     clearInterval(_timer);
 
                                     if (t.loader) {
                                         DOM.hide(t.loader);
                                     }
                                 }
-                            }, 1000);  
+                            }, 1000);
                         }
-                        
-                        iframe.onload = function() {
+
+                        iframe.onload = function () {
                             if (_timer) {
                                 clearInterval(_timer);
                             }
-                            
+
                             // Hide loader
                             if (t.loader) {
                                 DOM.hide(t.loader);

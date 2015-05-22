@@ -29,6 +29,11 @@
     height: 100%;
     width: 100%;
 }
+
+#jcemediabox-popup-overlay, #jcemediabox-popup-body, #jcemediabox-popup-container, #jcemediabox-popup-content {
+    box-sizing: content-box;
+}
+
 #jcemediabox-popup-page {
     position: fixed !important;
     z-index: 10000;
@@ -72,7 +77,7 @@
     width: 100%;
     height: auto;
 }
-    
+
 #jcemediabox-popup-content.broken-image {
     background : url('../img/broken-image.png') no-repeat center;
 }

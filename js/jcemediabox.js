@@ -222,6 +222,7 @@
     })();
 
     window.JCEMediaBox = {
+        domLoaded: false,
         /**
          * Global Options Object
          */
@@ -284,56 +285,96 @@
         },
         /**
          * Function to determine if DOM is ready.
-         * Based on JQuery 'bindReady' function - http://jquery.com/
-         * Copyright (c) 2009 John Resig
+         * Based on JQuery ready.js - https://github.com/jquery/jquery/blob/1.11-stable/src/core/ready.js
+         * Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors
+         * Released under the MIT license
+         * http://jquery.org/license
          */
         ready: function () {
-            // Mozilla, Opera and webkit nightlies currently support this event
-            if (document.addEventListener) {
-                // Use the handy event callback
-                document.addEventListener("DOMContentLoaded", function () {
-                    document.removeEventListener("DOMContentLoaded", arguments.callee, false);
-                    return JCEMediaBox._init();
-                }, false);
+            var win = window, doc = win.document, self = JCEMediaBox;
 
-                // If IE event model is used
-            } else if (document.attachEvent) {
-                // ensure firing before onload,
-                // maybe late but safe also for iframes
-                document.attachEvent("onreadystatechange", function () {
-                    if (document.readyState === "complete") {
-                        document.detachEvent("onreadystatechange", arguments.callee);
-                        return JCEMediaBox._init();
-                    }
-                });
+            if (self.domLoaded) {
+                return self._init();
+            }
 
-                // If IE and not an iframe
-                // continually check to see if the document is ready
-                if (document.documentElement.doScroll && window == window.top) {
-                    (function () {
-                        if (JCEMediaBox.domLoaded)
-                            return;
+            /**
+             * Clean-up method for dom ready events
+             */
+            function detach() {
+                if (doc.addEventListener) {
+                    doc.removeEventListener("DOMContentLoaded", completed, false);
+                    win.removeEventListener("load", completed, false);
 
-                        try {
-                            // If IE is used, use the trick by Diego Perini
-                            // http://javascript.nwbox.com/IEContentLoaded/
-                            document.documentElement.doScroll("left");
-                        } catch (error) {
-                            setTimeout(arguments.callee, 0);
-                            return;
-                        }
-
-                        // and execute any waiting functions
-                        return JCEMediaBox._init();
-                    })();
-
+                } else {
+                    doc.detachEvent("onreadystatechange", completed);
+                    win.detachEvent("onload", completed);
                 }
             }
 
-            // A fallback to window.onload, that will always work
-            JCEMediaBox.Event.add(window, "load", function () {
-                return JCEMediaBox._init();
-            });
+            /**
+             * The ready event handler and self cleanup method
+             */
+            function completed(event) {                
+                // readyState === "complete" is good enough for us to call the dom ready in oldIE
+                if (doc.addEventListener || event.type === "load" || doc.readyState === "complete") {
+                    detach();
+                    
+                    self.domLoaded = true;
+                    
+                    self._init();
+                }
+            }
+
+            if (doc.readyState === "complete") {
+                // Handle it asynchronously to allow scripts the opportunity to delay ready
+                setTimeout(completed);
+
+                // Standards-based browsers support DOMContentLoaded
+            } else if (doc.addEventListener) {                
+                // Use the handy event callback
+                doc.addEventListener("DOMContentLoaded", completed, false);
+
+                // A fallback to window.onload, that will always work
+                win.addEventListener("load", completed, false);
+
+                // If IE event model is used
+            } else {
+                // Ensure firing before onload, maybe late but safe also for iframes
+                doc.attachEvent("onreadystatechange", completed);
+
+                // A fallback to window.onload, that will always work
+                win.attachEvent("onload", completed);
+
+                // If IE and not a frame
+                // continually check to see if the document is ready
+                var top = false;
+
+                try {
+                    top = win.frameElement == null && doc.documentElement;
+                } catch (e) {
+                }
+
+                if (top && top.doScroll) {
+                    (function doScrollCheck() {
+                        if (!self.domLoaded) {
+
+                            try {
+                                // Use the trick by Diego Perini
+                                // http://javascript.nwbox.com/IEContentLoaded/
+                                top.doScroll("left");
+                            } catch (e) {
+                                return setTimeout(doScrollCheck, 50);
+                            }
+
+                            // detach all dom ready events
+                            detach();
+
+                            // and execute any waiting functions
+                            completed();
+                        }
+                    })();
+                }
+            }
         },
         /**
          * Get the Site Base URL
@@ -370,11 +411,6 @@
          * Initialize JCEMediaBox
          */
         _init: function () {
-            if (this.domLoaded)
-                return;
-
-            this.domLoaded = true;
-
             var t = this, na = navigator, ua = na.userAgent;
 
             /**
@@ -3559,7 +3595,7 @@
                     var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
 
                     var tag = /video/.test(type) ? 'video' : 'audio';
-                    
+
                     this.object = '';
                     // create <audio> / <video> tag if suported
                     if (hasSupport) {

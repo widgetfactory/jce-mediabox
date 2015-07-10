@@ -314,15 +314,15 @@
             /**
              * The ready event handler and self cleanup method
              */
-            function completed(event) {                
+            function completed(event) {
                 // readyState === "complete" is good enough for us to call the dom ready in oldIE
-                if (doc.addEventListener || event.type === "load" || doc.readyState === "complete") {
+                //if (doc.addEventListener || event && event.type === "load" || doc.readyState === "complete") {
                     detach();
-                    
+
                     self.domLoaded = true;
-                    
+
                     self._init();
-                }
+                //}
             }
 
             if (doc.readyState === "complete") {
@@ -330,7 +330,7 @@
                 setTimeout(completed);
 
                 // Standards-based browsers support DOMContentLoaded
-            } else if (doc.addEventListener) {                
+            } else if (doc.addEventListener) {
                 // Use the handy event callback
                 doc.addEventListener("DOMContentLoaded", completed, false);
 
@@ -365,9 +365,6 @@
                             } catch (e) {
                                 return setTimeout(doScrollCheck, 50);
                             }
-
-                            // detach all dom ready events
-                            detach();
 
                             // and execute any waiting functions
                             completed();
@@ -2627,13 +2624,28 @@
             return JCEMediaBox.DOM.select(s || selector, p);
         },
         getData: function (n) {
-            var DOM = JCEMediaBox.DOM, o = {}, data;
+            var DOM = JCEMediaBox.DOM, each = JCEMediaBox.each, o = {}, data;
             var re = /\w+\[[^\]]+\]/;
 
-            data = DOM.attribute(n, 'data-mediabox') || DOM.attribute(n, 'data-json');
+            data = n.getAttribute('data-mediabox') || n.getAttribute('data-json');
 
-            // try title or rel attributes
             if (!data) {
+                // try data-mediabox-* attributes (since 1.1.23, JCE 2.5.3)
+                var i, attrs = n.attributes, x = 0;
+                
+                for (i = attrs.length - 1; i >= 0; i--) {
+                    var attrName = attrs[i].name;
+                    if (attrName && attrName.indexOf('data-mediabox-') !== -1) {
+                        var attr = attrName.replace('data-mediabox-', '');
+                        o[attr] = attrs[i].value;
+                        x++;
+                    }
+                }
+                
+                if (x) {
+                    return o;
+                }
+
                 var title = DOM.attribute(n, 'title');
                 var rel = DOM.attribute(n, 'rel');
 
@@ -3383,9 +3395,9 @@
             }
 
             // decode title
-            title = decodeURIComponent(title);
+            title = decodeURIComponent(DOM.decode(title));
             // decode caption
-            caption = decodeURIComponent(caption);
+            caption = decodeURIComponent(DOM.decode(caption));
 
             extend(this.active, {
                 'src': p.src || o.src,
@@ -3497,7 +3509,7 @@
                         for (n in p) {
                             if (p[n] !== '') {
                                 if (/^(id|name|style|width|height)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
                                     delete p[n];
                                 }
                             }
@@ -3509,7 +3521,7 @@
                         this.object += '>';
                         // Create param elements
                         for (n in p) {
-                            t.object += '<param name="' + n + '" value="' + decodeURIComponent(p[n]) + '" />';
+                            t.object += '<param name="' + n + '" value="' + decodeURIComponent(DOM.decode(p[n])) + '" />';
                         }
                         // Add closing object element
                         this.object += '</object>';
@@ -3551,7 +3563,7 @@
                     for (n in p) {
                         if (p[n] !== '') {
                             if (/^(id|name|style|width|height)$/.test(n)) {
-                                t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
                             } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
                                 params[n] = p[n];
                             } else {
@@ -3611,7 +3623,7 @@
                                 }
 
                                 if (/(id|style|poster|audio)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
                                 }
                             }
                         }
@@ -3656,7 +3668,7 @@
                                 }
 
                                 if (/(id|style)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + decodeURIComponent(p[n]) + '"';
+                                    t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
                                 }
                             }
                         }

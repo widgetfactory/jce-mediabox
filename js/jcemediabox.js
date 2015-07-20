@@ -1276,20 +1276,14 @@
              * Get client window width
              */
             getWidth: function () {
-                return document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth || 0;
+                return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
             },
             /**
              * Get client window height
              */
             getHeight: function () {
                 if (JCEMediaBox.isiOS || JCEMediaBox.isAndroid) {
-                    // Get zoom level of mobile Safari
-                    // Note, that such zoom detection might not work correctly in other browsers
-                    // We use width, instead of height, because there are no vertical toolbars :)
                     var zoomLevel = document.documentElement.clientWidth / window.innerWidth;
-
-                    // window.innerHeight returns height of the visible area. 
-                    // We multiply it by zoom and get out real height.
                     return window.innerHeight * zoomLevel;
                 }
 
@@ -3068,11 +3062,11 @@
             // Set top position
             DOM.style(this.body, 'top', top);
             // Changes if IE6 or scrollpopup
-            if (JCEMediaBox.isIE6 || JCEMediaBox.isiOS || JCEMediaBox.options.popup.scrolling == 'scroll') {
-                DOM.style(this.page, 'position', 'absolute');
+            if (JCEMediaBox.isIE6 || JCEMediaBox.options.popup.scrolling == 'scroll') {
+                DOM.addClass(this.page, 'scrolling');
                 DOM.style(this.overlay, 'height', DIM.getScrollHeight());
                 DOM.style(this.body, 'top', DIM.getScrollTop() + top);
-            }
+            }            
             // Fade in overlay
             if (JCEMediaBox.options.popup.overlay == 1 && this.overlay) {
                 DOM.show(this.overlay);

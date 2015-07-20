@@ -38,6 +38,9 @@
     position: fixed !important;
     z-index: 10000;
 }
+#jcemediabox-popup-page.scrolling {
+    position: absolute !important;
+}
 #jcemediabox-popup-overlay {
     position: absolute;
     cursor: pointer;

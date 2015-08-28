@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JCE MediaBox" basedir="." default="build">
-    <property description="Package Version" name="version" value="1.1.24" />
-    <property description="File Version" name="file_version" value="1124" />
+    <property description="Package Version" name="version" value="1.1.25" />
+    <property description="File Version" name="file_version" value="1125" />
     <property description="Name" name="name" value="JCE MediaBox" />
     <property description="Export directory" name="export_dir" value="/Users/ryandemmer/Releases/jcemediabox/${file_version}" />
     <property description="Language" name="lang" value="../../../administrator/language/en-GB/" />

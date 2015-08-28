@@ -3598,7 +3598,7 @@
                 case 'audio/webm':
                     var type = this.active.type;
 
-                    var hasSupport = (type == 'video/mp4' && support.video.mp4) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
+                    var hasSupport = (type == 'video/mp4' && support.video.h264) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
 
                     var tag = /video/.test(type) ? 'video' : 'audio';
 

@@ -177,24 +177,28 @@
         <copy file="${export_dir}/jcemediabox_15.xml" tofile="${export_dir}/joomla15/jcemediabox.xml" />
 		
 	<!-- Joomla! 1.5 -->
-        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla15.zip" basedir="${export_dir}/joomla15">
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla15.zip" basedir="${export_dir}/joomla15" duplicate="preserve">
             <zipfileset dir="${export_dir}/joomla15">
                 <include name="**" />
-                <exclude name="jcemediabox_15.xml" />
             </zipfileset>
         </zip>
 
 	<!-- Joomla! 25+ -->
-        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla25.zip" basedir="${export_dir}/joomla25">
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla25.zip" basedir="${export_dir}/joomla25" duplicate="preserve">
             <zipfileset dir="${export_dir}/joomla25">
                 <include name="**" />
             </zipfileset>
         </zip>
-        
+
         <!-- Joomla! 3+ -->
-        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_joomla3.zip" basedir="${export_dir}/joomla25">
-            <zipfileset dir="${export_dir}/joomla25">
-                <include name="**" />
+        <copy file="${export_dir}/plg_jcemediabox_${file_version}_joomla25.zip" tofile="${export_dir}/plg_jcemediabox_${file_version}_joomla3.zip" />
+        
+        <!-- JED -->
+        <zip destfile="${export_dir}/plg_jcemediabox_${file_version}_unzip_first.zip" basedir="${export_dir}" duplicate="preserve">
+            <zipfileset dir="${export_dir}">
+                <exclude name="**" />
+                <include name="**joomla25.zip" />
+                <include name="**joomla3.zip" />
             </zipfileset>
         </zip>
     </target>

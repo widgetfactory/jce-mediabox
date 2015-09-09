@@ -960,6 +960,8 @@
             },
             decode: function (s) {
                 var el;
+                
+                s = s.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 
                 el = document.createElement("div");
                 el.innerHTML = s;
@@ -3230,7 +3232,8 @@
 
                 if (text) {
                     h += '<p>' + DOM.decode(text) + '</p>';
-                }
+                }                
+                
                 // set caption html (may be empty)
                 this.caption.innerHTML = h;
 

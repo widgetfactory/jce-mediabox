@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JCE MediaBox" basedir="." default="build">
-    <property description="Package Version" name="version" value="1.1.25" />
-    <property description="File Version" name="file_version" value="1125" />
+    <property description="Package Version" name="version" value="1.1.26" />
+    <property description="File Version" name="file_version" value="1126" />
     <property description="Name" name="name" value="JCE MediaBox" />
     <property description="Export directory" name="export_dir" value="/Users/ryandemmer/Releases/jcemediabox/${file_version}" />
     <property description="Language" name="lang" value="../../../administrator/language/en-GB/" />
@@ -9,7 +9,7 @@
     <property description="Licence" name="licence" value="GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html" />
     <property description="Copyright" name="copyright" value="Copyright (C) 2006 - 2015 Ryan Demmer. All rights reserved" />
 
-    <target name="ant" description="Builds the project">
+    <target name="build" description="Builds the project">
 
         
         <!-- Setup classpath for js-build-tools ant tasks -->

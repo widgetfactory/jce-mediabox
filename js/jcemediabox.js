@@ -2314,12 +2314,17 @@
 
             var local = document.location.href;
 
-            // both ssl
-            if (url.indexOf('https://') !== -1 && local.indexOf('https://') !== -1) {
+            // external ssl
+            if (url.indexOf('https://') !== -1) {
                 return url;
             }
 
-            return url.replace(/http(s)?:\/\//i, '//');
+            // local ssl, use protocol relative for non-ssl external
+            if (local.indexOf('https://') !== -1) {
+                return url.replace(/http(s)?:\/\//i, '//');
+            }
+
+            return url;
         },
         /**
          * Get the width of the container frame

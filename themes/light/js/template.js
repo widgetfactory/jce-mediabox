@@ -1,69 +1,70 @@
-JCEMediaBox.Popup.theme = [
+WFMediaBox.Theme.add("light", function () {
+    return [
     {
         "div": {
-            "id": "jcemediabox-popup-container",
+            "id": "wf-mediabox-container",
             "content": [
                 {
                     "div": {
-                        "id": "jcemediabox-popup-loader"
+                        "class": "wf-mediabox-loader"
                     }
                 },
                 {
                     "div": {
-                        "id": "jcemediabox-popup-content"
+                        "class": "wf-mediabox-content"
                     }
                 },
                 {
                     "a": {
-                        "id": "jcemediabox-popup-next",
+                        "class": "wf-mediabox-next",
                         "href": "#",
-                        "title": "{#close}",
-                        "class": "jcemediabox-popup-link"
+                        "title": "{{next}}",
+                        "text": "&raquo;"
                     }
                 },
                 {
                     "a": {
-                        "id": "jcemediabox-popup-prev",
+                        "class": "wf-mediabox-prev",
                         "href": "#",
-                        "title": "{#close}",
-                        "class": "jcemediabox-popup-link"
+                        "title": "{{previous}}",
+                        "text": "&laquo;"
                     }
                 }
             ]
         }
     },
-    {
-        "div": {
-            "id": "jcemediabox-popup-info-bottom",
-            "content": [
-                {
-                    "a": {
-                        "id": "jcemediabox-popup-closelink",
-                        "href": "#",
-                        "title": "{#close}",
-                        "class": "jcemediabox-popup-link",
-                        "content": "{#close}"
-                    }
-                },
-                {
-                    "div": {
-                        "id": "jcemediabox-popup-caption"
-                    }
-                },
-                {
-                    "div": {
-                        "id": "jcemediabox-popup-nav",
-                        "content": [
-                            {
-                                "span": {
-                                    "id": "jcemediabox-popup-numbers",
-                                    "content": "{$numbers}"
+        {
+            "div": {
+                "class": "wf-mediabox-info-bottom",
+                "content": [
+                    {
+                        "a": {
+                            "class": "wf-mediabox-close",
+                            "href": "#",
+                            "title": "{{close}}",
+                            "text": "{{close}}"
+                        }
+                    },
+                    {
+                        "div": {
+                            "class": "wf-mediabox-caption"
+                        }
+                    },
+                    {
+                        "div": {
+                            "class": "wf-mediabox-nav",
+                            "content": [
+                                {
+                                    "span": {
+                                        "class": "wf-mediabox-numbers",
+                                        "text": "{{numbers_count}}"
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
-    }
-];
+    ];
+});

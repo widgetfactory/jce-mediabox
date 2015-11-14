@@ -1,4 +1,4 @@
-WFMediaBox.Theme.add("standard", function() {
+WFMediaBox.Theme.add("standard", function () {
     return [
         {
             "div": {
@@ -12,51 +12,50 @@ WFMediaBox.Theme.add("standard", function() {
                     {
                         "div": {
                             "class": "wf-mediabox-content",
+                            "content": ""
+                        }
+                    },
+                    {
+                        "div": {
+                            "class": "wf-mediabox-info-bottom",
                             "content": [
                                 {
+                                    "a": {
+                                        "class": "wf-mediabox-close wf-icon-close",
+                                        "href": "#",
+                                        "title": "{{close}}",
+                                        "text": ""
+                                    }
+                                },
+                                {
                                     "div": {
-                                        "class": "wf-mediabox-info-bottom",
+                                        "class": "wf-mediabox-caption"
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "class": "wf-mediabox-nav",
                                         "content": [
                                             {
                                                 "a": {
-                                                    "class": "wf-mediabox-closelink wf-icon-close",
+                                                    "class": "wf-mediabox-prev wf-icon-prev",
                                                     "href": "#",
-                                                    "title": "{#close}",
+                                                    "title": "{{previous}}",
                                                     "text": ""
                                                 }
                                             },
                                             {
-                                                "div": {
-                                                    "class": "wf-mediabox-caption"
+                                                "a": {
+                                                    "class": "wf-mediabox-next wf-icon-next",
+                                                    "href": "#",
+                                                    "title": "{{next}}",
+                                                    "text": ""
                                                 }
                                             },
                                             {
-                                                "div": {
-                                                    "class": "wf-mediabox-nav",
-                                                    "content": [
-                                                        {
-                                                            "a": {
-                                                                "class": "wf-mediabox-prev wf-icon-prev",
-                                                                "href": "#",
-                                                                "title": "{#close}",
-                                                                "text": ""
-                                                            }
-                                                        },
-                                                        {
-                                                            "a": {
-                                                                "class": "wf-mediabox-next wf-icon-next",
-                                                                "href": "#",
-                                                                "title": "{#close}",
-                                                                "text": ""
-                                                            }
-                                                        },
-                                                        {
-                                                            "span": {
-                                                                "class": "wf-mediabox-numbers",
-                                                                "text": "{$numbers}"
-                                                            }
-                                                        }
-                                                    ]
+                                                "span": {
+                                                    "class": "wf-mediabox-numbers",
+                                                    "text": "{{numbers}}"
                                                 }
                                             }
                                         ]

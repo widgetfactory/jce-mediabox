@@ -11,161 +11,328 @@
  * other free or open source software licenses.
  *
  */
-WFMediaBox.Plugin.add('flash', function(v) {
-    this.attributes = {
-        type        : 'application/x-shockwave-flash',
-        classid     : 'd27cdb6e-ae6d-11cf-96b8-444553540000',
-        codebase    : 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,124,0',
-        wmode       : 'transparent'
-    };
+(function ($, WFMediaBox) {
+    function createObject(data, embed) {
+        var n;
 
-    this.is = function() {return /\.swf\b/.test(v);}
-});
-WFMediaBox.Plugin.add('flv', function(v) {
-    this.attributes = {
-        type: 'video/x-flv'
-    };
+        delete data.group;
+        delete data.title;
+        delete data.caption;
+        delete data.width;
+        delete data.height;
 
-    this.is = function() {return /\.flv\b/.test(v);}
-});
-/*WFMediaBox.Plugin.add('metacafe', function(v) {
-    this.attributes = {
+        var html = '<object ';
+        // custom attributes
+        for (n in data) {
+            if (/(id|name|style|codebase|classid|type|data)$/.test(n) && typeof data[n] === "string") {
+                html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
 
-            return {
-                width: 400,
-                height: 345,
-                type: 'flash',
-                attributes: {
-                    'wmode': 'opaque',
-                    'src': (function() {
-                        s.replace(/watch/i, 'fplayer');
-                    })();
-                }
-            };
+                delete data[n];
+            }
         }
-        
-        return /metacafe(.+)\/(watch|fplayer)\/(.+)/.test(v);
-});*/
-/**
- * Daily Motion - http://www.dailymotion.com
- * @param {String} v URL
- */
-WFMediaBox.Plugin.add('dailymotion', function(v) {
-    var self = this;
+        html += '>';
+        // custom params
+        for (n in data) {
+            if (typeof data[n] === "string") {
+                html += ' <param name="' + n + '" value="' + decodeURIComponent(data[n]) + '" />';
+            }
+        }
+        if (embed) {
+            html += '<embed';
+            for (n in data) {
+                html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
+            }
+            html += '></embed>';
+        }
+        html += '</object>';
 
-    self.is = function() {
-        return /dailymotion(.+)\/(swf|video)\//.test(v);
+        return html;
     }
 
-    function processURL(s) {
-        if (self.is()) {
-            s = trim(s);
-            s = s.replace(/_(.*)/, '');
-            s = s.replace(/video/i, 'swf');
+    function createIframe(src) {
+        // create html
+        return '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
+    }
+
+    WFMediaBox.Plugin.add('flash', function () {
+        this.type = "object";
+        this.html = function (data) {
+            data.type = "application/x-shockwave-flash";
+            data.data = data.src;
+
+            return $(createObject(data));
+        };
+
+        this.is = function (data) {
+            return /\.swf\b/.test(data.src);
+        };
+    });
+    WFMediaBox.Plugin.add('flv', function () {
+        this.html = function (data) {
+            data.type = "video/x-flv";
+            return $(createObject(data, true));
+        };
+
+        this.is = function (data) {
+            return /\.flv\b/.test(data.src);
+        };
+    });
+    /*WFMediaBox.Plugin.add('metacafe', function(v) {
+     this.attributes = {
+     
+     return {
+     width: 400,
+     height: 345,
+     type: 'flash',
+     attributes: {
+     'wmode': 'opaque',
+     'src': (function() {
+     s.replace(/watch/i, 'fplayer');
+     })();
+     }
+     };
+     }
+     
+     return /metacafe(.+)\/(watch|fplayer)\/(.+)/.test(v);
+     });*/
+    /**
+     * Daily Motion - http://www.dailymotion.com
+     * @param {String} v URL
+     */
+    WFMediaBox.Plugin.add('dailymotion', function () {
+        this.is = function (data) {
+            return /dai\.?ly(motion)?(.+)?\/(swf|video)?\/?([a-z0-9]+)_?/.test(data.src);
+        };
+
+        function processURL(s) {
+            var u = 'https://dailymotion.com/embed/video/';
+
+            var m = s.match(/dai\.?ly(motion)?(.+)?\/(swf|video)?\/?([a-z0-9]+)_?/);
+
+            if (m) {
+                u += m[4];
+            }
+
+            return u;
         }
 
-        return s;
-    }
+        this.width = 480;
 
-    self.attributes = {
-        width: 420,
-        height: 339,
-        type: 'flash',
-        'wmode': 'opaque',
-        'src': processURL(v)
-    }
-});
-WFMediaBox.Plugin.add('quicktime', function(v) {
-    this.attributes = {
-        classid: '02bf25d5-8c17-4b23-bc80-d3488abddc6b',
-        codebase: 'http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0',
-        type: 'video/quicktime'
-    };
+        // declare type
+        this.type = "iframe";
+        // create html
+        this.html = function (data) {
+            return $(createIframe(processURL(data.src)));
+        };
+    });
+    WFMediaBox.Plugin.add('quicktime', function () {
+        var n;
 
-    this.is = function() {return /\.mov\b/.test(v);}
-});
-/**
- * Youtube - http://www.youtube.com
- * @param {String} v URL
- */
-WFMediaBox.Plugin.add('youtube', function(v) {
-    var self = this;
-    
-    self.is = function() {
-        return /youtu(\.)?be([^\/]+)?\/(.+)/.test(v);
-    }
+        this.html = function (data) {
+            data.type = "video/quicktime";
+            data.classid = "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b";
+            data.codebase = "https://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0";
 
-    function processURL(v) {
-        if (self.is()) {
-            v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
-                var query = '';
-                if (/watch\?/.test(d)) {
-                    // remove watch?
-                    d = d.replace(/watch\?/, '');
-                    // get query arguments
-                    var args = JCEMediaBox.Popup.params(d);
-                    // set video id
-                    query += args.v;
-                    delete args.v;
-                    for (k in args) {
-                        query += (((/\?/.test(query)) ? '&' : '?') + k + '=' + args[k]);
-                    }
+            return $(createObject(data, true));
+        };
 
-                } else {
-                    query = d.replace(/embed\//, '');
-                }
+        this.type = "object";
+        this.width = 853;
+
+        this.is = function (data) {
+            return /\.(mov)\b/.test(data.src);
+        };
+    });
+    WFMediaBox.Plugin.add('windowsmedia', function () {
+
+        this.type = "object";
+        this.html = function (data) {
+            data.type = "application/x-mplayer2";
+            data.classid = "clsid:6bf52a52-394a-11d3-b153-00c04f79faa6";
+            data.codebase = "https://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701";
+
+            return $(createObject(data, true));
+        };
+
+        this.is = function (data) {
+            return /\.(wmv|avi)\b/.test(data.src);
+        };
+    });
+    /**
+     * Youtube - http://www.youtube.com
+     * @param {String} v URL
+     */
+    WFMediaBox.Plugin.add('youtube', function () {
+        var self = this;
+
+        this.is = function (data) {
+            return /youtu(\.)?be([^\/]+)?\/(.+)/.test(data.src);
+        };
+
+        function processURL(v) {
+            v = v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
+                d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
 
                 if (b && !c) {
                     c = '.com';
                 }
 
-                if (!/wmode/.test(query)) {
-                    query += /\?/.test(query) ? '&wmode=opaque' : '?wmode=opaque';
-                }
+                return 'youtube' + c + '/embed/' + d;
+            });
 
-                return 'youtube' + c + '/embed/' + query;
-                // add www (required by iOS ??)
-            }).replace(/\/\/youtube/i, '//www.youtube')
+            // add www (required by iOS ??)        
+            v = v.replace(/\/\/youtube/i, '//www.youtube');
+
+            // force ssl
+            v = v.replace(/^http:\/\//, 'https://');
+
+            v += '?html5=1';
+
+            return v;
+        }
+        // default 16:9 size
+        this.width = 560;
+        // declare type
+        this.type = "iframe";
+        // create html
+        this.html = function (data) {
+            return $(createIframe(processURL(data.src)));
+        };
+    });
+    WFMediaBox.Plugin.add('vimeo', function () {
+
+        this.is = function (data) {
+            return /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.test(data.src);
+        };
+
+        function processURL(s) {
+            s = s.replace(/(player\/)?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function (a, b, c, d, e) {
+                if (b) {
+                    return a;
+                }
+                return 'player.vimeo.com/video/' + e;
+            });
+
+            // force ssl
+            s = s.replace(/^http:\/\//, 'https://');
+
+            return s;
+        }
+        this.width = 500;
+        // declare type
+        this.type = "iframe";
+        // create html
+        this.html = function (data) {
+            return $(createIframe(processURL(data.src)));
+        };
+    });
+    /**
+     * Image
+     */
+    WFMediaBox.Plugin.add('image', function () {
+        this.type = "image";
+
+        // create image html (leave src blank)
+        this.html = function (data) {
+            return '<img src="" class="wf-mediabox-img" alt="' + decodeURIComponent(data.title || "") + '" />';
+        };
+
+        this.is = function (data) {
+            return data.type === "image" || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(data.src);
+        };
+    });
+    /**
+     * PDF 
+     */
+    WFMediaBox.Plugin.add('pdf', function () {
+        this.type = "iframe";
+        // create html
+        this.html = function (data) {
+            return $('<iframe src="' + data.src + '" frameborder="0" />');
+        };
+
+        this.height = '100%';
+
+        this.is = function (data) {
+            return data.type === "pdf" || /\.pdf$/i.test(data.src);
+        };
+    });
+    /**
+     * Ajax / Internal Content 
+     */
+    WFMediaBox.Plugin.add('content', function () {
+        function islocal(s) {
+            if (/^(\w+:)?\/\//.test(s)) {
+                return new RegExp('^(' + WFMediaBox.settings.site + ')').test(s);
+            } else {
+                return true;
+            }
         }
 
-        return v;
-    }
+        this.type = "ajax";
 
-    this.attributes = {
-        width: 425,
-        height: 350,
-        type: 'iframe',
-        src: processURL(v)
-    };
-});
-WFMediaBox.Plugin.add('vimeo', function(v) {
-    
-    this.is = function() {return /vimeo\.com\/(video\/)?([0-9]+)/.test(v);}
-    
-    this.attributes = {
-        width: 400,
-        height: 225,
-        type: 'iframe',
-        src: v.replace(/(player\.)?vimeo\.com\/(video\/)?([0-9]+)/, function(a, b, c, d) {
-            if (b) {
-                return a;
+        this.html = function (data) {
+            var html = "";
+            var src = data.src;
+
+            if (islocal(src) && src.indexOf('tmpl=component') === -1) {
+                src += /\?/.test(src) ? '&tmpl=component' : '?tmpl=component';
             }
-            return 'player.vimeo.com/video/' + d;
-        })
-    };
-});
-/**
- * Image
- */
-WFMediaBox.Plugin.add('image', function(v) {
-    this.attributes = {type: 'image'};
-    this.is = function() {return /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(v);}
-});
-/**
- * Twitpic - http://www.twitpic.com
- */
-WFMediaBox.Plugin.add('twitpic', function(v) {
-    this.attributes = {type: 'image'};
+            
+            var iframe = $('<iframe src="' + src + '" />').load(function() {
+                var n = this, html = this.contentWindow.document.body.innerHTML;
+                
+                // append html to created parent
+                $(this).parent().append(html);
+                
+                // remove iframe
+                window.setTimeout(function() {
+                    $(n).remove();
+                }, 10);
+                
+                WFMediaBox.create(WFMediaBox.getPopups('', $(this).parent()));
+            });
+            
+            return iframe;
+        };
 
-    this.is = function() {return /twitpic(.+)\/(.+)/.test(v);}
-});
+        this.is = function (data) {
+            return data.type === "ajax" || data.type === "text/html";
+        };
+    });
+    /**
+     * Dom Element
+     */
+    WFMediaBox.Plugin.add('dom', function () {
+        this.type = "dom";
+
+        this.html = function (data) {
+            var node = $(data.src);
+
+            if (node) {
+                return $(node).get(0).outerHTML;
+            }
+
+            return "";
+        };
+
+        this.is = function (data) {
+            return data.type === "dom";
+        };
+    });
+    /**
+     * IFrame
+     */
+    WFMediaBox.Plugin.add('iframe', function () {
+
+        this.type = "iframe";
+
+        this.html = function (data) {
+            return $('<iframe src="' + data.src + '" frameborder="0" />');
+        };
+
+        this.is = function (data) {
+            return !data.type || data.type === "iframe";
+        };
+    });
+})(jQuery, WFMediaBox);

@@ -3,7 +3,7 @@
  * @param {type} $ DomQuery
  * @returns {mediabox/Addons}
  */
-define("mediabox/Addons", ["jQuery"], function($) {
+define("mediabox/Addons", ["jQuery"], function ($) {
     function Addons() {
         var self = this;
 
@@ -17,7 +17,7 @@ define("mediabox/Addons", ["jQuery"], function($) {
          * @param {String} n Addon name
          * @param {Object} o Addon object
          */
-        add: function(id, addOn) {
+        add: function (id, addOn) {
             this.items.push(addOn);
             this.lookup[id] = {instance: addOn};
 
@@ -30,11 +30,11 @@ define("mediabox/Addons", ["jQuery"], function($) {
          * @param {String} name Add-on to look for.
          * @return {mediabox.Theme/mediabox.Plugin} Theme or plugin add-on instance or undefined.
          */
-        get: function(name) {
+        get: function (name) {
             if (name && this.lookup[name]) {
                 return this.lookup[name].instance;
             }
-            
+
             return this.lookup;
         }
     };
@@ -48,25 +48,17 @@ define("mediabox/Addons", ["jQuery"], function($) {
      * @param {type} n
      * @returns {boolean}
      */
-    Addons.Plugin.getPlugin = function(v, n) {
-        var o, s, r;
+    Addons.Plugin.getPlugin = function (v, n) {
+        var o, s, r, k;
 
-        s = this.get();
+        s = this.get(n);
 
-        $.each(s, function(k, o) {            
+        $.each(s, function (k, o) {
             var p = o.instance, c = new p(v);
-            
-            if (c) {
-                var at = c.attributes || {};
-                
-                // type is the same
-                if (n && at.type && at.type === n) {
-                   r = c;
-                }
-                // url match
-                if (c.is()) {                    
-                    r = c
-                }
+
+            if (c && c.is(v)) {
+                r = c;
+                return false;
             }
         });
 
@@ -78,25 +70,25 @@ define("mediabox/Addons", ["jQuery"], function($) {
      * @param {type} data
      * @returns {@exp;el@pro;innerHTML|String}
      */
-    Addons.Theme.parse = function(name, translate, parent) {
+    Addons.Theme.parse = function (name, translate, parent) {
         var theme = this.get(name), data;
-        
+
         if (theme) {
             data = new theme();
         }
-        
+
         // no theme data
         if (!data) {
             return;
         }
-        
+
         // create parent div if no parent set
         if (!parent) {
             parent = document.createElement('div');
         }
 
         if (!translate) {
-            translate = function(s) {
+            translate = function (s) {
                 return s;
             };
         }
@@ -108,15 +100,15 @@ define("mediabox/Addons", ["jQuery"], function($) {
          */
         function createNode(o, el) {
             // process node object
-            $.each(o, function(k, v) {                
-                if (typeof v === "string") {                    
+            $.each(o, function (k, v) {
+                if (typeof v === "string") {
                     // translate
                     v = translate(v);
-                    
+
                     // text node
-                    if (k === "text") {                        
+                    if (k === "text") {
                         $(el).html(v);
-                    // attribute
+                        // attribute
                     } else {
                         $(el).attr(k, v);
                     }
@@ -140,7 +132,7 @@ define("mediabox/Addons", ["jQuery"], function($) {
 
         // create nodes
         createNode(data, parent);
-        
+
         // return parent node
         return parent;
     };

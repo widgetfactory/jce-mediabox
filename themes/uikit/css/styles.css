@@ -1,0 +1,11 @@
+.wf-mediabox .uk-modal-dialog {opacity: 1; width: auto; transform: translateY(0); overflow: inherit; margin: inherit; max-width: inherit;border: 0 none;}
+.wf-mediabox .uk-modal-dialog-lightbox > .uk-close:first-child {left: auto; z-index: 2;}
+.wf-mediabox-caption {padding: inherit; background-color: inherit;}
+.uk-modal-dialog .wf-mediabox-content {z-index: 1;}
+
+.uk-modal-dialog .wf-mediabox-loader {width: inherit; height: inherit; z-index: 3;}
+.wf-mediabox-loading .wf-mediabox-loader {display: inline-flex;}
+.uk-modal-dialog .wf-mediabox-caption {top: auto;}
+/*.uk-modal-dialog .wf-mediabox-caption:empty {display: none;}*/
+.wf-mediabox .uk-modal-dialog-lightbox {background-color: inherit;}
+.wf-mediabox .uk-slidenav-position .uk-slidenav-next {left: auto;}

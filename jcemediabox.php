@@ -119,16 +119,15 @@ class plgSystemJCEMediabox extends JPlugin {
      * @return Boolean true
      */
     protected function getThemeCSS($vars) {
-        jimport('joomla.environment.browser');
         jimport('joomla.filesystem.file');
 
         $document = JFactory::getDocument();
 
         // Load template css file
-        if (JFile::exists(JPATH_ROOT . '/' . $vars['theme'] . '/css/style.css')) {
-            $document->addStyleSheet(JURI::base(true) . '/' . $vars['theme'] . '/css/style.css?' . $this->getEtag($vars['theme'] . '/style.css'));
+        if (JFile::exists(JPATH_ROOT . '/' . $vars['theme'] . '/css/styles.css')) {
+            $document->addStyleSheet(JURI::base(true) . '/' . $vars['theme'] . '/css/styles.css?' . $this->getEtag($vars['theme'] . '/styles.css'));
         } else {
-            $document->addStyleSheet($this->getURL() . '/themes/standard/css/style.css?' . $this->getEtag('standard/style.css'));
+            $document->addStyleSheet($this->getURL() . '/themes/' . self::$theme . '/css/styles.css?' . $this->getEtag(self::$theme . '/styles.css'));
         }
         return true;
     }
@@ -140,15 +139,12 @@ class plgSystemJCEMediabox extends JPlugin {
     protected function getLabels() {
         JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
-        $words = array('close', 'next', 'previous', 'cancel', 'numbers');
-        $i = 0;
-        $v = '';
+        $words = array('close', 'next', 'previous', 'cancel', 'numbers_count');
+
+        $v = [];
+
         foreach ($words as $word) {
-            $v .= "'" . $word . "':'" . htmlspecialchars(JText::_('JCEMEDIABOX_' . strtoupper($word))) . "'";
-            if ($i < count($words) - 1) {
-                $v .= ',';
-            }
-            $i++;
+            $v[$word] = htmlspecialchars(JText::_('PLG_SYSTEM_JCEMEDIABOX_' . strtoupper($word)));
         }
 
         return $v;
@@ -250,7 +246,7 @@ class plgSystemJCEMediabox extends JPlugin {
             }
         }
 
-        self::$theme = $params->get('theme', 'standard');
+        self::$theme = $params->get('theme', 'light');
 
         if ($params->get('dynamic_themes', 0)) {
             self::$theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
@@ -265,7 +261,7 @@ class plgSystemJCEMediabox extends JPlugin {
             //'convert'			=>	$params->get('convert', 0),
             'resize' => $params->get('resize', 0),
             'icons' => (int) $params->get('icons', 1),
-            'overlay' => $params->get('overlay', 1),
+            'overlay' => (int) $params->get('overlay', 1),
             'overlayopacity' => $params->get('overlayopacity', 0.8),
             'overlaycolor' => $params->get('overlaycolor', '#000000'),
             'fadespeed' => $params->get('fadespeed', 500),
@@ -274,15 +270,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'scrolling' => $params->get('scrolling', 'fixed'),
             //'protect'			=>	$params->get('protect', 1),
             'close' => $params->get('close', 2),
-            'labels' => '{' . $this->getLabels() . '}'
-        );
-
-        $tooltip = array(
-            'className' => $params->get('tipclass', 'tooltip'),
-            'opacity' => $params->get('tipopacity', 0.8),
-            'speed' => $params->get('tipspeed', 200),
-            'position' => $params->get('tipposition', 'br'),
-            'offsets' => "{x: " . $params->get('tipoffsets_x', 16) . ", y: " . $params->get('tipoffsets_y', 16) . "}",
+            'labels' => $this->getLabels()
         );
 
         $standard = array(
@@ -318,7 +306,7 @@ class plgSystemJCEMediabox extends JPlugin {
             $document->addScript($url . '/' . $script . '?' . $this->getEtag(basename($script)));
         }
         
-        $document->addStyleSheet($url . '/css/jcemediabox.css?' . $this->getEtag('jcemediabox.css'));
+        $document->addStyleSheet($url . '/css/styles.css?' . $this->getEtag('styles.css'));
 
         $this->getThemeCss($standard);
         

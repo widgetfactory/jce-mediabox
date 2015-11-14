@@ -98,19 +98,28 @@
     }
 
     function load(path) {
-        html += '<script type="text/javascript" src="' + baseDir + '/' + path + '"></script>\n';
-        moduleCount++;
+        
+        if (path.indexOf('.js') !== -1) {
+            html += '<script type="text/javascript" src="' + baseDir + '/' + path + '"></script>\n';
+            moduleCount++;
+        }
+        
+        if (path.indexOf('.css') !== -1) {
+            html += '<link rel="stylesheet" type="text/css" href="' + baseDir + '/' + path + '" />\n';
+            moduleCount++;
+        }
     }
 
     // Expose globally
     exports.define = define;
     exports.require = require;
 
-    expose(["jQuery", "mediabox/Env", "mediabox/util/Entities", "mediabox/Parameter", "mediabox/Storage", "mediabox/Base64", "mediabox/Addons", "mediabox/Convert", "mediabox/MediaBox"]);
+    expose(["jQuery", "mediabox/Env", "mediabox/util/Entities", "mediabox/Parameter", "mediabox/Storage", "mediabox/Base64", "mediabox/Addons", "mediabox/Convert", "mediabox/util/Tools", "mediabox/MediaBox"]);
 
     if (!window.jQuery) {
         load('../vendor/jquery/jquery-1.11.1.min.js');
     }
+
     if (!window.MediaElement) {
         load('../vendor/mediaelement/js/mediaelement-and-player.min.js');
     }
@@ -122,13 +131,15 @@
     load('lib/Base64.js');
     load('lib/Convert.js');
     load('lib/Addons.js');
+    load('lib/Tools.js');
     load('lib/Mediabox.js');
     
     // addons
     load('lib/Plugins.js');
-    
-    // theme
-    load('../themes/standard/js/template.js');
+
+    ['bootstrap', 'light', 'shadow', 'squeeze', 'standard', 'uikit'].forEach(function(s) {
+        load('../themes/' + s + '/js/template.js');
+    });
 
     writeScripts();
 })(this);

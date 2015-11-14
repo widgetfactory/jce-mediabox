@@ -1,0 +1,27 @@
+.wf-mediabox .modal {
+    width: auto;
+    margin: inherit;
+    padding: 0;
+    position: relative;
+    left: inherit;
+}
+
+.wf-mediabox .modal-header {
+    min-height: 30px;
+    padding: 9px 30px 9px 15px;
+}
+
+.wf-mediabox .modal-body {max-height: inherit;}
+
+.wf-mediabox .carousel {margin-bottom: inherit;}
+
+.wf-mediabox-caption {padding: 0;}
+
+.wf-mediabox-close {
+    float: none;
+    left: auto;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    z-index: 1;
+}

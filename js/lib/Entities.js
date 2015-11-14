@@ -20,7 +20,7 @@ define("mediabox/util/Entities", [], function() {
             el = document.createElement("div");
             el.innerHTML = s;
 
-            return el.textContent || el.innerText || s;
+            return el.innerHTML || s;
         }
     };
 });

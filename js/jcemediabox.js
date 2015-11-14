@@ -2383,6 +2383,7 @@
          * @param {Object} el Popup link element
          */
         zoom: function (el) {
+            var self = this;
             var DOM = JCEMediaBox.DOM, extend = JCEMediaBox.extend, each = JCEMediaBox.each;
             var children = el.childNodes;
 
@@ -2454,7 +2455,22 @@
                 var rh = child.height, rw = child.width;
 
                 // we can only render the zoom icon if we have a valid dimensions for the image
-                if ((!w || !ws) && !rw) {
+                if (!w && !ws && !rw) {
+                    // prevent loop
+                    if (child.loaded) {
+                        return false;
+                    }
+
+                    child.onload = function() {
+                        child.loaded = true;
+
+                        return self.zoom(el);
+                    };
+
+                    child.onerror = function() {
+                        return false;
+                    };
+
                     return false;
                 }
 
@@ -2469,7 +2485,7 @@
                         w = parseFloat(ws);
                         // other value
                     } else {
-                        w = child.width;
+                        w = rw;
                     }
                 }
 

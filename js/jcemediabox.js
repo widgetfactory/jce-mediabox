@@ -550,39 +550,26 @@
                     if (!src || !type) {
                         var source = DOM.select('source[type]', el);
 
-                        if (name === "video") {
-                            each(source, function(n) {
-                                src = n.getAttribute('src'), type = n.getAttribute('type');
+                        each(source, function(n) {
+                            src = n.getAttribute('src'), type = n.getAttribute('type');
 
-                                // video/x-flv not supported by any browser
-                                if (type !== "video/x-flv") {
-                                    hasSupport = checkSupport(name, type);
-                                }
-
-                                if (!hasSupport) {
-                                    return false;
-                                }
-                            });
-                            // check for flv fallback
-                            if (!hasSupport) {
-                                source = DOM.select('source[type="video/x-flv"]', el);
-
-                                if (source.length) {
-                                    src = source[0].getAttribute('src'), type = "video/x-flv";
-                                }
-                            }
-                        }
-
-                        if (name === "audio") {
-                            each(source, function(n) {
-                                src = n.getAttribute('src'), type = n.getAttribute('type');
-
+                            // video/x-flv not supported by any browser
+                            if (type !== "video/x-flv") {
                                 hasSupport = checkSupport(name, type);
+                            }
 
-                                if (!hasSupport) {
-                                    return false;
-                                }
-                            });
+                            if (!hasSupport) {
+                                return false;
+                            }
+                        });
+
+                        // check for flv fallback
+                        if (!hasSupport && name === "video") {
+                            source = DOM.select('source[type="video/x-flv"]', el);
+
+                            if (source.length) {
+                                src = source[0].getAttribute('src'), type = "video/x-flv";
+                            }
                         }
                     } else {
                         hasSupport = checkSupport(name, type);

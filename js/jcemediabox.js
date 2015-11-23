@@ -270,7 +270,9 @@
             pngfix: false,
             pngfixclass: '',
             theme: 'standard',
-            imgpath: 'plugins/system/jcemediabox/img'
+            imgpath: 'plugins/system/jcemediabox/img',
+            mediafallback: false,
+            mediaplayer: ""
         },
         init: function (options) {
             this.extend(this.options, options);
@@ -281,6 +283,11 @@
                 } catch (e) {
                 }
             }
+            // add DOM support for IE < 9
+            if (!support.video || !support.audio) {
+                document.createElement('source');
+            }
+
             this.ready();
         },
         /**
@@ -408,7 +415,7 @@
          * Initialize JCEMediaBox
          */
         _init: function () {
-            var t = this, na = navigator, ua = na.userAgent;
+            var self = this, na = navigator, ua = na.userAgent;
 
             /**
              * Constant that is true if the browser is Opera.
@@ -417,7 +424,7 @@
              * @type Boolean
              * @final
              */
-            t.isOpera = window.opera && opera.buildNumber;
+            self.isOpera = window.opera && opera.buildNumber;
 
             /**
              * Constant that is true if the browser is WebKit (Safari/Chrome).
@@ -426,11 +433,11 @@
              * @type Boolean
              * @final
              */
-            t.isWebKit = /WebKit/.test(ua);
+            self.isWebKit = /WebKit/.test(ua);
 
-            t.isChrome = /Chrome\//.test(ua);
+            self.isChrome = /Chrome\//.test(ua);
 
-            t.isSafari = /Safari\//.test(ua);
+            self.isSafari = /Safari\//.test(ua);
 
             /**
              * Constant that is true if the browser is IE.
@@ -439,7 +446,7 @@
              * @type Boolean
              * @final
              */
-            t.isIE = !t.isWebKit && !t.isOpera && (/MSIE/gi).test(ua) && (/Explorer/gi).test(na.appName) && !!window.ActiveXObject;
+            self.isIE = !self.isWebKit && !self.isOpera && (/MSIE/gi).test(ua) && (/Explorer/gi).test(na.appName) && !!window.ActiveXObject;
 
             /**
              * Constant that is true if the browser is IE 6 or older.
@@ -448,7 +455,7 @@
              * @type Boolean
              * @final
              */
-            t.isIE6 = t.isIE && /MSIE [56]/.test(ua) && !window.XMLHttpRequest;
+            self.isIE6 = self.isIE && /MSIE [56]/.test(ua) && !window.XMLHttpRequest;
 
             /**
              * Constant that is true if the browser is IE 7.
@@ -457,7 +464,7 @@
              * @type Boolean
              * @final
              */
-            t.isIE7 = t.isIE && /MSIE [7]/.test(ua) && !!window.XMLHttpRequest && !document.querySelector;
+            self.isIE7 = self.isIE && /MSIE [7]/.test(ua) && !!window.XMLHttpRequest && !document.querySelector;
 
             /**
              * Constant that tells if the current browser is an iPhone or iPad.
@@ -466,11 +473,11 @@
              * @type Boolean
              * @final
              */
-            t.isiOS = /(iPad|iPhone)/.test(ua);
+            self.isiOS = /(iPad|iPhone)/.test(ua);
 
-            t.isAndroid = /Android/.test(ua);
+            self.isAndroid = /Android/.test(ua);
 
-            t.isMobile = t.isiOS || t.isAndroid;
+            self.isMobile = self.isiOS || self.isAndroid;
 
             /**
              * Get the Site URL
@@ -487,7 +494,179 @@
             // Initialize Popup / Tooltip creation
             this.Popup.init();
             this.ToolTip.init();
+
+            if (this.options.mediafallback) {
+                this.mediaFallback();
+            }
         },
+
+        mediaFallback: function() {
+            var self = this, DOM = this.DOM, each = this.each;
+
+            function resolveMediaPath(s) {
+                if (s.indexOf('://') === -1 && s.indexOf('/') !== 0) {
+                    s = self.site + s;
+                }
+
+                return s;
+            }
+
+            // process video
+            var selector    = this.options.mediaselector || "video,audio";
+            var elms        = DOM.select(selector);
+            var swf         = this.options.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+
+            var supportMap = {
+                'video': {
+                    'h264' : ['video/mp4', 'video/mpeg'],
+                    'webm' : ['video/webm'],
+                    'ogg'  : ['video/ogg']
+                },
+                'audio': {
+                    'mp3'   : ['audio/mp3'],
+                    'ogg'   : ['audio/ogg'],
+                    'webm'  : ['audio/webm']
+                }
+            };
+
+            function checkSupport(name, type) {
+                var hasSupport = false;
+
+                for (var n in supportMap[name]) {
+                    if (supportMap[name][n].indexOf(type) !== -1) {
+                        hasSupport = support[name] && !!support[name][n];
+                    }
+                }
+
+                return hasSupport;
+            }
+
+            if (elms.length) {
+                each(elms, function(el) {
+                    var type = el.getAttribute('type'), src = el.getAttribute('src'), name = el.nodeName.toLowerCase(), hasSupport = false;
+
+                    // no src attribute set, try finding in <source>
+                    if (!src || !type) {
+                        var source = DOM.select('source[type]', el);
+
+                        if (name === "video") {
+                            each(source, function(n) {
+                                src = n.getAttribute('src'), type = n.getAttribute('type');
+
+                                // video/x-flv not supported by any browser
+                                if (type !== "video/x-flv") {
+                                    hasSupport = checkSupport(name, type);
+                                }
+
+                                if (!hasSupport) {
+                                    return false;
+                                }
+                            });
+                        }
+
+                        if (name === "audio") {
+                            each(source, function(n) {
+                                src = n.getAttribute('src'), type = n.getAttribute('type');
+
+                                hasSupport = checkSupport(name, type);
+
+                                if (!hasSupport) {
+                                    return false;
+                                }
+                            });
+                        }
+                    } else {
+                        hasSupport = checkSupport(name, type);
+                    }
+
+                    // can't do anything without these!
+                    if (!src || !type) {
+                        return;
+                    }
+
+                    // native audio/video support (exclude flv)
+                    if (hasSupport) {
+                        return;
+                    }
+
+                    var w = el.getAttribute('width'), h = el.getAttribute('height');
+                    var html = '', flashvars = [];
+
+                    // not custom player
+                    if (!self.options.mediaplayer) {
+                        flashvars.push('file=' + resolveMediaPath(src));
+                        //flashvars.push('smoothing=true');
+                    }
+
+                    self.each(['autoplay', 'loop', 'preload', 'controls'], function(at) {
+                        var v = el.getAttribute(at);
+
+                        if (typeof v !== "undefined" && v !== null) {
+                            if (v === at) {
+                                v = true;
+                            }
+
+                            flashvars.push(at + '=' + v);
+                        }
+
+                    });
+
+                    var i, attrs = el.attributes;
+
+                    for (i = attrs.length - 1; i >= 0; i--) {
+                        var attrName = attrs[i].name;
+                        if (attrName && (attrName.indexOf('data-video-') !== -1 || attrName.indexOf('data-audio-') !== -1)) {
+                            var name = attrName.replace(/data-(video|audio)-/i, '');
+                            var value = attrs[i].value;
+
+                            if (typeof value !== "undefined" || value !== null) {
+                                flashvars.push(name + '=' + value);
+                            }
+                        }
+                    }
+
+                    html += '<object class="wf-mediaplayer-object" data="' + resolveMediaPath(swf) + '" type="application/x-shockwave-flash"';
+
+                    if (w) {
+                        html += ' width="' + w + '"';
+                    }
+
+                    if (h) {
+                        html += ' height="' + h + '"';
+                    }
+
+                    html += '>';
+
+                    html += '<param name="movie" value="' + resolveMediaPath(swf) + '" />';
+                    html += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
+                    html += '<param name="allowfullscreen" value="true" />';
+                    html += '<param name="wmode" value="transparent" />';
+
+                    var poster = el.getAttribute('poster');
+
+                    if (poster) {
+                        html += '<img src="' + resolveMediaPath(poster) + '" alt="" />';
+                    }
+
+                    html += '<i>Flash is required to play this video. <a href="https://get.adobe.com/flashplayer" target="_blank">Get Adobe® Flash Player</a></i>';
+                    html += '</object>';
+
+                    var div = document.createElement('span');
+                    div.innerHTML = html;
+
+                    var o = div.firstChild;
+
+                    if (o && o.nodeName === "OBJECT") {
+                        el.parentNode.replaceChild(o, el);
+
+                        if (poster) {
+                            o.style.backgroundImage = "url('" + resolveMediaPath(poster) + "')";
+                        }
+                    }
+                });
+            }
+        },
+
         /**
          * Performs an iteration of all items in a collection such as an object or array. This method will execure the
          * callback function for each item in the collection, if the callback returns false the iteration will terminate.
@@ -3355,7 +3534,7 @@
          * @param {Integer} n Popup number
          */
         change: function (n) {
-            var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE, DIM = JCEMediaBox.Dimensions;
+            var t = this, extend = JCEMediaBox.extend, each = JCEMediaBox.each, inArray = JCEMediaBox.inArray, DOM = JCEMediaBox.DOM, Event = JCEMediaBox.Event, isIE = JCEMediaBox.isIE, DIM = JCEMediaBox.Dimensions;
 
             var p = {}, o, w, h;
             if (n < 0 || n >= this.items.length) {
@@ -3557,82 +3736,47 @@
                     this.setup();
                     break;
                 case 'video/x-flv':
-                    this.object = '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+                case 'video/mp4':
+                case 'video/mpeg':
+                case 'video/ogg':
+                case 'audio/ogg':
+                case 'audio/mp3':
+                case 'video/webm':
+                case 'audio/webm':
+                    var type = this.active.type, tag = /video/.test(type) ? 'video' : 'audio';
 
-                    var src = this.active.src;
-
-                    if (!/:\/\//.test(src)) {
-                        src = JCEMediaBox.site + src;
-                    }
-
-                    var map = {
-                        'loop': 'loop',
-                        'autoplay': 'autoPlay',
-                        'controls': 'controlBarAutoHide'
+                    var supportMap = {
+                        'video': {
+                            'h264' : ['video/mp4', 'video/mpeg'],
+                            'webm' : ['video/webm'],
+                            'ogg'  : ['video/ogg']
+                        },
+                        'audio': {
+                            'mp3'   : ['audio/mp3'],
+                            'ogg'   : ['audio/ogg'],
+                            'webm'  : ['audio/webm']
+                        }
                     };
 
-                    var v, flashvars = ['src=' + src], params = {
-                        wmode: 'opaque',
-                        allowfullscreen: true
-                    };
+                    var hasSupport = false;
 
-                    delete p.type;
-
-                    for (n in p) {
-                        if (p[n] !== '') {
-                            if (/^(id|name|style|width|height)$/.test(n)) {
-                                t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
-                            } else if (/^(wmode|allowfullscreen|play|menu|quality|scale|salign|wmode|bgcolor|base|fullScreenAspectRatio)$/i.test(n)) {
-                                params[n] = p[n];
-                            } else {
-                                if (/(loop|autoplay|controls)$/.test(n)) {
-                                    if (map[n]) {
-                                        v = (n == 'controls') ? !p[n] : !!p[n];
-                                        n = map[n];
-                                    }
-                                } else {
-                                    v = p[n];
-                                }
-
-                                flashvars.push(n + '=' + v);
+                    // video/x-flv not supported by any browser
+                    if (type !== "video/x-flv") {
+                        for (var n in supportMap[tag]) {
+                            if (supportMap[tag][n].indexOf(type) !== -1) {
+                                hasSupport = support[tag] && !!support[tag][n];
                             }
                         }
                     }
 
-                    this.object += '>';
-
-                    this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
-                    this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
-                    for (n in params) {
-                        this.object += '<param name="' + n + '" value="' + params[n] + '" />';
-                    }
-
-                    this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
-
-                    this.object += '</object>';
-
-                    // set global media type
-                    this.active.type = 'media';
-
-                    this.setup();
-                    break;
-                case 'video/mp4':
-                case 'audio/mp3':
-                case 'video/webm':
-                case 'audio/webm':
-                    var type = this.active.type;
-
-                    var hasSupport = (type == 'video/mp4' && support.video.h264) || (type == 'video/webm' && support.video.webm) || (type == 'audio/mp3' && support.audio.mp3) || (type == 'audio/webm' && support.audio.webm);
-
-                    var tag = /video/.test(type) ? 'video' : 'audio';
-
                     this.object = '';
+
                     // create <audio> / <video> tag if suported
                     if (hasSupport) {
                         p.width = p.width || this.active.width;
                         p.height = p.height || this.active.height;
 
-                        this.object += '<' + tag + ' type="' + type + '"';
+                        this.object += '<' + tag + ' type="' + type + '" src="' + this.active.src + '"' ;
 
                         for (n in p) {
                             if (p[n] !== '') {
@@ -3646,14 +3790,14 @@
                             }
                         }
 
-                        this.object += '>';
-                        this.object += '<source src="' + this.active.src + '" type="' + type + '" />';
-                    }
-                    if (type == 'video/mp4' || type == 'audio/mp3') {
-                        this.object += '<object type="application/x-shockwave-flash" data="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf"';
+                        this.object += '></' + tag + '>';
 
-                        p.width = p.width || this.active.width;
-                        p.height = p.height || this.active.height;
+                    } else if (/(video|audio)\/(mp4|mpeg|x-flv|mp3)/.test(type)) {
+                        var swf = JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+
+                        this.object += '<object type="application/x-shockwave-flash" class="wf-mediaplayer-object" data="' + swf +'"';
+                        // create empty style
+                        p.style = p.style || "";
 
                         var src = this.active.src;
 
@@ -3661,51 +3805,59 @@
                             src = JCEMediaBox.site + src;
                         }
 
-                        var map = {
-                            'loop': 'loop',
-                            'autoplay': 'autoPlay',
-                            'controls': 'controlBarMode'
-                        };
+                        var flashvars = ['file=' + src];
 
-                        var flashvars = ['src=' + src];
+                        // if supported
+                        if (p.poster) {
+                            // fix url
+                            if (p.poster.indexOf('://') === -1 && p.poster.indexOf('/') !== 0) {
+                                p.poster = JCEMediaBox.site + p.poster;
+                            }
 
-                        for (n in p) {
-                            if (p[n] !== '') {
-                                if (/(loop|autoplay|preload|controls)$/.test(n)) {
-                                    if (map[n]) {
-                                        var v = !!p[n];
+                            flashvars.push('poster=' + p.poster);
 
-                                        if (n == 'controls') {
-                                            if (!v) {
-                                                flashvars.push('controlBarMode=none');
-                                            }
-                                        } else {
-                                            flashvars.push(map[n] + '=' + v);
-                                        }
+                            p.style += " background-image:url('" + p.poster + "')";
+                        }
+
+                        each(p, function(v, n) {
+                            if (v !== "") {
+                                n = n.toLowerCase();
+
+                                if (n === "loop" || n === "autoplay" || n === "controls") {
+                                    flashvars.push(n + '=' + !!v);
+                                }
+
+                                if (n === "preload") {
+                                    flashvars.push(n + '=' + v);
+                                }
+
+                                if (n === "id" || n === "style") {
+                                    v = decodeURIComponent(DOM.decode(v));
+
+                                    v = JCEMediaBox.trim(v);
+
+                                    if (v !== "") {
+                                        t.object += ' ' + n + '="' + v + '"';
                                     }
                                 }
 
-                                if (/(id|style)$/.test(n)) {
-                                    t.object += ' ' + n + '="' + decodeURIComponent(DOM.decode(p[n])) + '"';
+                                if (n === "width" | n === "height") {
+                                    t.object += ' ' + n + '="' + v + '"';
                                 }
                             }
-                        }
+                        });
 
                         this.object += '>';
 
-                        this.object += '<param name="movie" value="' + JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf" />';
+                        this.object += '<param name="movie" value="' + swf +'" />';
                         this.object += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
                         this.object += '<param name="allowfullscreen" value="true" />';
                         this.object += '<param name="wmode" value="transparent" />';
-                        this.object += '<p>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></p>';
+                        this.object += '<i>Flash is required to play this video. <a href="http://get.adobe.com/flashplayer/" target="_blank">Get Adobe® Flash Player</a></i>';
                         this.object += '</object>';
+                    } else {
+                        DOM.addClass(this.content, 'broken-media');
                     }
-
-                    if (hasSupport) {
-                        this.object += '</' + tag + '>';
-                    }
-
-                    //DOM.addClass(this.content, 'broken-media');
 
                     // set global media type
                     this.active.type = 'media';

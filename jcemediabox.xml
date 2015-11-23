@@ -15,6 +15,12 @@
             <fieldset name="general" group="general">
                 <field name="theme" type="folderlist" directory="plugins/system/jcemediabox/themes" hide_none="true" hide_default="true" exclude="(css|img)" default="standard" label="JCEMEDIABOX_THEME" description="JCEMEDIABOX_THEMEDESC" />
                 <field name="imgpath" type="text" size="50" default="plugins/system/jcemediabox/img" label="JCEMEDIABOX_IMAGEPATH" description="JCEMEDIABOX_IMAGEPATHDESC"/>
+
+                <field name="mediafallback" type="radio" default="0" label="JCEMEDIABOX_MEDIAFALLBACK" description="JCEMEDIABOX_MEDIAFALLBACKDESC">
+                    <option value="1">JCEMEDIABOX_YES</option>
+                    <option value="0">JCEMEDIABOX_NO</option>
+                </field>
+
             </fieldset>
             <fieldset name="popup" group="popup">
                 <field type="spacer" default="JCEMEDIABOX_POPUP" />

@@ -20,6 +20,8 @@
             <option value="0">JCEMEDIABOX_NO</option>
         </param>
 
+        <param name="mediaselector" type="text" size="50" default="audio,video" label="JCEMEDIABOX_MEDIASELECTOR" description="JCEMEDIABOX_MEDIASELECTORDESC"/>
+
         <param type="spacer" default="JCEMEDIABOX_POPUP" />
         <param name="fadespeed" type="text" default="500" label="JCEMEDIABOX_FADESPEED" description="JCEMEDIABOX_FADESPEEDDESC"/>
         <param name="scalespeed" type="text" default="500" label="JCEMEDIABOX_SCALESPEED" description="JCEMEDIABOX_SCALESPEEDDESC"/>

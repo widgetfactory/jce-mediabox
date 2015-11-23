@@ -272,7 +272,8 @@
             theme: 'standard',
             imgpath: 'plugins/system/jcemediabox/img',
             mediafallback: false,
-            mediaplayer: ""
+            mediaplayer: "",
+            mediaselector: "audio,video"
         },
         init: function (options) {
             this.extend(this.options, options);
@@ -512,7 +513,7 @@
             }
 
             // process video
-            var selector    = this.options.mediaselector || "video,audio";
+            var selector    = this.options.mediaselector;
             var elms        = DOM.select(selector);
             var swf         = this.options.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
 
@@ -603,7 +604,6 @@
                     // not custom player
                     if (!self.options.mediaplayer) {
                         flashvars.push('file=' + resolveMediaPath(src));
-                        //flashvars.push('smoothing=true');
                     }
 
                     self.each(['autoplay', 'loop', 'preload', 'controls'], function(at) {

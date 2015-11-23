@@ -21,6 +21,8 @@
                     <option value="0">JCEMEDIABOX_NO</option>
                 </field>
 
+                <field name="mediaselector" type="text" size="50" default="audio,video" label="JCEMEDIABOX_MEDIASELECTOR" description="JCEMEDIABOX_MEDIASELECTORDESC"/>
+
             </fieldset>
             <fieldset name="popup" group="popup">
                 <field type="spacer" default="JCEMEDIABOX_POPUP" />

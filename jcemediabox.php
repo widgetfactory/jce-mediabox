@@ -293,7 +293,8 @@ class plgSystemJCEMediabox extends JPlugin {
             'theme' => $theme,
             'themecustom' => $params->get('themecustom', ''),
             'themepath' => $params->get('themepath', 'plugins/system/jcemediabox/themes'),
-            'mediafallback' => $params->get('mediafallback', 0)
+            'mediafallback' => $params->get('mediafallback', 0),
+            'mediaselector' => $params->get('mediaselector', 'audio,video')
         );
 
         jimport('joomla.environment.browser');

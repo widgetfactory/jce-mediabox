@@ -562,6 +562,14 @@
                                     return false;
                                 }
                             });
+                            // check for flv fallback
+                            if (!hasSupport) {
+                                source = DOM.select('source[type="video/x-flv"]', el);
+
+                                if (source.length) {
+                                    src = source[0].getAttribute('src'), type = "video/x-flv";
+                                }
+                            }
                         }
 
                         if (name === "audio") {

@@ -648,10 +648,14 @@
                     html += '<param name="allowfullscreen" value="true" />';
                     html += '<param name="wmode" value="transparent" />';
 
+                    var poster = el.getAttribute('poster');
+
+                    if (poster) {
+                        html += '<img src="' + resolveMediaPath(poster) + '" alt="" />';
+                    }
+
                     html += '<i>Flash is required to play this video. <a href="https://get.adobe.com/flashplayer" target="_blank">Get Adobe® Flash Player</a></i>';
                     html += '</object>';
-
-                    var poster = el.getAttribute('poster');
 
                     var div = document.createElement('span');
                     div.innerHTML = html;

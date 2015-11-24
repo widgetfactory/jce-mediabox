@@ -286,6 +286,11 @@ a.jcepopup.ie6.icon-left span.jcemediabox-zoom-image {
     background-color: #fff
 }
 
+.wf-mediaplayer-object img {
+    width: inherit;
+    height: inherit;
+}
+
 .wf-mediaplayer-container {
     /*position: relative;
     padding-bottom: 56.25%;

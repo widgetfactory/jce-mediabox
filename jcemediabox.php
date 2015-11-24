@@ -31,7 +31,7 @@ jimport('joomla.plugin.plugin');
  */
 class plgSystemJCEMediabox extends JPlugin {
 
-    private $version = '@@version@@';
+    private static $version = '@@version@@';
 
     /**
      * Constructor
@@ -48,27 +48,8 @@ class plgSystemJCEMediabox extends JPlugin {
         return JURI::base(true) . '/plugins/system/jcemediabox';
     }
 
-    /**
-     * Returns $version.
-     *
-     * @see plgSystemJCEMediabox::$version
-     */
-    protected function getVersion() {
-        return preg_replace('/[^\d]+/', '', $this->version);
-    }
-    
     protected function getEtag($file) {
-        return md5($file . $this->getVersion());
-    }
-
-    /**
-     * Sets $version.
-     *
-     * @param object $version
-     * @see plgSystemJCEMediabox::$version
-     */
-    protected function setVersion($version) {
-        $this->version = $version;
+        return md5($file . preg_replace('/[^\d]+/', '', self::$version));
     }
 
     /**
@@ -161,16 +142,15 @@ class plgSystemJCEMediabox extends JPlugin {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        $document = JFactory::getDocument();
-
-        $path = $this->getPath() . '/addons';
+        $path   = $this->getPath() . '/addons';
         $filter = array('default-src.js');
 
-        if ($this->getVersion()) {
+        // not dev mode, skip default.js
+        if (strpos(self::$version, '@@') === false) {
             $filter[] = 'default.js';
         }
 
-        $files = JFolder::files($path, '.js$', false, false, $filter);
+        $files  = JFolder::files($path, '.js$', false, false, $filter);
 
         $scripts = array();
 
@@ -275,8 +255,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'close' => $params->get('close', 2),
             'labels' => '{' . $this->getLabels() . '}',
             'cookie_expiry' => $params->get('cookie_expiry', ''),
-            'google_viewer' => $params->get('google_viewer', 0),
-            'pdfjs' => $params->get('pdfjs', 0),
+            'google_viewer' => $params->get('google_viewer', 0)
         );
 
         $tooltip = array(

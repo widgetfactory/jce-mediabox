@@ -29,7 +29,7 @@
          * @param {String} v URL
          */
         flash: function(v) {
-            if (/\.swf\b/.test(v)) {
+            if (/\.swf\b/i.test(v)) {
                 return {
                     type: 'flash'
                 };
@@ -40,7 +40,7 @@
          * @param {String} v URL
          */
         flv: function(v) {
-            if (/\.(flv|f4v)\b/.test(v)) {
+            if (/\.(flv|f4v)\b/i.test(v)) {
                 return {
                     type: 'video/x-flv'
                 };

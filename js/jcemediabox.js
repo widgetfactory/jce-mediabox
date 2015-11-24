@@ -504,9 +504,20 @@
         mediaFallback: function() {
             var self = this, DOM = this.DOM, each = this.each;
 
-            function resolveMediaPath(s) {
-                if (s.indexOf('://') === -1 && s.indexOf('/') !== 0) {
-                    s = self.site + s;
+            function toAbsolute(url) {
+                var div = document.createElement('div');
+                div.innerHTML = '<a href="' + url + '">x</a>';
+
+                return div.firstChild.href;
+            }
+
+            function resolveMediaPath(s, absolute) {
+                if (s && s.indexOf('://') === -1 && s.charAt(0) !== '/') {
+                    s = self.options.base + s;
+                }
+
+                if (absolute) {
+                    return toAbsolute(s);
                 }
 
                 return s;
@@ -590,7 +601,7 @@
 
                     // not custom player
                     if (!self.options.mediaplayer) {
-                        flashvars.push('file=' + resolveMediaPath(src));
+                        flashvars.push('file=' + resolveMediaPath(src, true));
                     }
 
                     self.each(['autoplay', 'loop', 'preload', 'controls'], function(at) {
@@ -2396,7 +2407,7 @@
             var o = {}, type = '';
 
             // Media types
-            if (/(director|windowsmedia|mplayer|quicktime|real|divx|flash|pdf)/.test(el.type)) {
+            if (el.type && /(director|windowsmedia|mplayer|quicktime|real|divx|flash|pdf)/.test(el.type)) {
                 type = /(director|windowsmedia|mplayer|quicktime|real|divx|flash|pdf)/.exec(el.type)[1];
             }
 
@@ -3601,6 +3612,25 @@
                 'height': height
             });
 
+            function toAbsolute(url) {
+                var div = document.createElement('div');
+                div.innerHTML = '<a href="' + url + '">x</a>';
+
+                return div.firstChild.href;
+            }
+
+            function resolveMediaPath(s, absolute) {
+                if (s && s.indexOf('://') === -1 && s.charAt(0) !== '/') {
+                    s = JCEMediaBox.options.base + s;
+                }
+
+                if (absolute) {
+                    return toAbsolute(s);
+                }
+
+                return s;
+            }
+
             switch (this.active.type) {
                 case 'image':
                 case 'image/jpeg':
@@ -3650,6 +3680,7 @@
                     }
 
                     p.src = this.active.src;
+
                     var base = /:\/\//.test(p.src) ? '' : this.site;
                     this.object = '';
 
@@ -3766,6 +3797,12 @@
 
                     this.object = '';
 
+                    var src = resolveMediaPath(this.active.src);
+
+                    if (p.poster) {
+                        p.poster = resolveMediaPath(p.poster);
+                    }
+
                     // create <audio> / <video> tag if suported
                     if (hasSupport) {
                         p.width = p.width || this.active.width;
@@ -3788,29 +3825,17 @@
                         this.object += '></' + tag + '>';
 
                     } else if (/(video|audio)\/(mp4|mpeg|x-flv|mp3)/.test(type)) {
-                        var swf = JCEMediaBox.site + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+                        var swf = JCEMediaBox.options.base + 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
 
                         this.object += '<object type="application/x-shockwave-flash" class="wf-mediaplayer-object" data="' + swf +'"';
                         // create empty style
                         p.style = p.style || "";
 
-                        var src = this.active.src;
-
-                        if (!/:\/\//.test(src)) {
-                            src = JCEMediaBox.site + src;
-                        }
-
-                        var flashvars = ['file=' + src];
+                        var flashvars = ['file=' + toAbsolute(src)];
 
                         // if supported
                         if (p.poster) {
-                            // fix url
-                            if (p.poster.indexOf('://') === -1 && p.poster.indexOf('/') !== 0) {
-                                p.poster = JCEMediaBox.site + p.poster;
-                            }
-
-                            flashvars.push('poster=' + p.poster);
-
+                            //flashvars.push('poster=' + toAbsolute(p.poster));
                             p.style += " background-image:url('" + p.poster + "')";
                         }
 

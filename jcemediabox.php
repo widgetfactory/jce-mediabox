@@ -33,13 +33,6 @@ class plgSystemJCEMediabox extends JPlugin {
 
     private static $version = '@@version@@';
 
-    /**
-     * Constructor
-     */
-    public function plgSystemJCEMediabox(&$subject, $config) {
-        parent::__construct($subject, $config);
-    }
-
     protected function getPath() {
         return JPATH_PLUGINS . '/system/jcemediabox';
     }

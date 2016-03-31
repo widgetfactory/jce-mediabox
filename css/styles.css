@@ -37,7 +37,8 @@
     font-size: 20px;
     font-weight: bold;
     line-height: 20px;
-    margin-left: 1.6px;
+    margin: 0;
+    width: 21px;
     text-align: center;
     text-decoration: none;
     vertical-align: middle;
@@ -48,12 +49,12 @@
 .wf-mediabox-prev:after {
     content: "◀︎";
     font-size: 12px;
-    margin: 1px 0 0 -2px;
+    margin: 1px 0 0 -1px;
 }
 .wf-mediabox-next:after {
     content:"▶︎";
     font-size: 12px;
-    margin: 1px 0 0 3px;
+    margin: 1px 0 0 2px;
 }
 
 .wf-mediabox-close {

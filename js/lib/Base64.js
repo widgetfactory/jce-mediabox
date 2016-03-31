@@ -4,8 +4,7 @@
  *  http://www.webtoolkit.info/
  *
  **/
-define("mediabox/util/Base64", [], function() {
-
+ (function() {
     // private property
     var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -65,7 +64,7 @@ define("mediabox/util/Base64", [], function() {
         return string;
     }
 
-    return {
+    var Base64 = {
         // public method for encoding
         encode: function(input) {
             var output = "";
@@ -135,7 +134,7 @@ define("mediabox/util/Base64", [], function() {
             return output;
         }
     };
-    
+
     // patch in btoa
     if (!window.btoa) {
         window.btoa = Base64.encode;
@@ -144,6 +143,4 @@ define("mediabox/util/Base64", [], function() {
     if (!window.atob) {
         window.atob = Base64.decode;
     }
-});
-
-
+})();

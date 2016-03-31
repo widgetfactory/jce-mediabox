@@ -1,4 +1,4 @@
-define("mediabox/Convert", ["jQuery", "mediabox/Parameter"], function($, Parameter) {
+(function($, Parameter) {
     var Convert = {
         /**
          * Convert legacy popups to new format
@@ -84,5 +84,5 @@ define("mediabox/Convert", ["jQuery", "mediabox/Parameter"], function($, Paramet
         }
     };
 
-    return Convert;
-});
+    window.MediaBox.Convert = Convert;
+})(jQuery, MediaBox.Parameter);

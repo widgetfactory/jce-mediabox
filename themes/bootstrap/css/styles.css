@@ -1,27 +1,36 @@
-.wf-mediabox .modal {
-    width: auto;
-    margin: inherit;
-    padding: 0;
-    position: relative;
-    left: inherit;
+.wf-mediabox-theme-bootstrap.wf-mediabox .modal {
+  width: auto;
+  margin: inherit;
+  padding: 0;
+  position: relative;
+  left: inherit;
 }
-
-.wf-mediabox .modal-header {
-    min-height: 30px;
-    padding: 9px 30px 9px 15px;
+.wf-mediabox-theme-bootstrap .modal-header {
+  min-height: 30px;
+  padding: 9px 30px 9px 15px;
 }
-
-.wf-mediabox .modal-body {max-height: inherit;}
-
-.wf-mediabox .carousel {margin-bottom: inherit;}
-
-.wf-mediabox-caption {padding: 0;}
-
-.wf-mediabox-close {
-    float: none;
-    left: auto;
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    z-index: 1;
+.wf-mediabox-theme-bootstrap .modal-body {
+  padding: 5px;
+  width: auto;
+  max-height: inherit;
+}
+.wf-mediabox-theme-bootstrap .carousel {
+  margin-bottom: inherit;
+}
+.wf-mediabox-theme-bootstrap .wf-mediabox-caption {
+  padding: 0;
+}
+.wf-mediabox-theme-bootstrap .wf-mediabox-close {
+  float: none;
+  left: auto;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  z-index: 1;
+}
+.wf-mediabox-theme-bootstrap .wf-mediabox-close:hover {
+  background-color: transparent;
+}
+.wf-mediabox-theme-bootstrap .wf-mediabox-prev::after, .wf-mediabox-theme-bootstrap .wf-mediabox-next::after {
+  content: "";
 }

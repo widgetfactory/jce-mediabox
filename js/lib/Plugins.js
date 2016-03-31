@@ -13,35 +13,41 @@
  */
 (function ($, WFMediaBox) {
     function createObject(data, embed) {
-        var n;
-
         delete data.group;
         delete data.title;
         delete data.caption;
         delete data.width;
         delete data.height;
 
+        var attribs = ['id','name','style','codebase','classid','type','data'];
+
         var html = '<object ';
         // custom attributes
-        for (n in data) {
-            if (/(id|name|style|codebase|classid|type|data)$/.test(n) && typeof data[n] === "string") {
+        for (var n in data) {
+            if (attribs.indexOf(n) !== -1 && typeof data[n] === "string") {
                 html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
 
                 delete data[n];
             }
         }
+
         html += '>';
+
         // custom params
-        for (n in data) {
+        for (var n in data) {
             if (typeof data[n] === "string") {
-                html += ' <param name="' + n + '" value="' + decodeURIComponent(data[n]) + '" />';
+              html += ' <param name="' + n + '" value="' + decodeURIComponent(data[n]) + '" />';
             }
         }
+
         if (embed) {
             html += '<embed';
-            for (n in data) {
+            for (var n in data) {
+              if (typeof data[n] === "string") {
                 html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
+              }
             }
+
             html += '></embed>';
         }
         html += '</object>';
@@ -60,7 +66,7 @@
             data.type = "application/x-shockwave-flash";
             data.data = data.src;
 
-            return $(createObject(data));
+            return $(createObject(data, true));
         };
 
         this.is = function (data) {
@@ -68,18 +74,34 @@
         };
     });
     WFMediaBox.Plugin.add('flv', function () {
+        this.type = "object";
         this.html = function (data) {
-            data.type = "video/x-flv";
-            return $(createObject(data, true));
+            var swf     = WFMediaBox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+
+            data.type   = "application/x-shockwave-flash";
+            data.data   = WFMediaBox.resolveMediaPath(swf);
+
+            data.flashvars = 'src=' + WFMediaBox.resolveMediaPath(data.src, true);
+
+            if (typeof data.controls === "undefined") {
+                data.controls = "true";
+            }
+
+            data.flashvars += '&controls=' + data.controls;
+
+            delete data.src;
+            delete data.controls;
+
+            return $(createObject(data));
         };
 
         this.is = function (data) {
-            return /\.flv\b/.test(data.src);
+            return /\.(flv|f4v)\b/.test(data.src);
         };
     });
     /*WFMediaBox.Plugin.add('metacafe', function(v) {
      this.attributes = {
-     
+
      return {
      width: 400,
      height: 345,
@@ -92,7 +114,7 @@
      }
      };
      }
-     
+
      return /metacafe(.+)\/(watch|fplayer)\/(.+)/.test(v);
      });*/
     /**
@@ -101,7 +123,7 @@
      */
     WFMediaBox.Plugin.add('dailymotion', function () {
         this.is = function (data) {
-            return /dai\.?ly(motion)?(.+)?\/(swf|video)?\/?([a-z0-9]+)_?/.test(data.src);
+            return /dai\.?ly(motion)/.test(data.src);
         };
 
         function processURL(s) {
@@ -133,7 +155,7 @@
             data.classid = "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b";
             data.codebase = "https://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0";
 
-            return $(createObject(data, true));
+            return $(createObject(data));
         };
 
         this.type = "object";
@@ -180,7 +202,7 @@
                 return 'youtube' + c + '/embed/' + d;
             });
 
-            // add www (required by iOS ??)        
+            // add www (required by iOS ??)
             v = v.replace(/\/\/youtube/i, '//www.youtube');
 
             // force ssl
@@ -242,7 +264,42 @@
         };
     });
     /**
-     * PDF 
+     * HTML5 Video
+     */
+    WFMediaBox.Plugin.add('video', function () {
+        this.type = "video";
+
+        // create image html (leave src blank)
+        this.html = function (data) {
+            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'], n;
+
+            var params = data.params || {};
+
+            for (n in params) {
+                attribs.push(n + '="' + params[n] + '"');
+            }
+
+            if (!params.autoplay) {
+                attribs.push('controls');
+            }
+
+            if (data.width) {
+                attribs.push('width="' + data.width + '"');
+            }
+
+            if (data.height) {
+                attribs.push('height="' + data.height + '"');
+            }
+
+            return '<video ' + attribs.join(' ') + '></video>';
+        };
+
+        this.is = function (data) {
+            return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(data.src)) && WFMediaBox.Env.video;
+        };
+    });
+    /**
+     * PDF
      */
     WFMediaBox.Plugin.add('pdf', function () {
         this.type = "iframe";
@@ -258,7 +315,7 @@
         };
     });
     /**
-     * Ajax / Internal Content 
+     * Ajax / Internal Content
      */
     WFMediaBox.Plugin.add('content', function () {
         function islocal(s) {
@@ -278,21 +335,21 @@
             if (islocal(src) && src.indexOf('tmpl=component') === -1) {
                 src += /\?/.test(src) ? '&tmpl=component' : '?tmpl=component';
             }
-            
+
             var iframe = $('<iframe src="' + src + '" />').load(function() {
                 var n = this, html = this.contentWindow.document.body.innerHTML;
-                
+
                 // append html to created parent
                 $(this).parent().append(html);
-                
+
                 // remove iframe
                 window.setTimeout(function() {
                     $(n).remove();
                 }, 10);
-                
+
                 WFMediaBox.create(WFMediaBox.getPopups('', $(this).parent()));
             });
-            
+
             return iframe;
         };
 

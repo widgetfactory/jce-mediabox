@@ -2,7 +2,7 @@ WFMediaBox.Theme.add("light", function () {
     return [
     {
         "div": {
-            "id": "wf-mediabox-container",
+            "class": "wf-mediabox-container",
             "content": [
                 {
                     "div": {
@@ -18,16 +18,14 @@ WFMediaBox.Theme.add("light", function () {
                     "a": {
                         "class": "wf-mediabox-next",
                         "href": "#",
-                        "title": "{{next}}",
-                        "text": "&raquo;"
+                        "title": "{{next}}"
                     }
                 },
                 {
                     "a": {
                         "class": "wf-mediabox-prev",
                         "href": "#",
-                        "title": "{{previous}}",
-                        "text": "&laquo;"
+                        "title": "{{previous}}"
                     }
                 }
             ]

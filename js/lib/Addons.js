@@ -3,141 +3,145 @@
  * @param {type} $ DomQuery
  * @returns {mediabox/Addons}
  */
-define("mediabox/Addons", ["jQuery"], function ($) {
-    function Addons() {
-        var self = this;
 
-        self.items = [];
-        self.lookup = {};
-    }
+(function($) {
+  function Addons() {
+      var self = this;
 
-    Addons.prototype = {
-        /**
-         * Extend the addons object with a new addon
-         * @param {String} n Addon name
-         * @param {Object} o Addon object
-         */
-        add: function (id, addOn) {
-            this.items.push(addOn);
-            this.lookup[id] = {instance: addOn};
+      self.items = [];
+      self.lookup = {};
+  }
 
-            return addOn;
-        },
-        /**
-         * Returns the specified add on by the short name.
-         *
-         * @method get
-         * @param {String} name Add-on to look for.
-         * @return {mediabox.Theme/mediabox.Plugin} Theme or plugin add-on instance or undefined.
-         */
-        get: function (name) {
-            if (name && this.lookup[name]) {
-                return this.lookup[name].instance;
-            }
+  Addons.prototype = {
+      /**
+       * Extend the addons object with a new addon
+       * @param {String} n Addon name
+       * @param {Object} o Addon object
+       */
+      add: function (id, addOn) {
+          this.items.push(addOn);
+          this.lookup[id] = {instance: addOn};
 
-            return this.lookup;
-        }
-    };
+          return addOn;
+      },
+      /**
+       * Returns the specified add on by the short name.
+       *
+       * @method get
+       * @param {String} name Add-on to look for.
+       * @return {mediabox.Theme/mediabox.Plugin} Theme or plugin add-on instance or undefined.
+       */
+      get: function (name) {
+          if (name && this.lookup[name]) {
+              return this.lookup[name].instance;
+          }
 
-    Addons.Plugin = new Addons();
-    Addons.Theme = new Addons();
+          return this.lookup;
+      }
+  };
 
-    /**
-     * Check a plugin
-     * @param {type} v
-     * @param {type} n
-     * @returns {boolean}
-     */
-    Addons.Plugin.getPlugin = function (v, n) {
-        var o, s, r, k;
+  Addons.Plugin = new Addons();
+  Addons.Theme = new Addons();
 
-        s = this.get(n);
+  /**
+   * Check a plugin
+   * @param {type} v
+   * @param {type} n
+   * @returns {boolean}
+   */
+  Addons.Plugin.getPlugin = function (v, n) {
+      var o, s, r, k;
 
-        $.each(s, function (k, o) {
-            var p = o.instance, c = new p(v);
+      s = this.get(n);
 
-            if (c && c.is(v)) {
-                r = c;
-                return false;
-            }
-        });
+      $.each(s, function (k, o) {
+          var p = o.instance, c = new p(v);
 
-        return r;
-    };
+          if (c && c.is(v)) {
+              r = c;
+              return false;
+          }
+      });
 
-    /**
-     * Convert json theme data to HTML
-     * @param {type} data
-     * @returns {@exp;el@pro;innerHTML|String}
-     */
-    Addons.Theme.parse = function (name, translate, parent) {
-        var theme = this.get(name), data;
+      return r;
+  };
 
-        if (theme) {
-            data = new theme();
-        }
+  /**
+   * Convert json theme data to HTML
+   * @param {type} data
+   * @returns {@exp;el@pro;innerHTML|String}
+   */
+  Addons.Theme.parse = function (name, translate, parent) {
+      var theme = this.get(name), data;
 
-        // no theme data
-        if (!data) {
-            return;
-        }
+      if (typeof theme !== "function") {
+          theme = this.get("standard");
+      }
 
-        // create parent div if no parent set
-        if (!parent) {
-            parent = document.createElement('div');
-        }
+      data = new theme();
 
-        if (!translate) {
-            translate = function (s) {
-                return s;
-            };
-        }
+      // no theme data
+      if (!data) {
+          return;
+      }
 
-        /**
-         * Internal function to create or process a node
-         * @param o Data object
-         * @param el Element
-         */
-        function createNode(o, el) {
-            // process node object
-            $.each(o, function (k, v) {
-                if (typeof v === "string") {
-                    // translate
-                    v = translate(v);
+      // create parent div if no parent set
+      if (!parent) {
+          parent = document.createElement('div');
+      }
 
-                    // text node
-                    if (k === "text") {
-                        $(el).html(v);
-                        // attribute
-                    } else {
-                        $(el).attr(k, v);
-                    }
-                } else {
-                    if ($.isArray(v)) {
-                        createNode(v, el);
-                    } else if (typeof k === "string") {
-                        // create new node
-                        var node = document.createElement(k);
-                        // append to parent
-                        $(el).append(node);
-                        // pass back
-                        createNode(v, node);
-                    } else {
-                        // pass back
-                        createNode(v, el);
-                    }
-                }
-            });
-        }
+      if (!translate) {
+          translate = function (s) {
+              return s;
+          };
+      }
 
-        // create nodes
-        createNode(data, parent);
+      /**
+       * Internal function to create or process a node
+       * @param o Data object
+       * @param el Element
+       */
+      function createNode(o, el) {
+          // process node object
+          $.each(o, function (k, v) {
+              if (typeof v === "string") {
+                  // translate
+                  v = translate(v);
 
-        // return parent node
-        return parent;
-    };
+                  // text node
+                  if (k === "text") {
+                      $(el).html(v);
+                      // attribute
+                  } else {
+                      $(el).attr(k, v);
+                  }
+              } else {
+                  if ($.isArray(v)) {
+                      createNode(v, el);
+                  } else if (typeof k === "string") {
+                      // create new node
+                      var node = document.createElement(k);
+                      // append to parent
+                      $(el).append(node);
+                      // pass back
+                      createNode(v, node);
+                  } else {
+                      // pass back
+                      createNode(v, el);
+                  }
+              }
+          });
+      }
 
-    return Addons;
-});
+      // create nodes
+      createNode(data, parent);
 
+      // return parent node
+      return parent;
+  };
 
+  window.MediaBox.Addons  = Addons;
+
+  window.MediaBox.Plugin  = Addons.Plugin;
+  window.MediaBox.Theme   = Addons.Theme;
+})(jQuery);

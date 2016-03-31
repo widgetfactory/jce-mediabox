@@ -5,8 +5,8 @@
  * @param {Object} Entities mediabox/util/Entities
  * @returns {mediabox/Addons}
  */
-define("mediabox/Parameter", ["jQuery", "mediabox/util/Entities"], function($, Entities) {
-    return {
+(function($, Entities) {
+    var Parameter = {
         parse : function(s) {
             var a = [], x = [];
 
@@ -61,6 +61,6 @@ define("mediabox/Parameter", ["jQuery", "mediabox/util/Entities"], function($, E
             return $.parseJSON('{' + a.join(',') + '}');
         }
     };
-});
 
-
+    window.MediaBox.Parameter = Parameter;
+})(jQuery, MediaBox.Entities);

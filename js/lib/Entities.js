@@ -1,5 +1,4 @@
-define("mediabox/util/Entities", [], function() {
-
+(function() {
     var entities = {
         '\"': '&quot;',
         "'": '&#39;',
@@ -8,7 +7,7 @@ define("mediabox/util/Entities", [], function() {
         '&': '&amp;'
     };
 
-    return {
+    var Entities = {
         encode: function(s) {
             return ('' + s).replace(/[<>&\"\']/g, function(c) {
                 return entities[c] || c;
@@ -23,4 +22,6 @@ define("mediabox/util/Entities", [], function() {
             return el.innerHTML || s;
         }
     };
-});
+
+    window.MediaBox.Entities = Entities;
+})();

@@ -1,4 +1,4 @@
-define("mediabox/util/Tools", [], function () {
+(function ($) {
     var Tools = {};
 
     function now() {
@@ -90,10 +90,10 @@ define("mediabox/util/Tools", [], function () {
         if (/\d/.test(w)) {
             w = parseInt(w);
         }
-        
+
         return w;
     };
-    
+
     Tools.parseHeight = function (h) {
         // calculate width if percentage
         if (/%/.test(h)) {
@@ -103,9 +103,9 @@ define("mediabox/util/Tools", [], function () {
         if (/\d/.test(h)) {
             h = parseInt(h);
         }
-        
+
         return h;
     };
 
-    return Tools;
-});
+    window.MediaBox.Tools = Tools;
+})(jQuery);

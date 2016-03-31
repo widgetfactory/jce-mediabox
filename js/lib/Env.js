@@ -16,7 +16,8 @@
  * @class tinymce.Env
  * @static
  */
-define("mediabox/Env", [], function() {
+(function() {
+
     var nav = navigator, userAgent = nav.userAgent;
     var opera, webkit, ie, ie6, gecko, mac, iDevice, Android, video, audio;
 
@@ -86,7 +87,7 @@ define("mediabox/Env", [], function() {
         return false;
     })();
 
-    return {
+    var Env = {
         /**
          * Constant that is true if the browser is Opera.
          *
@@ -168,4 +169,6 @@ define("mediabox/Env", [], function() {
          */
         audio: audio
     };
-});
+
+    window.MediaBox.Env = Env;
+})();

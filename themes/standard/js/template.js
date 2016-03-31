@@ -21,10 +21,9 @@ WFMediaBox.Theme.add("standard", function () {
                             "content": [
                                 {
                                     "a": {
-                                        "class": "wf-mediabox-close wf-icon-close",
+                                        "class": "wf-mediabox-close",
                                         "href": "#",
-                                        "title": "{{close}}",
-                                        "text": ""
+                                        "title": "{{close}}"
                                     }
                                 },
                                 {
@@ -38,18 +37,16 @@ WFMediaBox.Theme.add("standard", function () {
                                         "content": [
                                             {
                                                 "a": {
-                                                    "class": "wf-mediabox-prev wf-icon-prev",
+                                                    "class": "wf-mediabox-prev",
                                                     "href": "#",
-                                                    "title": "{{previous}}",
-                                                    "text": ""
+                                                    "title": "{{previous}}"
                                                 }
                                             },
                                             {
                                                 "a": {
-                                                    "class": "wf-mediabox-next wf-icon-next",
+                                                    "class": "wf-mediabox-next",
                                                     "href": "#",
-                                                    "title": "{{next}}",
-                                                    "text": ""
+                                                    "title": "{{next}}"
                                                 }
                                             },
                                             {

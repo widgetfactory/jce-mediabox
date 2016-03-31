@@ -1,6 +1,6 @@
-define("mediabox/util/Mimetype", [], function() {
-    return {
-       
+(function() {
+    var Mimetype = {
+
         get: function(c) {
             var ci, cb, mt;
 
@@ -60,6 +60,6 @@ define("mediabox/util/Mimetype", [], function() {
             };
         }
     };
-});
 
-
+    window.MediaBox.Mimetype = Mimetype;
+})();

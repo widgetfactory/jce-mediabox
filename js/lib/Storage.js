@@ -1,5 +1,4 @@
-define("mediabox/util/Storage", [], function() {
-
+(function() {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage
     if (!window.sessionStorage) {
         window.sessionStorage = {
@@ -34,7 +33,7 @@ define("mediabox/util/Storage", [], function() {
         window.sessionStorage.length = (document.cookie.match(/\=/g) || window.sessionStorage).length;
     }
 
-    return {
+    var Storage = {
         /**
          * Gets the raw data from sessionStorage by name.
          *
@@ -56,6 +55,6 @@ define("mediabox/util/Storage", [], function() {
             return sessionStorage.setItem(n, v);
         }
     };
-});
 
-
+    window.MediaBox.Storage = Storage;
+})();

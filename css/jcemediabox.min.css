@@ -1,0 +1,9 @@
+@import url('base.css');
+@import url('fonts.css');
+@import url('styles.css');
+
+@import url('../themes/bootstrap/css/styles.css');
+@import url('../themes/light/css/styles.css');
+@import url('../themes/shadow/css/styles.css');
+@import url('../themes/squeeze/css/styles.css');
+@import url('../themes/uikit/css/styles.css');

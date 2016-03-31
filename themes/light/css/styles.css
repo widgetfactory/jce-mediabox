@@ -10,112 +10,137 @@
  * other free or open source software licenses.
  */
 
-.wf-mediabox-frame {
+.wf-mediabox-theme-light .wf-mediabox-frame {
 	padding: 20px 10px;
 }
-.wf-mediabox-container {
-	background-color: #ffffff;
+.wf-mediabox-theme-light .wf-mediabox-loader {
+	background: url(../img/loader-light.gif) no-repeat center center;
 }
-.wf-mediabox-loader {
-	background: url(../img/loader.gif) no-repeat center center;
+.wf-mediabox-theme-light .wf-mediabox-container {
+	border-radius: 0;
+	padding: 10px 10px 0;
 }
-.wf-mediabox-content {
-	padding: 10px;
-	background-color: #ffffff;
+.wf-mediabox-theme-light .wf-mediabox-content {
 }
-.wf-mediabox-info-top {
-	line-height: 20px;
-	padding: 0px 0px 5px 0px;
-	color: #ffffff;
-}
-.wf-mediabox-info-bottom {
+.wf-mediabox-theme-light .wf-mediabox-info-top {}
+.wf-mediabox-theme-light .wf-mediabox-info-bottom {
 	background-color: #ffffff;
 	min-height: 30px;
 	padding: 0 0 10px 0;
 	border-radius: 0;
 }
-.wf-mediabox-close {
-	margin-right: 10px;
-	position: relative;
-	float: right;
-	border: none;
-	font-size: 16px;
+.wf-mediabox-theme-light .wf-mediabox-close::before {
+	content: "×";
+	font-size: 24px;
+	font-weight: bold;
+	vertical-align: text-top;
+}
+.wf-mediabox-theme-light .wf-mediabox-close {
+	border: medium none;
 	color: #676767;
+	display: block;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 16px;
+	left: auto;
+	margin-right: 10px;
+	min-height: 20px;
+	position: absolute;
+	right: 0;
 	text-transform: uppercase;
-	line-height: 30px;
-	vertical-align: middle;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	z-index: 1;
+	background-color: transparent;
+	width: auto;
 }
 
-.wf-mediabox-close::before {
-    content: "×";
-    font-size: 32px;
-    font-weight: bold;
-    vertical-align: middle;
-}
-
-.wf-mediabox-close:hover, .wf-mediabox-close:visited:hover {
+.wf-mediabox-theme-light .wf-mediabox-close:hover, .wf-mediabox-theme-light .wf-mediabox-close:visited, .wf-mediabox-theme-light .wf-mediabox-close:focus {
 	text-decoration: none;
+	color: inherit;
+	outline: none;
+	background-color: transparent;
 }
-.wf-mediabox-prev, .wf-mediabox-next {
-	width: 25%; 
+.wf-mediabox-theme-light .wf-mediabox-prev, .wf-mediabox-theme-light .wf-mediabox-next {
+	width: 25%;
 	height: 100%;
-	background-image: url(data:image/gif;); /* Trick IE into showing hover */ 
+	background-color: transparent;
 	z-index: 10003;
 	position: absolute;
 	top: 0;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	outline: none;
 }
-.wf-mediabox-prev {
+.wf-mediabox-theme-light .wf-mediabox-prev {
 	left : 10px;
 }
-.wf-mediabox-next {
+.wf-mediabox-theme-light .wf-mediabox-next {
 	right : 10px;
+	left: auto;
 }
-.wf-mediabox-prev:hover, .wf-mediabox-prev:visited:hover {
-	background: url(../img/prev.gif) no-repeat left top;
+.wf-mediabox-theme-light .wf-mediabox-next:after, .wf-mediabox-theme-light .wf-mediabox-prev:after {
+	background-color: #fff;
+	content:"\00ab";
+	display: none;
+	position: absolute;
+	top: 50%;
+	color: #676767;
+	line-height: 24px;
+	text-align: center;
+	font-size: 24px;
+	margin-top: -15px;
+	padding: 6px 25px;
+	font-weight: bold;
 }
-.wf-mediabox-next:hover, .wf-mediabox-next:visited:hover {
-	background: url(../img/next.gif) no-repeat right top;
+.wf-mediabox-theme-light .wf-mediabox-next:after {
+	content:"\00bb";
+	left: auto;
+	right: 0;
 }
-span.wf-mediabox-numbers {
+.wf-mediabox-theme-light .wf-mediabox-prev:hover,
+.wf-mediabox-theme-light .wf-mediabox-next:hover,
+.wf-mediabox-theme-light .wf-mediabox-prev:focus,
+.wf-mediabox-next:focus {background-color: transparent;}
+.wf-mediabox-theme-light .wf-mediabox-prev:hover:after,
+.wf-mediabox-theme-light .wf-mediabox-next:hover:after {display: block;}
+
+.wf-mediabox-theme-light .wf-mediabox-numbers {
 	color:#666666;
 	display:block;
-	padding:0 0 0 10px;
+	padding:0;
 	text-align:left;
 }
-.wf-mediabox-caption {
+.wf-mediabox-theme-light .wf-mediabox-caption {
 	margin: 0 98px 0 0;
-	padding: 0px 10px;
+	padding: 10px 10px 0;
 	min-height: 20px;
 }
-.wf-mediabox-caption h4, .wf-mediabox-caption p {
+.wf-mediabox-theme-light .wf-mediabox-caption h4, .wf-mediabox-theme-light .wf-mediabox-caption p {
 	color: #666666;
 }
-.wf-mediabox-caption h4 a:active, .wf-mediabox-caption p a:active, 
-.wf-mediabox-caption h4 a:hover, .wf-mediabox-caption p a:hover, 
-.wf-mediabox-caption h4 a:visited, .wf-mediabox-caption p a:visited,
-.wf-mediabox-caption h4 a, .wf-mediabox-caption p a {
+.wf-mediabox-theme-light .wf-mediabox-caption h4 a:active,
+.wf-mediabox-theme-light .wf-mediabox-caption p a:active,
+.wf-mediabox-theme-light .wf-mediabox-caption h4 a:hover,
+.wf-mediabox-theme-light .wf-mediabox-caption p a:hover,
+.wf-mediabox-theme-light .wf-mediabox-caption h4 a:visited,
+.wf-mediabox-theme-light .wf-mediabox-caption p a:visited,
+.wf-mediabox-theme-light .wf-mediabox-caption h4 a,
+.wf-mediabox-theme-light .wf-mediabox-caption p a {
 	color: #666666;
 	font-weight: bold;
 	text-decoration: none;
 }
-.wf-mediabox-caption h4 {}
-.wf-mediabox-caption p {}
 
 /** IE6 **/
-.wf-mediabox-page.ie6 .wf-mediabox-frame {
+.wf-mediabox-theme-light .wf-mediabox-page.ie6 .wf-mediabox-frame {
 	padding: 20px 10px 10px;
 }
-.wf-mediabox-page.ie6 .wf-mediabox-info-bottom {
+.wf-mediabox-theme-light .wf-mediabox-page.ie6 .wf-mediabox-info-bottom {
 	width: 100%;
 }
-.wf-mediabox-page.ie6 .wf-mediabox-prev, .wf-mediabox-next { 
+.wf-mediabox-theme-light .wf-mediabox-page.ie6 .wf-mediabox-prev,
+.wf-mediabox-theme-light .wf-mediabox-page.ie6 .wf-mediabox-next {
 	margin-right: -1px;
 }
 
 /** IPhone / IPad **/
-.wf-mediabox-page.idevice .wf-mediabox-container {
+.wf-mediabox-theme-light .wf-mediabox-page.idevice .wf-mediabox-container {
 	margin-bottom: -1px;
 }

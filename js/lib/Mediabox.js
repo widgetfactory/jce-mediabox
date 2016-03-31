@@ -927,7 +927,7 @@ if (window.jQuery === "undefined") {
 				// touch events
 				$('.wf-mediabox-body').on('touchstart', function(e) {
 					// single finger swipe only
-					if (e.originalEvent.touches.length !== 1) {
+					if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
 						return;
 					}
 
@@ -939,7 +939,7 @@ if (window.jQuery === "undefined") {
 						return;
 					}
 					// single finger swipe only
-					if (e.originalEvent.touches.length !== 1) {
+					if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
 						return;
 					}
 

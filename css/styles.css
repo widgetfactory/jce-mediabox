@@ -11,7 +11,7 @@
 }
 .wf-mediabox-info-bottom {
     padding: 10px 0 0;
-    border-radius: 0 0 10px 10px;
+    /*border-radius: 0 0 10px 10px;*/
 }
 .wf-mediabox-nav {
     background-color: #ffffff;
@@ -59,8 +59,8 @@
 }*/
 
 .wf-mediabox-close {
-    top: 10px;
-    right: 0;
+    top: 6px;
+    right: 1px;
 }
 
 .wf-mediabox-close:visited,
@@ -88,7 +88,7 @@
     top: 10px;
 }
 .wf-mediabox-next {
-    right: 0;
+    right: 1px;
     top: 10px;
     left: auto;
 }

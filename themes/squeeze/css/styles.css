@@ -28,10 +28,10 @@
 }
 
 .wf-mediabox-theme-squeeze .wf-mediabox-close, .wf-mediabox-theme-squeeze .wf-mediabox-prev, .wf-mediabox-theme-squeeze .wf-mediabox-next {
-	border: 2px solid #fff;
+	/*border: 2px solid #fff;*/
 	border-radius: 100%;
 	box-shadow: 1px 1px 5px #000;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	height: 20px;
 	left: auto;
 	line-height: 16px;
@@ -41,12 +41,12 @@
 	z-index: 1;
 	color: #fff;
 	background-color: #000;
-	font-size: 20px;
-	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 28px;
+	/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
 }
 .wf-mediabox-theme-squeeze .wf-mediabox-close {
-	right: -14px;
-	top: -14px;
+	right: -12px;
+	top: -12px;
 }
 .wf-mediabox-theme-squeeze .wf-mediabox-prev {
 	left: 10px;

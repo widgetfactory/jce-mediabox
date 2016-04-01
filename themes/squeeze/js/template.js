@@ -6,7 +6,7 @@ WFMediaBox.Theme.add("squeeze", function () {
                 "content": [
                     {
                         "a": {
-                            "class": "wf-mediabox-close",
+                            "class": "wf-mediabox-close wf-icon-close-squeeze",
                             "href": "#",
                             "title": "{{close}}"
                         }
@@ -39,14 +39,14 @@ WFMediaBox.Theme.add("squeeze", function () {
                             "content": [
                                 {
                                     "a": {
-                                        "class": "wf-mediabox-prev",
+                                        "class": "wf-mediabox-prev wf-icon-prev-squeeze",
                                         "href": "#",
                                         "title": "{{previous}}"
                                     }
                                 },
                                 {
                                     "a": {
-                                        "class": "wf-mediabox-next",
+                                        "class": "wf-mediabox-next wf-icon-next-squeeze",
                                         "href": "#",
                                         "title": "{{next}}"
                                     }

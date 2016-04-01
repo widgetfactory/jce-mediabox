@@ -21,7 +21,7 @@ WFMediaBox.Theme.add("standard", function () {
                             "content": [
                                 {
                                     "a": {
-                                        "class": "wf-mediabox-close",
+                                        "class": "wf-mediabox-close wf-icon-close-standard",
                                         "href": "#",
                                         "title": "{{close}}"
                                     }
@@ -37,14 +37,14 @@ WFMediaBox.Theme.add("standard", function () {
                                         "content": [
                                             {
                                                 "a": {
-                                                    "class": "wf-mediabox-prev",
+                                                    "class": "wf-mediabox-prev wf-icon-prev-standard",
                                                     "href": "#",
                                                     "title": "{{previous}}"
                                                 }
                                             },
                                             {
                                                 "a": {
-                                                    "class": "wf-mediabox-next",
+                                                    "class": "wf-mediabox-next wf-icon-next-standard",
                                                     "href": "#",
                                                     "title": "{{next}}"
                                                 }

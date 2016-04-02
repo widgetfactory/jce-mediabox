@@ -535,7 +535,7 @@
                     'ogg'  : ['video/ogg']
                 },
                 'audio': {
-                    'mp3'   : ['audio/mp3'],
+                    'mp3'   : ['audio/mp3', 'audio/mpeg'],
                     'ogg'   : ['audio/ogg'],
                     'webm'  : ['audio/webm']
                 }

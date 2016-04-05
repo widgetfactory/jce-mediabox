@@ -628,6 +628,10 @@ if (window.jQuery === "undefined") {
 					i = self.popups.length - 1;
 				}
 
+				$(this).attr('class', function(i, v) {
+					return v.replace(/icon-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, 'wf-icon-zoom-$1$2');
+				});
+
 				if (s.icons === 1) {
 					var $img = $('img:first', this).wrap('<span class="wf-icon-zoom-image" />');
 

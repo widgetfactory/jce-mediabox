@@ -3598,9 +3598,15 @@
             }
 
             // decode title
-            title = decodeURIComponent(DOM.decode(title));
+            title = DOM.decode(title);
             // decode caption
-            caption = decodeURIComponent(DOM.decode(caption));
+            caption = DOM.decode(caption);
+
+            // try decode encoded URI
+            try {
+              title   = decodeURIComponent(title);
+              caption = decodeURIComponent(caption);
+            } catch(e){}
 
             extend(this.active, {
                 'src': p.src || o.src,

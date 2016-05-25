@@ -663,7 +663,11 @@ if (window.jQuery === "undefined") {
 
 							// Set border
 							$.each(['width', 'style', 'color'], function(i, prop) {
-								styles['border-' + pos + '-' + prop] = $img.css('border-' + pos + '-' + prop);
+								var v = $img.css('border-' + pos + '-' + prop);
+
+								if (v !== "inherit" && v !== "initial") {
+										styles['border-' + pos + '-' + prop] = v;
+								}
 							});
 						});
 
@@ -674,6 +678,9 @@ if (window.jQuery === "undefined") {
 							'border': ''
 						});
 
+						// set applied styles to span
+						$img.parent().css(styles);
+						// add zoom class
 						$(this).addClass('wf-zoom-image');
 					} else {
 						$(this).append('<i class="wf-icon-zoom-link" />');

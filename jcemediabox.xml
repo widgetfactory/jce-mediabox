@@ -42,7 +42,7 @@
                 </field>
                 <field name="icons" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_ICONS" description="PLG_SYSTEM_JCEMEDIABOX_ICONS_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
-                    <option value="0">J/NO</option>
+                    <option value="0">JNO</option>
                 </field>
                 <field name="scrolling" type="radio" default="fixed" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLPOSITION" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLPOSITION_DESC" class="btn-group">
                     <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLL</option>
@@ -69,6 +69,13 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+
+                <field name="mediafallback" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK" class="btn-group btn-group-yesno" description="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="mediaselector" type="text" size="50" default="audio,video" label="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR" description="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR_DESC"/>
             </fieldset>
         </fields>
     </config>

@@ -1354,7 +1354,7 @@ if (window.jQuery === "undefined") {
 
 				// set height
 				if (ch) {
-					$('.wf-mediabox-content > div').css('height', ch);
+					$('.wf-mediabox-content > div').css('height', ch).addClass('wf-mediabox-content-height');
 				}
 
 				// show info

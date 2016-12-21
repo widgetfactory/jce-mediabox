@@ -8,7 +8,7 @@
     <authorEmail>@@email@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>JCEMEDIABOX_DESC</description>
+    <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
 
     <config>
         <fields name="params">
@@ -143,6 +143,6 @@
     </languages>
     
     <updateservers>
-	<server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&id=3&file=extension.xml]]></server>
+	<server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=jcemediabox.xml]]></server>
     </updateservers>
 </extension>

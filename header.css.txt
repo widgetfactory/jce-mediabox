@@ -1,1 +1,0 @@
-/*@@name@@ - @@version@@ | @@date@@ | http://www.joomlacontenteditor.net | @@copyright@@ | @@licence@@*/

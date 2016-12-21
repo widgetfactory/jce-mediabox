@@ -8,7 +8,7 @@
     <authorEmail>@@email@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>JCEMEDIABOX_DESC</description>
+    <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
 
     <params addpath="/plugins/system/jcemediabox/elements">
         <param name="theme" type="folderlist" directory="plugins/system/jcemediabox/themes" hide_none="true" hide_default="true" exclude="(css|img)" default="standard" label="JCEMEDIABOX_THEME" description="JCEMEDIABOX_THEMEDESC" />

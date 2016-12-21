@@ -18,7 +18,8 @@
     }
 
     // JCEMediaBox.Popup shortcut
-    var popup = mediabox.Popup, trim = mediabox.trim;
+    var popup = mediabox.Popup,
+        trim = mediabox.trim;
 
     /**
      * Flash addons
@@ -198,21 +199,21 @@
          * Word
          * @param {String} v URL
          */
-        word: function(v) {            
-            if (/\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(v)) {                
+        word: function(v) {
+            if (/\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(v)) {
                 var src = v;
-                
-                if (mediabox.options.popup.google_viewer) {                    
+
+                if (mediabox.options.popup.google_viewer) {
                     if (!/:\/\//.test(v)) {
                         v = mediabox.site + v.replace('?tmpl=component', '');
                     }
-                    
+
                     src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
                 }
-                
+
                 return {
-                    'type'  : 'iframe',
-                    'src'   : src
+                    'type': 'iframe',
+                    'src': src
                 };
             }
         }
@@ -227,6 +228,9 @@
          * @param {String} v URL
          */
         image: function(v) {
+            // remove query
+            v = v.split('?')[0];
+
             if (/\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(v)) {
                 return {
                     type: 'image'
@@ -254,26 +258,26 @@
          * PDF
          * @param {String} v URL
          */
-        pdf: function(v) {            
+        pdf: function(v) {
             if (/\.(pdf)$/i.test(v)) {
                 //var mobile = mediabox.isAndroid || mediabox.isiOS;
-                
+
                 var type = 'pdf';
                 var src = /\?#/.test(v) ? v + '&view=fitH' : v + '#view=fitH';
-                
+
                 if (mediabox.options.popup.google_viewer) {
                     type = 'iframe';
-                    
+
                     if (!/:\/\//.test(v)) {
                         v = mediabox.site + v.replace('?tmpl=component', '');
                     }
-                    
+
                     src = '//docs.google.com/viewer?url=' + encodeURIComponent(v) + '&embedded=true';
                 }
-                
+
                 return {
-                    'type'  : type,
-                    'src'   : src
+                    'type': type,
+                    'src': src
                 };
             }
         }

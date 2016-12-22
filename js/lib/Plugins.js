@@ -11,7 +11,7 @@
  * other free or open source software licenses.
  *
  */
-(function ($, WFMediaBox) {
+(function($, WFMediaBox) {
     function createObject(data, embed) {
         delete data.group;
         delete data.title;
@@ -19,7 +19,7 @@
         delete data.width;
         delete data.height;
 
-        var attribs = ['id','name','style','codebase','classid','type','data'];
+        var attribs = ['id', 'name', 'style', 'codebase', 'classid', 'type', 'data'];
 
         var html = '<object ';
         // custom attributes
@@ -36,16 +36,16 @@
         // custom params
         for (var n in data) {
             if (typeof data[n] === "string") {
-              html += ' <param name="' + n + '" value="' + decodeURIComponent(data[n]) + '" />';
+                html += ' <param name="' + n + '" value="' + decodeURIComponent(data[n]) + '" />';
             }
         }
 
         if (embed) {
             html += '<embed';
             for (var n in data) {
-              if (typeof data[n] === "string") {
-                html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
-              }
+                if (typeof data[n] === "string") {
+                    html += ' ' + n + '="' + decodeURIComponent(data[n]) + '"';
+                }
             }
 
             html += '></embed>';
@@ -60,26 +60,26 @@
         return '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
     }
 
-    WFMediaBox.Plugin.add('flash', function () {
+    WFMediaBox.Plugin.add('flash', function() {
         this.type = "object";
-        this.html = function (data) {
+        this.html = function(data) {
             data.type = "application/x-shockwave-flash";
             data.data = data.src;
 
             return $(createObject(data, true));
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /\.swf\b/.test(data.src);
         };
     });
-    WFMediaBox.Plugin.add('flv', function () {
+    WFMediaBox.Plugin.add('flv', function() {
         this.type = "object";
-        this.html = function (data) {
-            var swf     = WFMediaBox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+        this.html = function(data) {
+            var swf = WFMediaBox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
 
-            data.type   = "application/x-shockwave-flash";
-            data.data   = WFMediaBox.resolveMediaPath(swf);
+            data.type = "application/x-shockwave-flash";
+            data.data = WFMediaBox.resolveMediaPath(swf);
 
             data.flashvars = 'src=' + WFMediaBox.resolveMediaPath(data.src, true);
 
@@ -95,7 +95,7 @@
             return $(createObject(data));
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /\.(flv|f4v)\b/.test(data.src);
         };
     });
@@ -121,8 +121,8 @@
      * Daily Motion - http://www.dailymotion.com
      * @param {String} v URL
      */
-    WFMediaBox.Plugin.add('dailymotion', function () {
-        this.is = function (data) {
+    WFMediaBox.Plugin.add('dailymotion', function() {
+        this.is = function(data) {
             return /dai\.?ly(motion)/.test(data.src);
         };
 
@@ -143,14 +143,14 @@
         // declare type
         this.type = "iframe";
         // create html
-        this.html = function (data) {
+        this.html = function(data) {
             return $(createIframe(processURL(data.src)));
         };
     });
-    WFMediaBox.Plugin.add('quicktime', function () {
+    WFMediaBox.Plugin.add('quicktime', function() {
         var n;
 
-        this.html = function (data) {
+        this.html = function(data) {
             data.type = "video/quicktime";
             data.classid = "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b";
             data.codebase = "https://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0";
@@ -161,14 +161,14 @@
         this.type = "object";
         this.width = 853;
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /\.(mov)\b/.test(data.src);
         };
     });
-    WFMediaBox.Plugin.add('windowsmedia', function () {
+    WFMediaBox.Plugin.add('windowsmedia', function() {
 
         this.type = "object";
-        this.html = function (data) {
+        this.html = function(data) {
             data.type = "application/x-mplayer2";
             data.classid = "clsid:6bf52a52-394a-11d3-b153-00c04f79faa6";
             data.codebase = "https://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701";
@@ -176,7 +176,7 @@
             return $(createObject(data, true));
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /\.(wmv|avi)\b/.test(data.src);
         };
     });
@@ -184,15 +184,15 @@
      * Youtube - http://www.youtube.com
      * @param {String} v URL
      */
-    WFMediaBox.Plugin.add('youtube', function () {
+    WFMediaBox.Plugin.add('youtube', function() {
         var self = this;
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /youtu(\.)?be([^\/]+)?\/(.+)/.test(data.src);
         };
 
         function processURL(v) {
-            v = v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
+            v = v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
                 d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
 
                 if (b && !c) {
@@ -217,18 +217,18 @@
         // declare type
         this.type = "iframe";
         // create html
-        this.html = function (data) {
+        this.html = function(data) {
             return $(createIframe(processURL(data.src)));
         };
     });
-    WFMediaBox.Plugin.add('vimeo', function () {
+    WFMediaBox.Plugin.add('vimeo', function() {
 
-        this.is = function (data) {
+        this.is = function(data) {
             return /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.test(data.src);
         };
 
         function processURL(s) {
-            s = s.replace(/(player\/)?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function (a, b, c, d, e) {
+            s = s.replace(/(player\/)?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function(a, b, c, d, e) {
                 if (b) {
                     return a;
                 }
@@ -244,34 +244,37 @@
         // declare type
         this.type = "iframe";
         // create html
-        this.html = function (data) {
+        this.html = function(data) {
             return $(createIframe(processURL(data.src)));
         };
     });
     /**
      * Image
      */
-    WFMediaBox.Plugin.add('image', function () {
+    WFMediaBox.Plugin.add('image', function() {
         this.type = "image";
 
         // create image html (leave src blank)
-        this.html = function (data) {
-            return '<img src="" class="wf-mediabox-img" alt="' + decodeURIComponent(data.title || "") + '" />';
+        this.html = function(data) {
+            return '<img src="#" class="wf-mediabox-img" alt="' + decodeURIComponent(data.title || "") + '" />';
         };
 
-        this.is = function (data) {
-            return data.type === "image" || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(data.src);
+        this.is = function(data) {
+            // remove query
+            data.src = data.src.split('?')[0];
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(data.src);
         };
     });
     /**
      * HTML5 Video
      */
-    WFMediaBox.Plugin.add('video', function () {
+    WFMediaBox.Plugin.add('video', function() {
         this.type = "video";
 
         // create image html (leave src blank)
-        this.html = function (data) {
-            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'], n;
+        this.html = function(data) {
+            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'],
+                n;
 
             var params = data.params || {};
 
@@ -294,30 +297,30 @@
             return '<video ' + attribs.join(' ') + '></video>';
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(data.src)) && WFMediaBox.Env.video;
         };
     });
     /**
      * PDF
      */
-    WFMediaBox.Plugin.add('pdf', function () {
+    WFMediaBox.Plugin.add('pdf', function() {
         this.type = "iframe";
         // create html
-        this.html = function (data) {
+        this.html = function(data) {
             return $('<iframe src="' + data.src + '" frameborder="0" />');
         };
 
         this.height = '100%';
 
-        this.is = function (data) {
+        this.is = function(data) {
             return data.type === "pdf" || /\.pdf$/i.test(data.src);
         };
     });
     /**
      * Ajax / Internal Content
      */
-    WFMediaBox.Plugin.add('content', function () {
+    WFMediaBox.Plugin.add('content', function() {
         function islocal(s) {
             if (/^(\w+:)?\/\//.test(s)) {
                 return new RegExp('^(' + WFMediaBox.settings.site + ')').test(s);
@@ -328,7 +331,7 @@
 
         this.type = "ajax";
 
-        this.html = function (data) {
+        this.html = function(data) {
             var html = "";
             var src = data.src;
 
@@ -337,7 +340,8 @@
             }
 
             var iframe = $('<iframe src="' + src + '" />').load(function() {
-                var n = this, html = this.contentWindow.document.body.innerHTML;
+                var n = this,
+                    html = this.contentWindow.document.body.innerHTML;
 
                 // append html to created parent
                 $(this).parent().append(html);
@@ -353,17 +357,17 @@
             return iframe;
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return data.type === "ajax" || data.type === "text/html";
         };
     });
     /**
      * Dom Element
      */
-    WFMediaBox.Plugin.add('dom', function () {
+    WFMediaBox.Plugin.add('dom', function() {
         this.type = "dom";
 
-        this.html = function (data) {
+        this.html = function(data) {
             var node = $(data.src);
 
             if (node) {
@@ -373,22 +377,22 @@
             return "";
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return data.type === "dom";
         };
     });
     /**
      * IFrame
      */
-    WFMediaBox.Plugin.add('iframe', function () {
+    WFMediaBox.Plugin.add('iframe', function() {
 
         this.type = "iframe";
 
-        this.html = function (data) {
+        this.html = function(data) {
             return $('<iframe src="' + data.src + '" frameborder="0" />');
         };
 
-        this.is = function (data) {
+        this.is = function(data) {
             return !data.type || data.type === "iframe";
         };
     });

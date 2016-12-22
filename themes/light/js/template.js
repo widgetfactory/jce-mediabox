@@ -1,44 +1,38 @@
-WFMediaBox.Theme.add("light", function () {
-    return [
-    {
-        "div": {
-            "class": "wf-mediabox-container",
-            "content": [
-                {
-                    "div": {
-                        "class": "wf-mediabox-loader"
+WFMediaBox.Theme.add("light", function() {
+    return [{
+            "div": {
+                "class": "wf-mediabox-container",
+                "content": [{
+                        "div": {
+                            "class": "wf-mediabox-loader"
+                        }
+                    },
+                    {
+                        "div": {
+                            "class": "wf-mediabox-content"
+                        }
+                    },
+                    {
+                        "a": {
+                            "class": "wf-mediabox-next",
+                            "title": "{{next}}"
+                        }
+                    },
+                    {
+                        "a": {
+                            "class": "wf-mediabox-prev",
+                            "title": "{{previous}}"
+                        }
                     }
-                },
-                {
-                    "div": {
-                        "class": "wf-mediabox-content"
-                    }
-                },
-                {
-                    "a": {
-                        "class": "wf-mediabox-next",
-                        "href": "#",
-                        "title": "{{next}}"
-                    }
-                },
-                {
-                    "a": {
-                        "class": "wf-mediabox-prev",
-                        "href": "#",
-                        "title": "{{previous}}"
-                    }
-                }
-            ]
-        }
-    },
+                ]
+            }
+        },
         {
             "div": {
                 "class": "wf-mediabox-info-bottom",
-                "content": [
-                    {
+                "content": [{
                         "a": {
                             "class": "wf-mediabox-close",
-                            "href": "#",
                             "title": "{{close}}",
                             "text": "{{close}}"
                         }
@@ -51,14 +45,12 @@ WFMediaBox.Theme.add("light", function () {
                     {
                         "div": {
                             "class": "wf-mediabox-nav",
-                            "content": [
-                                {
-                                    "span": {
-                                        "class": "wf-mediabox-numbers",
-                                        "text": "{{numbers_count}}"
-                                    }
+                            "content": [{
+                                "span": {
+                                    "class": "wf-mediabox-numbers",
+                                    "text": "{{numbers_count}}"
                                 }
-                            ]
+                            }]
                         }
                     }
                 ]

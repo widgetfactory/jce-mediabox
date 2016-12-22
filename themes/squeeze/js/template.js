@@ -1,13 +1,10 @@
-WFMediaBox.Theme.add("squeeze", function () {
-    return [
-        {
+WFMediaBox.Theme.add("squeeze", function() {
+    return [{
             "div": {
                 "class": "wf-mediabox-container",
-                "content": [
-                    {
+                "content": [{
                         "a": {
                             "class": "wf-mediabox-close wf-icon-close-squeeze",
-                            "href": "#",
                             "title": "{{close}}"
                         }
                     },
@@ -27,8 +24,7 @@ WFMediaBox.Theme.add("squeeze", function () {
         {
             "div": {
                 "class": "wf-mediabox-info-bottom",
-                "content": [
-                    {
+                "content": [{
                         "div": {
                             "class": "wf-mediabox-caption"
                         }
@@ -36,18 +32,15 @@ WFMediaBox.Theme.add("squeeze", function () {
                     {
                         "div": {
                             "class": "wf-mediabox-nav",
-                            "content": [
-                                {
+                            "content": [{
                                     "a": {
                                         "class": "wf-mediabox-prev wf-icon-prev-squeeze",
-                                        "href": "#",
                                         "title": "{{previous}}"
                                     }
                                 },
                                 {
                                     "a": {
                                         "class": "wf-mediabox-next wf-icon-next-squeeze",
-                                        "href": "#",
                                         "title": "{{next}}"
                                     }
                                 },

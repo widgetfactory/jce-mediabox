@@ -56,7 +56,7 @@ class plgSystemJCEMediabox extends JPlugin {
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers_count');
 
-        $v = [];
+        $v = array();
 
         foreach ($words as $word) {
             $v[$word] = htmlspecialchars(JText::_('PLG_SYSTEM_JCEMEDIABOX_LABEL_' . strtoupper($word)));
@@ -87,10 +87,10 @@ class plgSystemJCEMediabox extends JPlugin {
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop    = $app->input->getInt('pop');
-        $print  = $app->input->getInt('print');
-        $task   = $app->input->get('task');
-        $tmpl   = $app->input->getWord('tmpl');
+        $pop    = JRequest::getInt('pop');
+        $print  = JRequest::getInt('print');
+        $task   = JRequest::getCmd('task');
+        $tmpl   = JRequest::getWord('tmpl');
 
         // don't load mediabox on certain pages
         if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
@@ -137,7 +137,7 @@ class plgSystemJCEMediabox extends JPlugin {
         self::$theme = $params->get('theme', 'standard');
 
         if ($params->get('dynamic_themes', 0)) {
-            self::$theme = $app->input->getWord('theme', $params->get('theme', 'standard'));
+            self::$theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
         }
 
         $config = array(

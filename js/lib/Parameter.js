@@ -39,7 +39,7 @@
                 x = s;
             }
 
-            $.each(x, function(n, i) {
+            $.each(x, function(i, n) {
                 if (n) {
                     n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function(a, b, c, d) {
                         if (d) {

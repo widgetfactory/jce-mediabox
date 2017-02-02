@@ -26,22 +26,26 @@ jimport('joomla.plugin.plugin');
 /**
  * JCE MediaBox Plugin
  *
- * @package 		JCE MediaBox
- * @subpackage	System
+ * @package         JCE MediaBox
+ * @subpackage    System
  */
-class plgSystemJCEMediabox extends JPlugin {
+class plgSystemJCEMediabox extends JPlugin
+{
 
     private static $version = '@@version@@';
 
-    protected function getPath() {
+    protected function getPath()
+    {
         return JPATH_PLUGINS . '/system/jcemediabox';
     }
 
-    protected function getURL() {
+    protected function getURL()
+    {
         return JURI::base(true) . '/plugins/system/jcemediabox';
     }
 
-    protected function getEtag($file) {
+    protected function getEtag($file)
+    {
         return md5($file . preg_replace('/[^\d]+/', '', self::$version));
     }
 
@@ -52,7 +56,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * @param Boolean $end If end parameters
      * @return JSON Object String
      */
-    protected function renderParams($name, $params, $end) {
+    protected function renderParams($name, $params, $end)
+    {
         $html = '';
         if ($name) {
             $html .= $name . ":{";
@@ -90,7 +95,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * @param object $vars Parameter variables
      * @return Boolean true
      */
-    protected function getThemeCSS($vars) {
+    protected function getThemeCSS($vars)
+    {
         jimport('joomla.environment.browser');
         jimport('joomla.filesystem.file');
 
@@ -110,7 +116,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * Create a list of translated labels for popup window
      * @return Key : Value labels string
      */
-    protected function getLabels() {
+    protected function getLabels()
+    {
         JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers');
@@ -131,11 +138,12 @@ class plgSystemJCEMediabox extends JPlugin {
      * Load Addons
      * @return Boolean true
      */
-    protected function getAddons() {
+    protected function getAddons()
+    {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        $path   = $this->getPath() . '/addons';
+        $path = $this->getPath() . '/addons';
         $filter = array('default-src.js');
 
         // not dev mode, skip default.js
@@ -143,7 +151,7 @@ class plgSystemJCEMediabox extends JPlugin {
             $filter[] = 'default.js';
         }
 
-        $files  = JFolder::files($path, '.js$', false, false, $filter);
+        $files = JFolder::files($path, '.js$', false, false, $filter);
 
         $scripts = array();
 
@@ -160,7 +168,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * OnAfterRoute function
      * @return Boolean true
      */
-    public function onAfterDispatch() {
+    public function onAfterDispatch()
+    {
         $app = JFactory::getApplication();
 
         if ($app->isAdmin()) {
@@ -180,16 +189,16 @@ class plgSystemJCEMediabox extends JPlugin {
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop    = JRequest::getInt('pop');
-        $print  = JRequest::getInt('print');
-        $task   = JRequest::getVar('task');
-        $tmpl   = JRequest::getWord('tmpl');
-        
+        $pop = JRequest::getInt('pop');
+        $print = JRequest::getInt('print');
+        $task = JRequest::getVar('task');
+        $tmpl = JRequest::getWord('tmpl');
+
         // don't load mediabox on certain pages
         if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
             return;
         }
-        
+
         $params = $this->params;
 
         $components = $params->get('components', '');
@@ -202,23 +211,28 @@ class plgSystemJCEMediabox extends JPlugin {
                 }
             }
         }
+
+        // get active menu
+        $menus = $app->getMenu();
+        $menu = $menus->getActive();
+
         // get menu items from parameter
         $menuitems = (array) $params->get('menu');
-        
+
         // is there a menu assignment?
-        if (!empty($menuitems) && !empty($menuitems[0])) {
-            // get active menu
-            $menus = $app->getMenu();
-            $menu = $menus->getActive();
-
-            if (is_string($menuitems)) {
-                $menuitems = explode(',', $menuitems);
+        if (!empty($menuitems)) {
+            if ($menu && !in_array($menu->id, (array) $menuitems)) {
+                return;
             }
+        }
 
-            if ($menu) {
-                if (!in_array($menu->id, (array) $menuitems)) {
-                    return;
-                }
+        // get excluded menu items from parameter
+        $menuitems_exclude = (array) $params->get('menu_exclude');
+
+        // is there a menu exclusion?
+        if (!empty($menuitems_exclude)) {            
+            if ($menu && in_array($menu->id, (array) $menuitems_exclude)) {
+                return;
             }
         }
 
@@ -234,7 +248,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'legacy' => $params->get('legacy', 0),
             'lightbox' => $params->get('lightbox', 0),
             'shadowbox' => $params->get('shadowbox', 0),
-            //'convert'			=>	$params->get('convert', 0),
+            //'convert'            =>    $params->get('convert', 0),
             'resize' => $params->get('resize', 0),
             'icons' => $params->get('icons', 1),
             'overlay' => $params->get('overlay', 1),
@@ -244,11 +258,11 @@ class plgSystemJCEMediabox extends JPlugin {
             'scalespeed' => $params->get('scalespeed', 500),
             'hideobjects' => $params->get('hideobjects', 1),
             'scrolling' => $params->get('scrolling', 'fixed'),
-            //'protect'			=>	$params->get('protect', 1),
+            //'protect'            =>    $params->get('protect', 1),
             'close' => $params->get('close', 2),
             'labels' => '{' . $this->getLabels() . '}',
             'cookie_expiry' => $params->get('cookie_expiry', ''),
-            'google_viewer' => $params->get('google_viewer', 0)
+            'google_viewer' => $params->get('google_viewer', 0),
         );
 
         $tooltip = array(
@@ -266,7 +280,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'themecustom' => $params->get('themecustom', ''),
             'themepath' => $params->get('themepath', 'plugins/system/jcemediabox/themes'),
             'mediafallback' => $params->get('mediafallback', 0),
-            'mediaselector' => $params->get('mediaselector', 'audio,video')
+            'mediaselector' => $params->get('mediaselector', 'audio,video'),
         );
 
         jimport('joomla.environment.browser');
@@ -276,10 +290,10 @@ class plgSystemJCEMediabox extends JPlugin {
 
         $url = $this->getURL();
 
-        foreach ($scripts as $script) {            
+        foreach ($scripts as $script) {
             $document->addScript($url . '/' . $script . '?' . $this->getEtag(basename($script)));
         }
-        
+
         $document->addStyleSheet($url . '/css/jcemediabox.css?' . $this->getEtag('jcemediabox.css'));
 
         $this->getThemeCss($standard);
@@ -294,10 +308,9 @@ class plgSystemJCEMediabox extends JPlugin {
         return true;
     }
 
-    protected function getScripts() {
+    protected function getScripts()
+    {
         return array_merge(array('js/jcemediabox.js'), $this->getAddons());
     }
 
 }
-
-?>

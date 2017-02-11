@@ -2192,12 +2192,14 @@
 
                     return this.parseJSON('{' + s + '}');
                 }
-
-                // if url
-                if (s.indexOf('&') != -1) {
-                    x = s.split(/&(amp;)?/g);
-                } else {
-                    x.push(s);
+                // key=value pair
+                if (s.indexOf('=') !== -1) {
+                    // if url
+                    if (s.indexOf('&') !== -1) {
+                        x = s.split(/&(amp;)?/g);
+                    } else {
+                        x.push(s);
+                    }
                 }
             }
 
@@ -2822,7 +2824,7 @@
          * @param {Object} p Optional parent element popups contained within
          */
         getPopups: function (s, p) {
-            var selector = 'a.jcebox, a.jcelightbox, a.jcepopup, area.jcebox, area.jcelightbox, area.jcepopup';
+            var selector = '.jcebox, .jcelightbox, .jcepopup, [data-mediabox]';
             return JCEMediaBox.DOM.select(s || selector, p);
         },
         getData: function (n) {
@@ -2992,7 +2994,6 @@
 
             // Iterate through all found or specified popup links
             each(this.elements, function (el, i) {
-
                 if (el.childNodes.length === 1 && el.firstChild.nodeName === "IMG") {
                     DOM.addClass(el, 'jcemediabox-image');
                 }
@@ -3003,11 +3004,9 @@
                 }
 
                 // Simplify class identifier for css
-                if (/(jcelightbox|jcebox)/.test(el.className)) {
-                    DOM.removeClass(el, 'jcelightbox');
-                    DOM.removeClass(el, 'jcebox');
-                    DOM.addClass(el, 'jcepopup');
-                }
+                DOM.removeClass(el, 'jcelightbox');
+                DOM.removeClass(el, 'jcebox');
+                DOM.addClass(el, 'jcepopup');
 
                 var o = t.process(el);
 

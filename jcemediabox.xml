@@ -53,6 +53,8 @@
                     <option value="0">JNO</option>
                 </field>
                 <field name="components" type="components" multiple="true" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" />
+                <field name="menu" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" />
+                <field name="menu_exclude" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" />
                 <field name="dynamic_themes" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES" description="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

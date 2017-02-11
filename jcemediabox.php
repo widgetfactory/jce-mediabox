@@ -2,7 +2,7 @@
 
 /**
  * @package JCE MediaBox
- * @copyright Copyright (C) 2006-2016 Ryan Demmer. All rights reserved.
+ * @copyright Copyright (C) 2006-2017 Ryan Demmer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL 3, see LICENCE
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -26,24 +26,27 @@ jimport('joomla.plugin.plugin');
 /**
  * JCE MediaBox Plugin
  *
- * @package 		JCE MediaBox
- * @subpackage	System
+ * @package         JCE MediaBox
+ * @subpackage    System
  */
-class plgSystemJCEMediabox extends JPlugin {
-
+class plgSystemJCEMediabox extends JPlugin
+{
     private $version = '@@version@@';
 
     private static $theme;
 
-    protected function getPath() {
+    protected function getPath()
+    {
         return JPATH_PLUGINS . '/system/jcemediabox';
     }
 
-    protected function getURL() {
+    protected function getURL()
+    {
         return JURI::base(true) . '/plugins/system/jcemediabox';
     }
 
-    protected function getEtag($file) {
+    protected function getEtag($file)
+    {
         return md5_file($this->getPath() . '/' . $file);
     }
 
@@ -51,7 +54,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * Create a list of translated labels for popup window
      * @return Key : Value labels string
      */
-    protected function getLabels() {
+    protected function getLabels()
+    {
         JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers_count');
@@ -69,7 +73,8 @@ class plgSystemJCEMediabox extends JPlugin {
      * OnAfterRoute function
      * @return Boolean true
      */
-    public function onAfterDispatch() {
+    public function onAfterDispatch()
+    {
         $app = JFactory::getApplication();
 
         if ($app->isAdmin()) {
@@ -87,10 +92,10 @@ class plgSystemJCEMediabox extends JPlugin {
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop    = JRequest::getInt('pop');
-        $print  = JRequest::getInt('print');
-        $task   = JRequest::getCmd('task');
-        $tmpl   = JRequest::getWord('tmpl');
+        $pop = JRequest::getInt('pop');
+        $print = JRequest::getInt('print');
+        $task = JRequest::getCmd('task');
+        $tmpl = JRequest::getWord('tmpl');
 
         // don't load mediabox on certain pages
         if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
@@ -103,7 +108,7 @@ class plgSystemJCEMediabox extends JPlugin {
 
         if (!empty($components)) {
             if (is_string($components)) {
-              $components = explode(',', $components);
+                $components = explode(',', $components);
             }
 
             $option = $app->input->get('option', '');
@@ -114,23 +119,28 @@ class plgSystemJCEMediabox extends JPlugin {
                 }
             }
         }
+        
+        // get active menu
+        $menus = $app->getMenu();
+        $menu = $menus->getActive();
+
         // get menu items from parameter
         $menuitems = (array) $params->get('menu');
 
         // is there a menu assignment?
-        if (!empty($menuitems) && !empty($menuitems[0])) {
-            // get active menu
-            $menus = JSite::getMenu();
-            $menu = $menus->getActive();
-
-            if (is_string($menuitems)) {
-                $menuitems = explode(',', $menuitems);
+        if (!empty($menuitems)) {
+            if ($menu && !in_array($menu->id, (array) $menuitems)) {
+                return;
             }
+        }
 
-            if ($menu) {
-                if (!in_array($menu->id, (array) $menuitems)) {
-                    return;
-                }
+        // get excluded menu items from parameter
+        $menuitems_exclude = (array) $params->get('menu_exclude');
+
+        // is there a menu exclusion?
+        if (!empty($menuitems_exclude)) {            
+            if ($menu && in_array($menu->id, (array) $menuitems_exclude)) {
+                return;
             }
         }
 
@@ -141,7 +151,7 @@ class plgSystemJCEMediabox extends JPlugin {
         }
 
         $config = array(
-            'base'  => JURI::base(true) . '/',
+            'base' => JURI::base(true) . '/',
             'theme' => self::$theme,
             'mediafallback' => (int) $params->get('mediafallback', 0),
             'mediaselector' => $params->get('mediaselector', 'audio,video'),
@@ -159,7 +169,7 @@ class plgSystemJCEMediabox extends JPlugin {
             'hideobjects' => (int) $params->get('hideobjects', 1),
             'scrolling' => $params->get('scrolling', 'fixed'),
             'close' => (int) $params->get('close', 2),
-            'labels' => $this->getLabels()
+            'labels' => $this->getLabels(),
         );
 
         if ($this->params->get('jquery', 1)) {

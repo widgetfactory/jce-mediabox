@@ -71,6 +71,7 @@
         </param>
         <param name="components" type="text" size="50" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" />
         <param name="menu" type="menuitemlegacy" state="1" multiple="multiple" size="10" default="" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" />
+        <param name="menu_exclude" type="menuitemlegacy" state="1" multiple="multiple" size="10" default="" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" />
         <param name="dynamic_themes" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES" description="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES_DESC">
             <option value="1">YES</option>
             <option value="0">NO</option>

@@ -279,6 +279,10 @@ a.wf-mediabox-img {
     right: 5px;
 }
 
+.wf-zoom-image-invert .wf-icon-zoom-image:before {
+    color: #888;
+}
+
 .wf-icon-zoom-top-left .wf-icon-zoom-image:before,
 .wf-icon-zoom-left-top .wf-icon-zoom-image:before {
     top: 5px;

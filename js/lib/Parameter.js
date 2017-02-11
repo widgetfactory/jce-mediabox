@@ -5,10 +5,11 @@
  * @param {Object} Entities mediabox/util/Entities
  * @returns {mediabox/Addons}
  */
-(function($, Entities) {
+(function ($, Entities) {
     var Parameter = {
-        parse : function(s) {
-            var a = [], x = [];
+        parse: function (s) {
+            var a = [],
+                x = [];
 
             if (typeof s === 'string') {
                 // if a JSON string return the object
@@ -18,7 +19,7 @@
 
                 // JCE MediaBox parameter format eg: title[title]
                 if (/\w+\[[^\]]+\]/.test(s)) {
-                    s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function(a, b, c, d) {
+                    s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
 
                         return '"' + b + '":"' + Entities.encode($.trim(c)) + '"' + (d ? ',' : '');
                     });
@@ -26,11 +27,13 @@
                     return $.parseJSON('{' + s + '}');
                 }
 
-                // if url
-                if (s.indexOf('&') !== -1) {
-                    x = s.split(/&(amp;)?/g);
-                } else {
-                    x.push(s);
+                if (s.indexOf('=') !== -1) {
+                    // if url
+                    if (s.indexOf('&') !== -1) {
+                        x = s.split(/&(amp;)?/g);
+                    } else {
+                        x.push(s);
+                    }
                 }
             }
 
@@ -39,9 +42,9 @@
                 x = s;
             }
 
-            $.each(x, function(i, n) {
+            $.each(x, function (i, n) {
                 if (n) {
-                    n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function(a, b, c, d) {
+                    n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function (a, b, c, d) {
                         if (d) {
                             if (!/[^0-9]/.test(d)) {
                                 return '"' + b + '":' + parseInt(d);

@@ -1180,10 +1180,6 @@ if (window.jQuery === "undefined") {
                     for (var i = 0; i < len; i++) {
                         var n = i + 1;
 
-                        if (len > 5 && i > 1 && i < len - 1 && this.index !== i) {
-                            continue;
-                        }
-
                         var title = this.items[i].title || n;
 
                         // Craete Numbers link
@@ -1199,10 +1195,6 @@ if (window.jQuery === "undefined") {
                             }
                             return self.queue(x);
                         });
-
-                        if (len > 5 && i === 1) {
-                            $('.wf-mediabox-numbers').append('<span>...</span>');
-                        }
                     }
                 }
 

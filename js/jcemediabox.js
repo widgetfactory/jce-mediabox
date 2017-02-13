@@ -2935,11 +2935,14 @@
             }
 
             // check for auto popup
-            //if (el.id) {
             if (/autopopup-(single|multiple)/.test(el.className)) {
                 auto = /(multiple)/.test(el.className) ? 'multiple' : 'single';
             }
-            //}
+            
+            // use data-mediabox-autopopup value
+            if (data.autopopup) {
+                auto = data.autopopup;
+            }
 
             // get group from data object
             group = group || data.group || '';

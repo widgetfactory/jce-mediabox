@@ -148,7 +148,6 @@ a.jcepopup span.jcemediabox-zoom-span {
     background: transparent;
     cursor: pointer;
     display: inline-block;
-    overflow: hidden;
     position: relative;
     float: none;
 }

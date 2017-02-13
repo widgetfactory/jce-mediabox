@@ -220,8 +220,8 @@ class plgSystemJCEMediabox extends JPlugin
         $menuitems = (array) $params->get('menu');
 
         // is there a menu assignment?
-        if (!empty($menuitems)) {
-            if ($menu && !in_array($menu->id, (array) $menuitems)) {
+        if (!empty($menuitems) && !empty($menuitems[0])) {
+            if ($menu && !in_array($menu->id, $menuitems)) {
                 return;
             }
         }
@@ -230,8 +230,8 @@ class plgSystemJCEMediabox extends JPlugin
         $menuitems_exclude = (array) $params->get('menu_exclude');
 
         // is there a menu exclusion?
-        if (!empty($menuitems_exclude)) {            
-            if ($menu && in_array($menu->id, (array) $menuitems_exclude)) {
+        if (!empty($menuitems_exclude) && !empty($menuitems_exclude[0])) {            
+            if ($menu && in_array($menu->id, $menuitems_exclude)) {
                 return;
             }
         }

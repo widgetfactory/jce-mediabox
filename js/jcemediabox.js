@@ -2824,7 +2824,7 @@
          * @param {Object} p Optional parent element popups contained within
          */
         getPopups: function (s, p) {
-            var selector = '.jcebox, .jcelightbox, .jcepopup, [data-mediabox]';
+            var selector = 'a.jcebox, a.jcelightbox, a.jcepopup, a[data-mediabox], area.jcebox, area.jcelightbox, area.jcepopup, area[data-mediabox]';
             return JCEMediaBox.DOM.select(s || selector, p);
         },
         getData: function (n) {
@@ -2940,9 +2940,7 @@
             }
             
             // use data-mediabox-autopopup value
-            if (data.autopopup) {
-                auto = data.autopopup;
-            }
+            auto = auto || data.autopopup || "";
 
             // get group from data object
             group = group || data.group || '';
@@ -2997,6 +2995,10 @@
 
             // Iterate through all found or specified popup links
             each(this.elements, function (el, i) {
+                if (!el.href) {
+                    return true;
+                }
+                
                 if (el.childNodes.length === 1 && el.firstChild.nodeName === "IMG") {
                     DOM.addClass(el, 'jcemediabox-image');
                 }

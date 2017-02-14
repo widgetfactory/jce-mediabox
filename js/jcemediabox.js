@@ -2833,7 +2833,8 @@
 
             data = n.getAttribute('data-mediabox') || n.getAttribute('data-json');
 
-            if (!data) {
+            // no data set or value is "1", ie: mediabox flag
+            if (!data || data == "1") {
                 // try data-mediabox-* attributes (since 1.1.23, JCE 2.5.3)
                 var i, attrs = n.attributes, x = 0;
 

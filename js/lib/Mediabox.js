@@ -1121,11 +1121,14 @@ if (window.jQuery === "undefined") {
                     h = '';
 
                 var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
-                var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+)';
+                //var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+)';
+
+                // simple URL matching without any concern for correct syntax, eg: http://something_not_a_space
+                var ux = /([a-zA-Z]{3,9}:\/\/[^\s]+)/gi;
 
                 function processRe(h) {
-                    h = h.replace(new RegExp(ex, 'g'), '<a href="mailto:$1" target="_blank" title="$1">$1</a>');
-                    h = h.replace(new RegExp(ux, 'g'), '<a href="$1" target="_blank" title="$1">$1</a>');
+                    h = h.replace(ex, '<a href="mailto:$1" target="_blank">$1</a>');
+                    h = h.replace(ux, '<a href="$1" target="_blank">$1</a>');
 
                     return h;
                 }

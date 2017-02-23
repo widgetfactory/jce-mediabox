@@ -156,7 +156,7 @@
 
 .wf-mediabox-content {
     width: auto;
-    height: 100%;
+    height: auto;
     overflow: hidden;
 }
 
@@ -262,7 +262,6 @@ a.wf-mediabox-img {
     position: relative;
     line-height: 0;
     font-size: 0;
-    display: inherit;
 }
 
 .wf-icon-zoom-image:before {

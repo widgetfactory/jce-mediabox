@@ -533,10 +533,13 @@ if (window.jQuery === "undefined") {
                 }
             }
 
-            // check for auto popup
+            // check for auto popup in classname
             if (/autopopup-(single|multiple)/.test(el.className)) {
                 auto = /(multiple)/.test(el.className) ? 'multiple' : 'single';
             }
+
+            // use data-mediabox-autopopup attribute if set
+            auto = auto || data.autopopup || "";
 
             // get group
             if ($(el).hasClass('nogroup')) {

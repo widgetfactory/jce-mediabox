@@ -321,9 +321,9 @@
      * Ajax / Internal Content
      */
     WFMediaBox.Plugin.add('content', function() {
-        function islocal(s) {
+        function islocal(s) {                        
             if (/^(\w+:)?\/\//.test(s)) {
-                return new RegExp('^(' + WFMediaBox.settings.site + ')').test(s);
+                return new RegExp('^(' + WFMediaBox.site + ')').test(s);
             } else {
                 return true;
             }

@@ -2708,6 +2708,11 @@
                         'style': child.style.cssText
                     });
 
+                    // pass title to span
+                    if (child.nodeName === "IMG" && child.title) {
+                        span.setAttribute('title', child.title);
+                    }
+
                     // Set styles
                     DOM.styles(span, styles);
 

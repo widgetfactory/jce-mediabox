@@ -2918,7 +2918,7 @@
 
             // Process rel attribute
             if (!/\w+\[[^\]]+\]/.test(rel)) {
-                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
+                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|noopener|noreferrer|licence|tag|friend';
                 var lb = '(lightbox(\[(.*?)\])?)';
                 var lt = '(lyte(box|frame|show)(\[(.*?)\])?)';
 

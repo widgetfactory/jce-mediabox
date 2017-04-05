@@ -322,11 +322,11 @@
      */
     WFMediaBox.Plugin.add('content', function() {
         function islocal(s) {                        
-            if (/^(\w+:)?\/\//.test(s)) {
-                return new RegExp('^(' + WFMediaBox.site + ')').test(s);
-            } else {
-                return true;
+            if (/^([a-z]+)?:\/\//.test(s)) {                
+                return new RegExp('(' + WFMediaBox.site + ')').test(s);
             }
+            
+            return true;
         }
 
         this.type = "ajax";
@@ -358,7 +358,7 @@
         };
 
         this.is = function(data) {
-            return data.type === "ajax" || data.type === "text/html";
+            return data.type === "ajax" || data.type === "text/html" || $(data.node).hasClass('ajax');
         };
     });
     /**

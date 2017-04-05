@@ -511,11 +511,11 @@ if (window.jQuery === "undefined") {
 
             // Process and cleanup rel attribute (legacy)
             if (!/\w+\[[^\]]+\]/.test(rel)) {
-                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend';
+                var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|noopener|noreferrer|licence|tag|friend';
                 var lb = '(lightbox(\[(.*?)\])?)';
                 var lt = '(lyte(box|frame|show)(\[(.*?)\])?)';
 
-                group = $.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
+                group = $.trim(rel.replace(new RegExp("(^|\\s+)" + rx + "|" + lb + "|" + lt + "(\\s+|$)", "g"), '', 'gi'));
             }
 
             // Get AREA parameters from URL if not set
@@ -570,6 +570,7 @@ if (window.jQuery === "undefined") {
 
             // Popup object
             $.extend(o, {
+                node: el,
                 src: src,
                 title: title,
                 caption: caption,
@@ -631,6 +632,21 @@ if (window.jQuery === "undefined") {
                 // new index if not a pageload
                 if (!pageload) {
                     i = self.popups.length - 1;
+                }
+
+                // add noopener noreferrer if target="_blank"
+                if ($(this).attr('target') === "_blank") {
+                    var rel = $(this).attr('rel') || '';
+
+                    if (rel.indexOf('noopener') === -1) {
+                        rel += " noopener";
+                    }
+
+                    if (rel.indexOf('noreferrer') === -1) {
+                        rel += " noreferrer";
+                    }
+
+                    $(this).attr('rel', $.trim(rel));
                 }
 
                 $(this).attr('class', function(i, v) {

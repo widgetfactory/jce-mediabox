@@ -2922,7 +2922,7 @@
                 var lb = '(lightbox(\[(.*?)\])?)';
                 var lt = '(lyte(box|frame|show)(\[(.*?)\])?)';
 
-                group = JCEMediaBox.trim(rel.replace(new RegExp('\s*(' + rx + '|' + lb + '|' + lt + ')\s*'), '', 'gi'));
+                group = JCEMediaBox.trim(rel.replace(new RegExp("(^|\\s+)" + rx + "|" + lb + "|" + lt + "(\\s+|$)", "g"), '', 'gi'));
             }
 
             // Get AREA parameters from URL if not set
@@ -3012,6 +3012,21 @@
                 // Create zoom icon
                 if (JCEMediaBox.options.popup.icons == 1 && el.nodeName == 'A' && !/(noicon|icon-none|noshow)/.test(el.className) && el.style.display != 'none') {
                     t.zoom(el);
+                }
+
+                // add noopener noreferrer if target="_blank"
+                if (DOM.attribute(el, 'target') === "_blank") {
+                    var rel = DOM.attribute(el, 'rel') || '';
+
+                    if (rel.indexOf('noopener') === -1) {
+                        rel += " noopener";
+                    }
+
+                    if (rel.indexOf('noreferrer') === -1) {
+                        rel += " noreferrer";
+                    }
+
+                    DOM.attribute(el, 'rel', JCEMediaBox.trim(rel));
                 }
 
                 // Simplify class identifier for css

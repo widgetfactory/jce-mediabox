@@ -124,7 +124,7 @@ class plgSystemJCEMediabox extends JPlugin
         $i = 0;
         $v = '';
         foreach ($words as $word) {
-            $v .= "'" . $word . "':'" . htmlspecialchars(JText::_('JCEMEDIABOX_' . strtoupper($word))) . "'";
+            $v .= "'" . $word . "':'" . htmlspecialchars(JText::_('JCEMEDIABOX_' . strtoupper($word)), ENT_QUOTES, 'UTF-8') . "'";
             if ($i < count($words) - 1) {
                 $v .= ',';
             }

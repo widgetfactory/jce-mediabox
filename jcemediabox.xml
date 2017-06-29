@@ -9,20 +9,16 @@
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
     <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
-
     <config>
         <fields name="params">
             <fieldset name="general" group="general">
                 <field name="theme" type="folderlist" directory="plugins/system/jcemediabox/themes" hide_none="true" hide_default="true" exclude="(css|img)" default="standard" label="JCEMEDIABOX_THEME" description="JCEMEDIABOX_THEMEDESC" />
                 <field name="imgpath" type="text" size="50" default="plugins/system/jcemediabox/img" label="JCEMEDIABOX_IMAGEPATH" description="JCEMEDIABOX_IMAGEPATHDESC"/>
-
                 <field name="mediafallback" type="radio" default="0" label="JCEMEDIABOX_MEDIAFALLBACK" class="btn-group btn-group-yesno" description="JCEMEDIABOX_MEDIAFALLBACKDESC">
                     <option value="1">JCEMEDIABOX_YES</option>
                     <option value="0">JCEMEDIABOX_NO</option>
                 </field>
-
                 <field name="mediaselector" type="text" size="50" default="audio,video" label="JCEMEDIABOX_MEDIASELECTOR" description="JCEMEDIABOX_MEDIASELECTORDESC"/>
-
             </fieldset>
             <fieldset name="popup" group="popup">
                 <field type="spacer" default="JCEMEDIABOX_POPUP" />
@@ -87,14 +83,8 @@
                     <option value="1">JCEMEDIABOX_YES</option>
                     <option value="0">JCEMEDIABOX_NO</option>
                 </field>
-                
                 <field name="cookie_expiry" type="text" size="5" default="" label="JCEMEDIABOX_COOKIE_EXPIRY" description="JCEMEDIABOX_COOKIE_EXPIRYDESC" />
-                
-                <!--field name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC">
-                    <option value="1">JCEMEDIABOX_YES</option>
-                    <option value="0">JCEMEDIABOX_NO</option>
-                </field-->
-                
+                <!--field name="google_viewer" type="radio" default="0" label="JCEMEDIABOX_GOOGLE_VIEWER" description="JCEMEDIABOX_GOOGLE_VIEWERDESC"><option value="1">JCEMEDIABOX_YES</option><option value="0">JCEMEDIABOX_NO</option></field-->
             </fieldset>
             <fieldset name="tooltip" group="tooltip">
                 <field type="spacer" default="JCEMEDIABOX_TOOLTIP" />
@@ -126,7 +116,6 @@
             </fieldset>
         </fields>
     </config>
-	
     <files folder="plugins/system/jcemediabox">
         <file plugin="jcemediabox">jcemediabox.php</file>
         <folder>addons</folder>
@@ -137,13 +126,13 @@
         <folder>themes</folder>
         <folder>mediaplayer</folder>
     </files>
-	
     <languages folder="administrator/language/en-GB">
         <language tag="en-GB">en-GB.plg_system_jcemediabox.ini</language>
         <language tag="en-GB">en-GB.plg_system_jcemediabox.sys.ini</language>
     </languages>
-    
     <updateservers>
-	<server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=jcemediabox.xml]]></server>
+        <server type="extension" priority="1" name="JCE MediaBox Updates">
+            <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/plg_system_jcemediabox.xml]]>
+        </server>
     </updateservers>
 </extension>

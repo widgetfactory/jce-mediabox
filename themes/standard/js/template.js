@@ -9,8 +9,7 @@ WFMediaBox.Theme.add("standard", function() {
                 },
                 {
                     "div": {
-                        "class": "wf-mediabox-content",
-                        "content": ""
+                        "class": "wf-mediabox-content"
                     }
                 },
                 {

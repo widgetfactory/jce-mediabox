@@ -1200,7 +1200,8 @@
 
                         });
                     }
-                    if (e && JCEMediaBox.isWebKit) {
+
+                    if (e && e.target && JCEMediaBox.isWebKit) {
                         if (e.target.nodeType == 3) {
                             e.target = e.target.parentNode;
                         }

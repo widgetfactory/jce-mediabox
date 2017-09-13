@@ -268,9 +268,10 @@
         };
 
         this.is = function (data) {
-            // remove query
-            data.src = data.src.split('?')[0];
-            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(data.src);
+            var src = data.src;
+            // remove query to test extension
+            src = src.split('?')[0];
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(src);
         };
     });
     /**

@@ -92,10 +92,10 @@ class plgSystemJCEMediabox extends JPlugin
         $db = JFactory::getDBO();
 
         // Causes issue in Safari??
-        $pop = JRequest::getInt('pop');
-        $print = JRequest::getInt('print');
-        $task = JRequest::getCmd('task');
-        $tmpl = JRequest::getWord('tmpl');
+        $pop = $app->input->getInt('pop');
+        $print = $app->input->getInt('print');
+        $task = $app->input->getCmd('task');
+        $tmpl = $app->input->getWord('tmpl');
 
         // don't load mediabox on certain pages
         if ($pop || $print || $tmpl == 'component' || $task == 'new' || $task == 'edit') {
@@ -119,7 +119,7 @@ class plgSystemJCEMediabox extends JPlugin
                 }
             }
         }
-        
+
         // get active menu
         $menus = $app->getMenu();
         $menu = $menus->getActive();
@@ -138,7 +138,7 @@ class plgSystemJCEMediabox extends JPlugin
         $menuitems_exclude = (array) $params->get('menu_exclude');
 
         // is there a menu exclusion?
-        if (!empty($menuitems_exclude) && !empty($menuitems_exclude[0])) {            
+        if (!empty($menuitems_exclude) && !empty($menuitems_exclude[0])) {
             if ($menu && in_array($menu->id, (array) $menuitems_exclude)) {
                 return;
             }
@@ -147,43 +147,31 @@ class plgSystemJCEMediabox extends JPlugin
         self::$theme = $params->get('theme', 'standard');
 
         if ($params->get('dynamic_themes', 0)) {
-            self::$theme = JRequest::getWord('theme', $params->get('theme', 'standard'));
+            self::$theme = $app->input->getWord('theme', $params->get('theme', 'standard'));
         }
 
         $config = array(
-            'base'              => JURI::base(true) . '/',
-            'theme'             => self::$theme,
-            'mediafallback'     => (int) $params->get('mediafallback', 0),
-            'mediaselector'     => $params->get('mediaselector', 'audio,video'),
-            'width'             => $params->get('width', ''),
-            'height'            => $params->get('height', ''),
-            'lightbox'          => (int) $params->get('lightbox', 0),
-            'shadowbox'         => (int) $params->get('shadowbox', 0),
-            'icons'             => (int) $params->get('icons', 1),
-            'overlay'           => (int) $params->get('overlay', 1),
-            'overlay_opacity'   => (float) $params->get('overlayopacity'),
-            'overlay_color'     => $params->get('overlaycolor', ''),
-            'transition_speed'  => (int) $params->get('transition_speed', $params->get('scalespeed', 300)),
-            'close'             => (int) $params->get('close', 2),
-            'scrolling'         => (string) $params->get('scrolling', 'fixed'),
-            'labels'            => $this->getLabels(),
+            'base' => JURI::base(true) . '/',
+            'theme' => self::$theme,
+            'mediafallback' => (int) $params->get('mediafallback', 0),
+            'mediaselector' => $params->get('mediaselector', 'audio,video'),
+            'width' => $params->get('width', ''),
+            'height' => $params->get('height', ''),
+            'lightbox' => (int) $params->get('lightbox', 0),
+            'shadowbox' => (int) $params->get('shadowbox', 0),
+            'icons' => (int) $params->get('icons', 1),
+            'overlay' => (int) $params->get('overlay', 1),
+            'overlay_opacity' => (float) $params->get('overlayopacity'),
+            'overlay_color' => $params->get('overlaycolor', ''),
+            'transition_speed' => (int) $params->get('transition_speed', $params->get('scalespeed', 300)),
+            'close' => (int) $params->get('close', 2),
+            'scrolling' => (string) $params->get('scrolling', 'fixed'),
+            'labels' => $this->getLabels(),
         );
 
         if ($this->params->get('jquery', 1)) {
-            $version = new JVersion;
-
-            if ($version->isCompatible('3.0')) {
-                // Include jQuery
-                JHtml::_('jquery.framework');
-            } else {
-                // check if loaded
-                if (!$app->get('jquery')) {
-                    $document->addScript('https://code.jquery.com/jquery-1.12.4.min.js');
-                    $document->addScriptDeclaration('jQuery.noConflict();');
-                    // flag as loaded
-                    $app->set('jquery', true);
-                }
-            }
+            // Include jQuery
+            JHtml::_('jquery.framework');
         }
 
         $document->addScript($this->getURL() . '/js/jcemediabox.min.js?' . $this->getEtag('js/jcemediabox.min.js'));

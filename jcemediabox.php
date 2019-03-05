@@ -151,25 +151,22 @@ class plgSystemJCEMediabox extends JPlugin
         }
 
         $config = array(
-            'base' => JURI::base(true) . '/',
-            'theme' => self::$theme,
-            'mediafallback' => (int) $params->get('mediafallback', 0),
-            'mediaselector' => $params->get('mediaselector', 'audio,video'),
-            'width' => $params->get('width', ''),
-            'height' => $params->get('height', ''),
-            'legacy' => (int) $params->get('legacy', 0),
-            'lightbox' => (int) $params->get('lightbox', 0),
-            'shadowbox' => (int) $params->get('shadowbox', 0),
-            'icons' => (int) $params->get('icons', 1),
-            'overlay' => (int) $params->get('overlay', 1),
-            'overlayopacity' => (float) $params->get('overlayopacity'),
-            'overlaycolor' => $params->get('overlaycolor', ''),
-            'fadespeed' => (int) $params->get('fadespeed', 500),
-            'scalespeed' => (int) $params->get('scalespeed', 500),
-            'hideobjects' => (int) $params->get('hideobjects', 1),
-            'scrolling' => $params->get('scrolling', 'fixed'),
-            'close' => (int) $params->get('close', 2),
-            'labels' => $this->getLabels(),
+            'base'              => JURI::base(true) . '/',
+            'theme'             => self::$theme,
+            'mediafallback'     => (int) $params->get('mediafallback', 0),
+            'mediaselector'     => $params->get('mediaselector', 'audio,video'),
+            'width'             => $params->get('width', ''),
+            'height'            => $params->get('height', ''),
+            'lightbox'          => (int) $params->get('lightbox', 0),
+            'shadowbox'         => (int) $params->get('shadowbox', 0),
+            'icons'             => (int) $params->get('icons', 1),
+            'overlay'           => (int) $params->get('overlay', 1),
+            'overlay_opacity'   => (float) $params->get('overlayopacity'),
+            'overlay_color'     => $params->get('overlaycolor', ''),
+            'transition_speed'  => (int) $params->get('transition_speed', $params->get('scalespeed', 300)),
+            'close'             => (int) $params->get('close', 2),
+            'scrolling'         => (string) $params->get('scrolling', 'fixed'),
+            'labels'            => $this->getLabels(),
         );
 
         if ($this->params->get('jquery', 1)) {
@@ -192,7 +189,7 @@ class plgSystemJCEMediabox extends JPlugin
         $document->addScript($this->getURL() . '/js/jcemediabox.min.js?' . $this->getEtag('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getURL() . '/css/jcemediabox.min.css?' . $this->getEtag('css/jcemediabox.min.css'));
 
-        $document->addScriptDeclaration('jQuery(document).on("ready",function(){WFMediaBox.init(' . json_encode($config) . ');});');
+        $document->addScriptDeclaration('jQuery(document).ready(function(){WFMediaBox.init(' . json_encode($config) . ');});');
 
         return true;
     }

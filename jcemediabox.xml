@@ -18,40 +18,37 @@
                   <option value="light">PLG_SYSTEM_JCEMEDIABOX_THEME_LIGHT</option>
                   <option value="shadow">PLG_SYSTEM_JCEMEDIABOX_THEME_SHADOW</option>
                   <option value="squeeze">PLG_SYSTEM_JCEMEDIABOX_THEME_SQUEEZE</option>
-                  <option value="bootstrap">PLG_SYSTEM_JCEMEDIABOX_THEME_BOOTSTRAP</option>
-                  <option value="uikit">PLG_SYSTEM_JCEMEDIABOX_THEME_UIKIT</option>
+                  <!--option value="bootstrap">PLG_SYSTEM_JCEMEDIABOX_THEME_BOOTSTRAP</option>
+                  <option value="uikit">PLG_SYSTEM_JCEMEDIABOX_THEME_UIKIT</option-->
                 </field>
 
-                <field name="fadespeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_FADESPEED" description="PLG_SYSTEM_JCEMEDIABOX_FADESPEED_DESC"/>
-                <field name="scalespeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_SCALESPEED" description="PLG_SYSTEM_JCEMEDIABOX_SCALESPEED_DESC"/>
+                <field name="transitionspeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED" description="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED_DESC"/>
+                
                 <field name="overlay" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAY" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAY_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
                 <field name="overlayopacity" type="number" default="" step="0.1" min="0" max="1" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAYOPACITY" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAYOPACITY_DESC" />
                 <field name="overlaycolor" type="color" default="" class="color" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAYCOLOR" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAYCOLOR_DESC" />
+                
                 <field name="width" type="text" default="" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_WIDTH" description="PLG_SYSTEM_JCEMEDIABOX_WIDTH_DESC" />
                 <field name="height" type="text" default="" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_HEIGHT" description="PLG_SYSTEM_JCEMEDIABOX_HEIGHT_DESC" />
-                <field name="resize" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_RESIZE" description="PLG_SYSTEM_JCEMEDIABOX_RESIZE_DESC" class="btn-group btn-group-yesno">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+
                 <field name="close" type="list" default="2" label="PLG_SYSTEM_JCEMEDIABOX_CLOSE_ACTION" description="PLG_SYSTEM_JCEMEDIABOX_CLOSE_ACTION_DESC">
                     <option value="1">PLG_SYSTEM_JCEMEDIABOX_CLOSE_BUTTON</option>
                     <option value="2">PLG_SYSTEM_JCEMEDIABOX_CLOSE_BUTTON_OVERLAY</option>
                 </field>
+
+                <field name="scrolling" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLING" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLING_DESC">
+                    <option value="fixed">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_FIXED</option>
+                    <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_SCROLL</option>
+                </field>
+                
                 <field name="icons" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_ICONS" description="PLG_SYSTEM_JCEMEDIABOX_ICONS_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="scrolling" type="radio" default="fixed" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLPOSITION" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLPOSITION_DESC" class="btn-group">
-                    <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLL</option>
-                    <option value="fixed">PLG_SYSTEM_JCEMEDIABOX_FIXED</option>
-                </field>
-                <field name="hideobjects" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_HIDEOBJECTS" description="PLG_SYSTEM_JCEMEDIABOX_HIDEOBJECTS_DESC" class="btn-group btn-group-yesno">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+
                 <field name="components" type="components" multiple="true" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" />
                 <field name="menu" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" />
                 <field name="menu_exclude" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" />
@@ -59,14 +56,12 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="legacy" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_LEGACY" description="PLG_SYSTEM_JCEMEDIABOX_LEGACY_DESC" class="btn-group btn-group-yesno">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+
                 <field name="lightbox" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX" description="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+
                 <field name="shadowbox" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SHADOWBOX" description="PLG_SYSTEM_JCEMEDIABOX_SHADOWBOX_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

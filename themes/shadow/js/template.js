@@ -1,32 +1,31 @@
-WFMediaBox.Theme.add("shadow", function() {
-    return [{
+WFMediaBox.Theme.add("shadow", function () {
+    return [
+        {
             "div": {
                 "class": "wf-mediabox-info-top",
-                "content": [{
-                    "div": {
-                        "class": "wf-mediabox-caption"
+                "content": [
+                    {
+                        "div": {
+                            "class": "wf-mediabox-caption"
+                        }
                     }
-                }]
+                ]
             }
         },
         {
             "div": {
                 "class": "wf-mediabox-container",
-                "content": [{
-                        "div": {
-                            "class": "wf-mediabox-loader",
-                            "content": [{
-                                "a": {
-                                    "class": "wf-mediabox-cancel",
-                                    "title": "{{cancel}}",
-                                    "text": "{{cancel}}"
-                                }
-                            }]
-                        }
-                    },
+                "content": [
                     {
                         "div": {
-                            "class": "wf-mediabox-content"
+                            "class": "wf-mediabox-content",
+                            "content": [
+                                {
+                                    "div" : {
+                                        "class" : "wf-mediabox-content-item"
+                                    }
+                                }
+                            ]
                         }
                     }
                 ]
@@ -35,36 +34,43 @@ WFMediaBox.Theme.add("shadow", function() {
         {
             "div": {
                 "class": "wf-mediabox-info-bottom",
-                "content": [{
-                    "div": {
-                        "class": "wf-mediabox-nav",
-                        "content": [{
-                                "span": {
-                                    "class": "wf-mediabox-numbers",
-                                    "text": "{{numbers}}"
+                "content": [
+                    {
+                        "div": {
+                            "class": "wf-mediabox-nav",
+                            "role": "navigation",
+                            "content": [
+                                {
+                                    "span": {
+                                        "class": "wf-mediabox-numbers",
+                                        "text": "{{numbers}}"
+                                    }
+                                },
+                                {
+                                    "button": {
+                                        "class": "wf-mediabox-close",
+                                        "title": "{{close}}",
+                                        "aria-label": "{{close}}"
+                                    }
+                                },
+                                {
+                                    "button": {
+                                        "class": "wf-mediabox-next wf-icon-next-shadow",
+                                        "title": "{{next}}",
+                                        "aria-label": "{{next}}"
+                                    }
+                                },
+                                {
+                                    "button": {
+                                        "class": "wf-mediabox-prev wf-icon-prev-shadow",
+                                        "title": "{{previous}}",
+                                        "aria-label": "{{previous}}"
+                                    }
                                 }
-                            },
-                            {
-                                "a": {
-                                    "class": "wf-mediabox-close",
-                                    "title": "{{close}}"
-                                }
-                            },
-                            {
-                                "a": {
-                                    "class": "wf-mediabox-next",
-                                    "title": "{{next}}"
-                                }
-                            },
-                            {
-                                "a": {
-                                    "class": "wf-mediabox-prev",
-                                    "title": "{{previous}}"
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
-                }]
+                ]
             }
         }
     ];

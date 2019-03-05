@@ -81,7 +81,7 @@
         };
     };
 
-    Tools.parseWidth = function (w) {
+    Tools.parseWidth = function (w) {        
         // calculate width if percentage
         if (/%/.test(w)) {
             w = Math.floor($(window).width() * parseInt(w) / 100);

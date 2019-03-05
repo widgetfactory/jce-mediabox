@@ -1,8 +1,7 @@
 /**
  * Squeeze Template
- * @version		$Id: style.css 484 2010-01-22 03:53:17Z happynoodleboy $
  * @package		JCE MediaBox
- * @copyright	Copyright (C) 2009 - 2010 Ryan Demmer. All rights reserved.
+ * @copyright	Copyright (C) 2009 - 2019 Ryan Demmer. All rights reserved.
  * @license		GNU/GPL
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -10,61 +9,65 @@
  * other free or open source software licenses.
  */
 
+ .wf-mediabox-theme-squeeze .wf-mediabox-frame {
+	padding: 1em;
+}
+
 .wf-mediabox-theme-squeeze .wf-mediabox-container {
-	border-radius : 3px 3px 0 0;
 	overflow: inherit;
-	padding: 10px 10px 0;
 }
+
 .wf-mediabox-theme-squeeze .wf-mediabox-info-bottom {
-	border-radius: 0 0 3px 3px;
-	padding: 0;
 }
+
 .wf-mediabox-theme-squeeze .wf-mediabox-loader {}
 
-.wf-mediabox-theme-squeeze .wf-mediabox-nav {padding: 10px 0 0;}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-caption {
-	padding: 10px 10px 0;
+.wf-mediabox-theme-squeeze .wf-mediabox-nav {
 }
 
-.wf-mediabox-theme-squeeze .wf-mediabox-close, .wf-mediabox-theme-squeeze .wf-mediabox-prev, .wf-mediabox-theme-squeeze .wf-mediabox-next {
-	/*border: 2px solid #fff;*/
+.wf-mediabox-theme-squeeze .wf-mediabox-caption {
+}
+
+.wf-mediabox-theme-squeeze .wf-mediabox-close,
+.wf-mediabox-theme-squeeze .wf-mediabox-prev,
+.wf-mediabox-theme-squeeze .wf-mediabox-next {
 	border-radius: 100%;
-	box-shadow: 1px 1px 5px #000;
-	/*font-weight: bold;*/
-	height: 20px;
+	box-shadow: 1px 1px 0.25em #000;
+	height: 1.2em;
 	left: auto;
-	line-height: 16px;
+	line-height: 1em;
 	position: absolute;
 	text-align: center;
-	width: 20px;
+	width: 1.5em;
 	z-index: 1;
 	color: #fff;
 	background-color: #000;
-	font-size: 28px;
-	/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
 }
+
+.wf-mediabox-theme-squeeze .wf-mediabox-close:after,
+.wf-mediabox-theme-squeeze .wf-mediabox-prev:after,
+.wf-mediabox-theme-squeeze .wf-mediabox-next:after {
+	font-size: 1.75em;
+}
+
 .wf-mediabox-theme-squeeze .wf-mediabox-close {
-	right: -12px;
-	top: -12px;
+	right: -0.75em;
+	top: -0.75em;
 }
+
 .wf-mediabox-theme-squeeze .wf-mediabox-prev {
-	left: 10px;
+	left: 0.75em;
+	top: 2.5em;
 }
+
 .wf-mediabox-theme-squeeze .wf-mediabox-next {
-	right: 10px;
+	right: 0.75em;
+	top: 2.5em;
 }
-.wf-mediabox-theme-squeeze .wf-mediabox-close:hover,
-.wf-mediabox-theme-squeeze .wf-mediabox-close:active,
-.wf-mediabox-theme-squeeze .wf-mediabox-close:focus,
-.wf-mediabox-theme-squeeze .wf-mediabox-prev:hover,
-.wf-mediabox-theme-squeeze .wf-mediabox-prev:active,
-.wf-mediabox-theme-squeeze .wf-mediabox-prev:focus,
-.wf-mediabox-theme-squeeze .wf-mediabox-next:hover,
-.wf-mediabox-theme-squeeze .wf-mediabox-next:active,
-.wf-mediabox-theme-squeeze .wf-mediabox-next:focus {
-	color: #fff;
-	text-decoration: none;
-	outline: none;
+
+.wf-mediabox-theme-squeeze .wf-mediabox-numbers {
 }
-.wf-mediabox-theme-squeeze .wf-mediabox-numbers {padding: 0 0 10px;}
+
+.wf-mediabox-theme-squeeze .wf-mediabox-numbers button.active {
+	background-color: #000;
+}

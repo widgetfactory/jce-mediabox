@@ -10,8 +10,30 @@ if (window.jQuery === "undefined") {
     throw new Error('JQuery is required to run Mediabox!');
 }
 
-(function($) {
+(function ($) {
     var autoplayInterval;
+
+    function scrollIntoView(el, pos) {
+        var supported = 'scrollBehavior' in document.documentElement.style;
+        
+        if (supported) {
+            try {
+                $(el).get(0).scrollIntoView({
+                    block: "center"
+                });
+
+                return;
+            } catch (e) {
+            }
+        }
+        
+        // fallback to manual calculation
+        var boxCenter = $(el).offset().top + $(el).outerHeight(true) / 2;
+        var windowCenter = window.innerHeight / 2;
+
+        window.scrollTo(0, boxCenter - windowCenter);
+        
+    }
 
     var MediaBox = {
         util: {},
@@ -30,12 +52,15 @@ if (window.jQuery === "undefined") {
         // array of popup items
         items: [],
 
+        // the link that opened the popup
+        activator: null,
+
         /**
          * Get the Site Base URL
          * @method getSite
          * @return {String} Site Base URL
          */
-        getSite: function() {
+        getSite: function () {
             var base = this.settings.base || "";
 
             if (base) {
@@ -74,7 +99,7 @@ if (window.jQuery === "undefined") {
          *    some_settings : 'some value'
          * });
          */
-        init: function(settings) {
+        init: function (settings) {
             var self = this;
 
             // extend settings with passed in object
@@ -97,7 +122,7 @@ if (window.jQuery === "undefined") {
             }
         },
 
-        resolveMediaPath: function(s, absolute) {
+        resolveMediaPath: function (s, absolute) {
             function toAbsolute(url) {
                 var div = document.createElement('div');
                 div.innerHTML = '<a href="' + url + '">x</a>';
@@ -116,7 +141,7 @@ if (window.jQuery === "undefined") {
             return s;
         },
 
-        mediaFallback: function() {
+        mediaFallback: function () {
             var self = this;
 
             // process video
@@ -149,7 +174,7 @@ if (window.jQuery === "undefined") {
                 return hasSupport;
             }
 
-            $(elms).each(function(i, el) {
+            $(elms).each(function (i, el) {
                 var type = el.getAttribute('type'),
                     src = el.getAttribute('src'),
                     name = el.nodeName.toLowerCase(),
@@ -157,7 +182,7 @@ if (window.jQuery === "undefined") {
 
                 // no src attribute set, try finding in <source>
                 if (!src || !type) {
-                    $('source[type]', el).each(function(i, n) {
+                    $('source[type]', el).each(function (i, n) {
                         src = n.getAttribute('src'), type = n.getAttribute('type');
 
                         // video/x-flv not supported by any browser
@@ -202,7 +227,7 @@ if (window.jQuery === "undefined") {
                     flashvars.push('file=' + self.resolveMediaPath(src, true));
                 }
 
-                $.each(['autoplay', 'loop', 'preload', 'controls'], function(i, at) {
+                $.each(['autoplay', 'loop', 'preload', 'controls'], function (i, at) {
                     var v = el.getAttribute(at);
 
                     if (typeof v !== "undefined" && v !== null) {
@@ -275,7 +300,7 @@ if (window.jQuery === "undefined") {
          * @param {String} s Optional selector
          * @param {Object} p Optional parent element popups contained within
          */
-        getPopups: function(s, p) {
+        getPopups: function (s, p) {
             var selector = s || this.settings.selector;
 
             return $(selector, p);
@@ -285,12 +310,12 @@ if (window.jQuery === "undefined") {
          * Translate popup labels
          * @param {String} s Theme HTML
          */
-        translate: function(s) {
+        translate: function (s) {
             var o = this.settings,
                 labels = o.labels;
 
             if (s) {
-                s = s.replace(/\{\{(\w+?)\}\}/g, function(a, b) {
+                s = s.replace(/\{\{(\w+?)\}\}/g, function (a, b) {
                     return labels[b] || a;
                 });
             }
@@ -301,13 +326,13 @@ if (window.jQuery === "undefined") {
          * Returns a styles object from a parameter
          * @param {Object} o
          */
-        getStyles: function(o) {
+        getStyles: function (o) {
             var x = [];
             if (!o)
                 return {};
 
-            $.each(o.split(';'), function(i, s) {
-                s = s.replace(/(.*):(.*)/, function(a, b, c) {
+            $.each(o.split(';'), function (i, s) {
+                s = s.replace(/(.*):(.*)/, function (a, b, c) {
                     return '"' + b + '":"' + c + '"';
                 });
 
@@ -320,7 +345,7 @@ if (window.jQuery === "undefined") {
          * Determine whether the url is local
          * @param {Object} s
          */
-        islocal: function(s) {
+        islocal: function (s) {
             if (/^(\w+):\/\//.test(s)) {
                 return new RegExp('^(' + Env.url + ')').test(s);
             } else {
@@ -328,56 +353,9 @@ if (window.jQuery === "undefined") {
             }
         },
         /**
-         * Get the width of the container frame
-         */
-        frameWidth: function() {
-            var w = 0,
-                s;
-
-            $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').each(function() {
-                s = $(this).hasClass('wf-mediabox-info-top') ? 'top' : 'bottom';
-                w = w + parseFloat($(this).css('padding-' + s));
-            });
-
-            return parseFloat($('.wf-mediabox-frame').width() - w);
-        },
-        /**
-         * Get the height of the container frame
-         */
-        frameHeight: function() {
-            var h = 0,
-                el = $('.wf-mediabox-frame');
-
-            $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').each(function() {
-                var s = this.id.replace('jcemediabox-popup-info-', '');
-                h = h + parseFloat($(el).css('padding-' + s));
-            });
-
-            return $(window).height() - h;
-        },
-        /**
-         * Get the width of the usable window
-         */
-        width: function() {
-            return this.frameWidth();
-        },
-        /**
-         * Get the height of the usable window less info divs
-         */
-        height: function() {
-            var h = 0,
-                self = this;
-
-            $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').each(function() {
-                h = h + parseInt($(this).outerHeight());
-            });
-
-            return this.frameHeight() - h;
-        },
-        /**
          * Process autopopups
          */
-        auto: function() {
+        auto: function () {
             var self = this,
                 key;
 
@@ -399,7 +377,7 @@ if (window.jQuery === "undefined") {
                 return key;
             }
 
-            $(this.popups).each(function(i, el) {
+            $(this.popups).each(function (i, el) {
                 if (el.auto) {
                     if (el.auto == 'single') {
                         // use element ID or base64 key
@@ -425,7 +403,7 @@ if (window.jQuery === "undefined") {
          * @param {object} n Element
          * @returns {object} Data object
          */
-        getData: function(n) {
+        getData: function (n) {
             var o = {},
                 data, re = /\w+\[[^\]]+\]/;
 
@@ -438,7 +416,7 @@ if (window.jQuery === "undefined") {
                 if (rel && re.test(rel)) {
                     var args = [];
 
-                    rel = rel.replace(/\b((\w+)\[(.*?)\])(;?)/g, function(a, b, c) {
+                    rel = rel.replace(/\b((\w+)\[(.*?)\])(;?)/g, function (a, b, c) {
                         args.push(b);
                         return '';
                     });
@@ -456,7 +434,9 @@ if (window.jQuery === "undefined") {
                 n.removeAttribute('data-mediabox');
 
                 // parse paramter string to object
-                o = MediaBox.Parameter.parse(data);
+                if (/&\[\]\{\}/.test(data)) {
+                    o = MediaBox.Parameter.parse(data);
+                }
             }
 
             // try data-mediabox attributes
@@ -475,11 +455,14 @@ if (window.jQuery === "undefined") {
 
             return o;
         },
+
+        preloadMedia: function () {},
+
         /**
          * Process a popup link and return properties object
          * @param {Object} el Popup link element
          */
-        process: function(el) {
+        process: function (el) {
             var data, s = this.settings,
                 o = {},
                 group = '',
@@ -489,8 +472,13 @@ if (window.jQuery === "undefined") {
             // get src value from href attribute
             var src = el.href;
 
+            // not a popup link
+            if (!src) {
+                return;
+            }
+
             // Legacy width/height values
-            src = src.replace(/b(w|h)=([0-9]+)/g, function(s, k, v) {
+            src = src.replace(/b(w|h)=([0-9]+)/g, function (s, k, v) {
                 k = (k === 'w') ? 'width' : 'height';
 
                 return k + '=' + v;
@@ -500,11 +488,11 @@ if (window.jQuery === "undefined") {
             data = this.getData(el) || {};
 
             // set title
-            var title = el.title || data.title || '';
+            var title = data.title || el.title || '';
             // set caption
             var caption = data.caption || '';
             // set type
-            var type = el.type || data.type || '';
+            var type = data.type || el.type || '';
 
             // get rel attribute value
             var rel = el.rel || '';
@@ -554,17 +542,17 @@ if (window.jQuery === "undefined") {
             var height = data.height || s.height;
 
             // cleanup data
-            $.each(['src', 'title', 'caption', 'group', 'width', 'height'], function(i, k) {
+            $.each(['src', 'title', 'caption', 'group', 'width', 'height'], function (i, k) {
                 delete data[k];
             });
 
             // convert to integer
-            if (/\d/.test(width)) {
+            if (/!\D/.test(width)) {
                 width = parseInt(width);
             }
 
             // convert to integer
-            if (/\d/.test(height)) {
+            if (/!\D/.test(height)) {
                 height = parseInt(height);
             }
 
@@ -592,7 +580,7 @@ if (window.jQuery === "undefined") {
          * Load the popup theme
          * @param {Object} elements Optional array of popup elements
          */
-        create: function(elements) {
+        create: function (elements) {
             var self = this,
                 s = this.settings,
                 pageload = false,
@@ -623,8 +611,12 @@ if (window.jQuery === "undefined") {
             this.elements = elements || this.getPopups();
 
             // Iterate through all found or specified popup links
-            $(this.elements).removeClass('jcelightbox jcebox jcepopup').addClass('wfpopup').each(function(i) {
+            $(this.elements).removeClass('jcelightbox jcebox jcepopup').addClass('wfpopup').each(function (i) {
                 var o = self.process(this);
+
+                if (!o) {
+                    return true;
+                }
 
                 // add to popups array
                 self.popups.push(o);
@@ -649,12 +641,12 @@ if (window.jQuery === "undefined") {
                     $(this).attr('rel', $.trim(rel));
                 }
 
-                $(this).attr('class', function(i, v) {
+                $(this).attr('class', function (i, v) {
                     return v.replace(/icon-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, 'wf-icon-zoom-$1$2');
                 });
 
                 if (s.icons === 1 && !$(this).hasClass('noicon')) {
-                    var $img = $('img:first', this).wrap('<span class="wf-icon-zoom-image" />');
+                    var $img = $('img:first', this).after('<span class="wf-icon-zoom-image" />');
 
                     if ($img.length) {
                         var styles = {};
@@ -665,10 +657,12 @@ if (window.jQuery === "undefined") {
                             $img.parent().css('float', flt);
                             // reset float
                             $img.css('float', '');
+
+                            $(this).addClass('wf-mediabox-has-float');
                         }
 
                         // Transfer margin, padding and border
-                        $.each(['top', 'right', 'bottom', 'left'], function(i, pos) {
+                        $.each(['top', 'right', 'bottom', 'left'], function (i, pos) {
                             var m = $img.css('margin-' + pos),
                                 p = $img.css('padding-' + pos);
 
@@ -683,7 +677,7 @@ if (window.jQuery === "undefined") {
                             }
 
                             // Set border
-                            $.each(['width', 'style', 'color'], function(i, prop) {
+                            $.each(['width', 'style', 'color'], function (i, prop) {
                                 var v = $img.css('border-' + pos + '-' + prop);
 
                                 if (v !== "inherit" && v !== "initial") {
@@ -709,8 +703,12 @@ if (window.jQuery === "undefined") {
                 }
 
                 // Add click event to link
-                $(this).on('click', function(e) {
+                $(this).on('click', function (e) {
                     e.preventDefault();
+
+                    // set as lightbox activator
+                    self.activator = this;
+
                     return self.start(o, i);
                 });
             });
@@ -723,7 +721,7 @@ if (window.jQuery === "undefined") {
          * @param {String} type Popup Type, eg: image, flash, ajax
          * @param {Object} params Popup Parameters Object
          */
-        open: function(data, title, group, type, params) {
+        open: function (data, title, group, type, params) {
             var i, x = 0,
                 o = {};
 
@@ -738,7 +736,7 @@ if (window.jQuery === "undefined") {
             }
 
             // process as an element
-            if (typeof(data === 'object') && data.nodeName && (data.nodeName === 'A' || data.nodeName === 'AREA')) {
+            if (typeof (data === 'object') && data.nodeName && (data.nodeName === 'A' || data.nodeName === 'AREA')) {
                 i = $.inArray(this.elements, data);
 
                 if (i >= 0) {
@@ -762,15 +760,16 @@ if (window.jQuery === "undefined") {
          * @param {Object} p The popup link object
          * @param {Object} i The popup index
          */
-        start: function(p, i) {
-            var n = 0,
+        start: function (p, i) {
+            var self = this,
+                n = 0,
                 items = [],
                 len;
 
             // build popup window
             if (this.build()) {
                 if (p.group) {
-                    $.each(this.popups, function(x, o) {
+                    $.each(this.popups, function (x, o) {
                         if (o.group === p.group) {
                             len = items.push(o);
                             if (i && x === i) {
@@ -788,23 +787,29 @@ if (window.jQuery === "undefined") {
                     items.push(p);
                 }
 
-                return this.show(items, n);
+                var overlayDuration = $('.wf-mediabox-overlay').css('transition-duration');
+                overlayDuration = (parseFloat(overlayDuration) * 1000) || 300;
+
+                window.setTimeout(function () {
+                    return self.show(items, n);
+                }, overlayDuration);
+
+                return true;
             }
         },
         /**
          * Build Popup structure
          */
-        build: function() {
+        build: function () {
             var self = this,
                 s = this.settings;
 
             if ($('.wf-mediabox').length === 0) {
                 // Create main page object
-                var $page = $('<div class="wf-mediabox" />').appendTo('body');
+                var $page = $('<div class="wf-mediabox" role="dialog" aria-modal="true" aria-labelledby="" aria-describedby="" tabindex="-1" />').appendTo('body');
 
-                if (!s.overlayopacity) {
-                    $page.addClass('wf-mediabox-transition');
-                }
+                // add the tranistion class
+                $page.addClass('wf-mediabox-overlay-transition');
 
                 // add ie6 identifier
                 if (MediaBox.Env.ie6) {
@@ -817,17 +822,17 @@ if (window.jQuery === "undefined") {
 
                 // Create overlay
                 if (s.overlay === 1) {
-                    $('<div class="wf-mediabox-overlay" />').appendTo($page).css('background-color', s.overlaycolor);
+                    $('<div class="wf-mediabox-overlay" tabindex="-1" />').appendTo($page).css('background-color', s.overlaycolor).css('');
                 }
 
                 // Create Frame and body with theme content
-                $page.append('<div class="wf-mediabox-frame"><div class="wf-mediabox-body" /></div>');
+                $page.append('<div class="wf-mediabox-frame" role="document" tabindex="-1"><div class="wf-mediabox-loader" role="status" aria-label="' + this.translate('loading') + '" tabindex="-1"></div><div class="wf-mediabox-body" aria-hidden="true" tabindex="-1" /></div>');
 
                 // add theme class to page
                 $page.addClass('wf-mediabox-theme-' + s.theme);
 
                 // add theme data
-                MediaBox.Addons.Theme.parse(s.theme, function(s) {
+                MediaBox.Addons.Theme.parse(s.theme, function (s) {
                     return self.translate(s);
                 }, '.wf-mediabox-body');
 
@@ -841,7 +846,7 @@ if (window.jQuery === "undefined") {
 
                 // Add close function to frame on click
                 if (s.close === 2) {
-                    $('.wf-mediabox-frame').on('click', function(e) {
+                    $('.wf-mediabox-frame').on('click', function (e) {
                         if (e.target && e.target === this) {
                             self.close();
                         }
@@ -849,30 +854,31 @@ if (window.jQuery === "undefined") {
                 }
 
                 // Setup Close link and Cancel link event
-                $('.wf-mediabox-close, .wf-mediabox-cancel').on('click', function(e) {
+                $('.wf-mediabox-close, .wf-mediabox-cancel').on('click', function (e) {
                     e.preventDefault();
                     self.close();
-                });
+                }).attr('tabindex', 0);
 
                 // Setup Next link event
-                $('.wf-mediabox-next').on('click', function(e) {
+                $('.wf-mediabox-next').on('click', function (e) {
                     e.preventDefault();
                     self.nextItem();
-                });
+                }).attr('tabindex', 0);
 
                 // Setup Previous link event
-                $('.wf-mediabox-prev').on('click', function(e) {
+                $('.wf-mediabox-prev').on('click', function (e) {
                     e.preventDefault();
                     self.previousItem();
-                });
+                }).attr('tabindex', 0);
 
                 // store html
-                $('.wf-mediabox-numbers').data('html', $('.wf-mediabox-numbers').html());
+                $('.wf-mediabox-numbers').data('html', $('.wf-mediabox-numbers').html()).attr('aria-hidden', true);
 
                 // add transition class
-                if (!s.overlayopacity) {
-                    $page.addClass('wf-mediabox-open');
-                }
+                $page.addClass('wf-mediabox-open');
+
+                // update opacity
+                $('.wf-mediabox-overlay').css('opacity', s.overlayopacity || 0.8);
             }
 
             return true;
@@ -882,7 +888,7 @@ if (window.jQuery === "undefined") {
          * @param {Array} items Array of popup objects
          * @param {Int} n Index of current popup
          */
-        show: function(items, n) {
+        show: function (items, n) {
             var top = 0,
                 s = this.settings;
 
@@ -892,24 +898,14 @@ if (window.jQuery === "undefined") {
             // Show popup
             $('.wf-mediabox-body').show();
 
-            // Changes if IE6 or scrollpopup
-            if (MediaBox.Env.ie6 || s.scrolling === 'scroll') {
-                // Get top position
-                if (!/\d/.test($('.wf-mediabox-body').css('top'))) {
-                    top = ($(window).height() - $('.wf-mediabox-body').outerHeight()) / 2;
-                }
-
-                $('.wf-mediabox').css('position', 'absolute');
-                $('.wf-mediabox-overlay').css('height', $(document).height());
-                $('.wf-mediabox-body').css('top', $(document).scrollTop() + top);
-            }
-
             // Fade in overlay
-            if (s.overlay === 1 && $('.wf-mediabox-overlay').length && s.overlayopacity) {
+            if (s.overlay === 1 && $('.wf-mediabox-overlay').length && s.overlay_opacity) {
                 $('.wf-mediabox-overlay').css('opacity', 0).animate({
-                    'opacity': parseFloat(s.overlayopacity)
-                }, s.fadespeed);
+                    'opacity': parseFloat(s.overlay_opacity)
+                }, s.transition_speed);
             }
+
+            $('.wf-mediabox').addClass('wf-mediabox-transition-scale');
 
             return this.change(n);
         },
@@ -918,48 +914,19 @@ if (window.jQuery === "undefined") {
          * @param {Boolean} open Whether popup is opened or closed
          */
 
-        bind: function(open) {
+        bind: function (open) {
             var self = this,
                 s = this.settings;
 
-            if (MediaBox.Env.ie6) {
-                $('select').each(function(i, el) {
-                    if (open) {
-                        el.tmpStyle = el.style.visibility || '';
-                    }
-                    el.style.visibility = open ? 'hidden' : el.tmpStyle;
-                });
-            }
-            if (s.hideobjects) {
-                $('object, embed').not('.wf-mediabox-object').each(function(i, el) {
-                    if (open) {
-                        el.tmpStyle = el.style.visibility || '';
-                    }
-                    el.style.visibility = open ? 'hidden' : el.tmpStyle;
-                });
-
-            }
-            var scroll = s.scrollpopup;
-
             if (open) {
-                $(document).on('keydown.wf-mediabox', function(e) {
+                $(document).on('keydown.wf-mediabox', function (e) {
                     self.addListener(e);
                 });
-
-                if (MediaBox.Env.ie6) {
-                    $(window).on('scroll.wf-mediabox', function(e) {
-                        $('.wf-mediabox-overlay').height('height', $(document).height());
-                    });
-
-                    $(window).on('scroll.wf-mediabox', function(e) {
-                        $('.wf-mediabox-overlay').width($(document).width());
-                    });
-                }
 
                 var xDown, yDown;
 
                 // touch events
-                $('.wf-mediabox-body').on('touchstart', function(e) {
+                $('.wf-mediabox-body').on('touchstart', function (e) {
                     // single finger swipe only
                     if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
                         return;
@@ -968,7 +935,7 @@ if (window.jQuery === "undefined") {
                     xDown = e.originalEvent.touches[0].clientX;
                     yDown = e.originalEvent.touches[0].clientY;
 
-                }).on('touchmove', function(e) {
+                }).on('touchmove', function (e) {
                     if (!xDown || !yDown) {
                         return;
                     }
@@ -983,7 +950,8 @@ if (window.jQuery === "undefined") {
                     var xDiff = xDown - xUp;
                     var yDiff = yDown - yUp;
 
-                    if (Math.abs(xDiff) > Math.abs(yDiff)) { /*most significant*/
+                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                        /*most significant*/
                         if (xDiff > 0) {
                             self.nextItem();
                         } else {
@@ -998,32 +966,21 @@ if (window.jQuery === "undefined") {
                 });
 
             } else {
-                if (MediaBox.Env.ie6 || !scroll) {
-                    $(window).off('scroll.wf-mediabox');
-                    $(window).off('resize.wf-mediabox');
-                }
                 $(document).off('keydown.wf-mediabox');
+
+                // remove events
+                $('.wf-mediabox').off('keydown.wf-mediabox');
             }
 
-            var resize = MediaBox.Tools.debounce(function() {
-                var w = Math.floor($('.wf-mediabox-content').width() * ($('.wf-mediabox-frame').height() - 20) / $('.wf-mediabox-body').height());
+            var resize = MediaBox.Tools.debounce(function () {
+                // get existing width
+                var popup = self.items[self.index];
 
-                // reduce width to content max-width
-                w = Math.min(w, parseInt($('.wf-mediabox-content').css('max-width')));
+                if (!popup) {
+                    return;
+                }
 
-                // set body max-width
-                $('.wf-mediabox-body').css('max-width', w);
-
-                /*$('.wf-mediabox-content > div').css('height', function(i, v) {
-
-                	if (this.style.height) {
-                		return $('.wf-mediabox-frame').height();
-                	}
-
-                	return v;
-                });*/
-
-                $('.wf-mediabox-content > div').css('height', '').removeClass('wf-mediabox-content-height');
+                self.updateBodyWidth(popup.width);
 
             }, 100);
 
@@ -1031,36 +988,42 @@ if (window.jQuery === "undefined") {
 
             // slideshow
             if (s.autoplay) {
-                autoplayInterval = setInterval(function() {
+                autoplayInterval = setInterval(function () {
                     if (self.nextItem() === false) {
                         clearInterval(autoplayInterval);
                     }
                 }, s.autoplay * 1000);
             }
         },
-        calculateWidth: function(cw, ch) {
-            var ph = $('.wf-mediabox-body').height(),
-                wh = $('.wf-mediabox-frame').height() - 20;
 
-            // content width
-            cw = cw || $('.wf-mediabox-content').width();
+        updateBodyWidth: function (w) {
+            var fw = $('.wf-mediabox-frame').width();
+            var fh = $('.wf-mediabox-frame').height();
 
-            // content height
-            ch = ch || $('.wf-mediabox-content').height();
+            if (this.settings.scrolling === "scroll") {
+                var framePadding = $('.wf-mediabox-frame').css('padding-left');
 
-            // calculate height of popup container without content
-            var mh = ph - $('.wf-mediabox-content').height();
+                fw = $(window).width() - parseInt(framePadding) * 2;
+                fh = $(window).height() - parseInt(framePadding) * 2;
+            }
 
-            // get popup height with content included
-            ph = mh + ch;
+            // constrain width
+            w = Math.min(w, fw);  
 
-            return Math.min(cw, Math.floor(cw * Math.min(wh / ph, 1)));
+            $('.wf-mediabox-body').css('max-width',  w);
+
+            while($('.wf-mediabox-body').height() > fh) {
+                w = w - 10;
+
+                $('.wf-mediabox-body').css('max-width', w);
+            }
         },
+
         /**
          * Keyboard listener
          * @param {Object} e Event
          */
-        addListener: function(e) {
+        addListener: function (e) {
             switch (e.keyCode) {
                 case 27:
                     this.close();
@@ -1077,20 +1040,19 @@ if (window.jQuery === "undefined") {
          * Process a popup in the group queue
          * @param {Object} n Queue position
          */
-        queue: function(n) {
-            var self = this,
-                s = this.settings;
+        queue: function (n) {
+            var self = this;
+
             // Optional element
             var changed = false;
 
-            var callback = function() {
+            var callback = function () {
                 if (!changed) {
                     changed = true;
-                    $('.wf-mediabox-content').removeClass('fade-in').animate({
-                        'opacity': 0
-                    }, s.fadespeed, function() {
-                        return self.change(n);
-                    });
+
+                    $('.wf-mediabox-body').removeClass('wf-mediabox-transition');
+
+                    return self.change(n);
                 }
             };
 
@@ -1099,7 +1061,7 @@ if (window.jQuery === "undefined") {
         /**
          * Process the next popup in the group
          */
-        nextItem: function() {
+        nextItem: function () {
             if (this.items.length === 1)
                 return false;
             var n = this.index + 1;
@@ -1108,12 +1070,14 @@ if (window.jQuery === "undefined") {
                 return false;
             }
 
+            //$('.wf-mediabox').addClass('wf-mediabox-transition-slide-in');
+
             return this.queue(n);
         },
         /**
          * Process the previous popup in the group
          */
-        previousItem: function() {
+        previousItem: function () {
             if (this.items.length === 1)
                 return false;
             var n = this.index - 1;
@@ -1121,13 +1085,19 @@ if (window.jQuery === "undefined") {
             if (n < 0 || n >= this.items.length) {
                 return false;
             }
+
+            //$('.wf-mediabox').addClass('wf-mediabox-transition-slide-out');
+
             return this.queue(n);
         },
         /**
          * Set the popup information (caption, title, numbers)
          */
-        info: function() {
+        info: function () {
             var popup = this.items[this.index];
+
+            // remove existing focus
+            $('.wf-mediabox-focus').removeClass('wf-mediabox-focus');
 
             // Optional Element Caption/Title
 
@@ -1136,7 +1106,7 @@ if (window.jQuery === "undefined") {
                     text = popup.caption || '',
                     h = '';
 
-                var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
+                var ex = /([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)/gi;
                 //var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+)';
 
                 // simple URL matching without any concern for correct syntax, eg: http://something_not_a_space
@@ -1162,23 +1132,28 @@ if (window.jQuery === "undefined") {
                 }
 
                 if (title) {
-                    h += '<h4>' + title + '</h4>';
+                    h += '<h4 id="wf-mediabox-modal-title">' + title + '</h4>';
+                    // update aria-labelledby 
+                    $('.wf-mediabox').attr('aria-labelledby', 'wf-mediabox-modal-title');
                 }
 
                 if (text) {
-                    h += '<p>' + text + '</p>';
+                    h += '<p id="wf-mediabox-modal-description">' + text + '</p>';
+                    // update aria-describedby
+                    $('.wf-mediabox').attr('aria-describedby', 'wf-mediabox-modal-description');
                 }
 
                 // set caption html (may be empty)
-                $('.wf-mediabox-caption').html(h).css('visibility', 'hidden');
+                $('.wf-mediabox-caption').html(h).addClass('wf-mediabox-caption-hidden');
 
                 if (h) {
                     // Process e-mail and urls
-                    $('.wf-mediabox-caption').find(':not(a)').each(function() {
-                        var s = $(this).text();
+                    $('.wf-mediabox-caption').find(':not(a)').each(function () {
+                        var s = $(this).html();
+
                         if (s && /(@|:\/\/)/.test(s)) {
                             if (s = processRe(s)) {
-                                $(this).parent().html(s);
+                                $(this).replaceWith(s);
                             }
                         }
                     });
@@ -1193,7 +1168,7 @@ if (window.jQuery === "undefined") {
                 var html = $('.wf-mediabox-numbers').data('html') || "{{numbers}}";
 
                 if (html.indexOf('{{numbers}}') !== -1) {
-                    $('.wf-mediabox-numbers').empty().append('<ul />');
+                    $('.wf-mediabox-numbers').empty().append('<ol />');
 
                     for (var i = 0; i < len; i++) {
                         var n = i + 1;
@@ -1201,16 +1176,22 @@ if (window.jQuery === "undefined") {
                         var title = this.items[i].title || n;
 
                         // Craete Numbers link
-                        var link = $('<a title="' + title + '" />').addClass((this.index == i) ? 'active' : '').html(n);
+                        var link = $('<button aria-label="' + title + '" tabindex="0" />').html(n);
 
-                        $('<li />').append(link).appendTo($('ul', '.wf-mediabox-numbers'));
+                        if (this.index === i) {
+                            $(link).addClass('active');
+                        }
+
+                        $('<li />').append(link).appendTo($('ol', '.wf-mediabox-numbers'));
 
                         // add click event
-                        $(link).on('click', function(e) {
+                        $(link).on('click', function (e) {
                             var x = parseInt(e.target.innerHTML) - 1;
+
                             if (self.index == x) {
                                 return false;
                             }
+
                             return self.queue(x);
                         });
                     }
@@ -1219,41 +1200,51 @@ if (window.jQuery === "undefined") {
                 if (html.indexOf('{{current}}') !== -1) {
                     $('.wf-mediabox-numbers').html(html.replace('{{current}}', this.index + 1).replace('{{total}}', len));
                 }
+
+                $('.wf-mediabox-numbers').attr('aria-hidden', false);
             } else {
-                $('.wf-mediabox-numbers').empty();
+                $('.wf-mediabox-numbers').empty().attr('aria-hidden', true);
             }
+
             // show info
             $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').show(); //.children().show();
 
             // Show / Hide Previous and Next buttons
-            $('.wf-mediabox-next, .wf-mediabox-prev').hide();
+            $('.wf-mediabox-next, .wf-mediabox-prev').hide().attr('aria-hidden', true);
 
             if (len > 1) {
                 if (this.index > 0) {
-                    $('.wf-mediabox-prev').show();
+                    $('.wf-mediabox-prev').show().attr('aria-hidden', false).addClass('wf-mediabox-focus');
                 } else {
-                    $('.wf-mediabox-prev').hide();
+                    $('.wf-mediabox-prev').hide().attr('aria-hidden', true);
                 }
                 if (this.index < len - 1) {
-                    $('.wf-mediabox-next').show();
+                    $('.wf-mediabox-next').show().attr('aria-hidden', false).addClass('wf-mediabox-focus');
                 } else {
-                    $('.wf-mediabox-next').hide();
+                    $('.wf-mediabox-next').hide().attr('aria-hidden', true);
                 }
+            } else {
+                // add focus to close button
+                $('.wf-mediabox-close').addClass('wf-mediabox-focus');
             }
         },
         /**
          * Change the popup
          * @param {Integer} n Popup number
          */
-        change: function(n) {
+        change: function (n) {
             var self = this,
                 s = this.settings;
 
             var p = {},
                 popup, w, h;
+
             if (n < 0 || n >= this.items.length) {
                 return false;
             }
+
+            //$('.wf-mediabox.wf-mediabox-transition-slide-out').removeClass('wf-mediabox-transition-slide-out').addClass('wf-mediabox-transition-slide-in');
+
             // set current popup index
             this.index = n;
 
@@ -1261,7 +1252,7 @@ if (window.jQuery === "undefined") {
             $('.wf-mediabox-container, .wf-mediabox-cancel').show();
 
             // set loader
-            $('.wf-mediabox-container').addClass('wf-mediabox-loading');
+            $('.wf-mediabox').addClass('wf-mediabox-loading').find('.wf-mediabox-loading').attr('aria-hidden', false);
 
             // get current popup item
             popup = this.items[n];
@@ -1287,10 +1278,10 @@ if (window.jQuery === "undefined") {
                 }
             }
 
-            // empty content and update classes
-            $('.wf-mediabox-content').attr('class', function(i, value) {
-                return 'wf-mediabox-content';
-            }).addClass('wf-mediabox-content-' + type).empty().append(html);
+            // update classes
+            $('.wf-mediabox-content').attr('class', 'wf-mediabox-content').addClass('wf-mediabox-content-' + type).css('height', '');
+
+            $('.wf-mediabox-content-item').html(html);
 
             // re-set with updated parameters
             this.items[n] = popup;
@@ -1302,7 +1293,7 @@ if (window.jQuery === "undefined") {
         /**
          * Pre-animation setup. Resize images, set width / height
          */
-        setup: function() {
+        setup: function () {
             // Setup info
             this.info();
 
@@ -1310,180 +1301,234 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-content img').css('-ms-interpolation-mode', 'bicubic');
             }
 
+            var tabIndex = 0;
+
+            $('.wf-mediabox').on('keydown.wf-mediabox', function (e) {
+                // only TAB
+                if (e.keyCode !== 9) {
+                    return;
+                }
+
+                // prevent tabbing outside the lightbox
+                e.preventDefault();
+
+                // get all visible, tabbable items
+                var $items = $('.wf-mediabox').find('[tabindex]:visible').filter(function () {
+                    return parseInt(this.getAttribute('tabindex')) >= 0;
+                });
+
+                // get index of the currently focused item
+                $items.each(function (i) {
+                    if ($(this).hasClass('wf-mediabox-focus')) {
+                        tabIndex = i;
+                    }
+                });
+
+                // must be >= 0
+                tabIndex = Math.max(tabIndex, 0);
+
+                // reverse on SHIFT+TAB
+                if (e.shiftKey) {
+                    tabIndex--;
+                } else {
+                    tabIndex++;
+                }
+
+                // must be >= 0
+                tabIndex = Math.max(tabIndex, 0);
+
+                // if greater than the last item, then go back to 0
+                if (tabIndex === $items.length) {
+                    tabIndex = 0
+                }
+
+                $items.removeClass('wf-mediabox-focus');
+
+                // focus the nth item
+                $items.eq(tabIndex).focus().addClass('wf-mediabox-focus');
+            });
+
             // Animate box
             return this.animate();
         },
-        showInfo: function() {
-            var self = this;
 
-            // Set Information
-            $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').addClass('wf-info-show');
-        },
         /**
          * Animate the Popup
          */
-        animate: function() {
+        animate: function () {
             var self = this,
                 s = this.settings,
-                ss = s.scalespeed,
-                fs = s.fadespeed;
+                ss = s.scalespeed || 1000,
+                fs = s.fadespeed || 1000;
 
             // current popup
             var popup = this.items[this.index];
 
-            var cw = popup.width || $('.wf-mediabox-body').width();
+            var cw = popup.width || '';
             var ch = popup.height || '';
 
             cw = MediaBox.Tools.parseWidth(cw);
             ch = MediaBox.Tools.parseHeight(ch);
 
-            // set body width
-            $('.wf-mediabox-body, .wf-mediabox-content').css('max-width', cw);
-
             $('.wf-mediabox-content').removeClass('wf-mediabox-broken-image wf-mediabox-broken-media');
             $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404');
 
-            $('img, iframe, video, audio, object, embed', '.wf-mediabox-content').on('load loadedmetadata', function(e) {
-                $('.wf-mediabox-container').removeClass('wf-mediabox-loading');
+            $('.wf-mediabox-caption').removeClass('wf-mediabox-caption-hidden');
+
+            // constrain width for ajax loading
+            if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ajax')) {
+                $('.wf-mediabox-body').css('max-width', 640);
+            }
+
+            $('img, iframe, video, audio, object, embed', '.wf-mediabox-content').one('load loadedmetadata', function (e) {
+                // update loader
+                $('.wf-mediabox').removeClass('wf-mediabox-loading').find('.wf-mediabox-loading').attr('aria-hidden', true);
+
+                // remove padding
+                $('.wf-mediabox-content-item').css('padding-bottom', '');
 
                 if (this.nodeName === "IMG") {
-                    if (this.src === "#") {
-                        return;
-                    }
 
-                    var img = new Image();
+                    // use passed in width or the images actual width, whichever is less
+                    cw = cw || this.naturalWidth || this.width;
 
-                    img.onload = function() {
-                        cw = popup.width || img.width;
-                        ch = popup.height || img.height;
+                    // store width
+                    popup.width = cw;
 
-                        $('.wf-mediabox-container').removeClass('wf-mediabox-loading');
-                        $('.wf-mediabox-content').css('max-width', cw);
+                    // update popup
+                    self.updateBodyWidth(cw);
 
-                        var w = self.calculateWidth(cw, ch);
-
-                        $('.wf-mediabox-body').animate({
-                            'max-width': w
-                        }, ss, function() {
-                            // add fade in
-                            $('.wf-mediabox-content').animate({
-                                'opacity': 1
-                            }, fs).addClass('fade-in');
-
-                            $('.wf-mediabox-caption').css('visibility', 'visible');
-                        });
-
-                        /*$('.wf-mediabox-body').css('max-width', w);
-
-                        // add fade in
-                        $('.wf-mediabox-content').animate({
-                            'opacity': 1
-                        }, fs).addClass('fade-in');*/
-                    };
-
-                    img.src = popup.src;
                 } else {
-                     // add fade in
-                    $('.wf-mediabox-content').animate({
-                        'opacity': 1
-                    }, fs).addClass('fade-in');
-
-                    // set height
-                    if (ch) {
-                        $('.wf-mediabox-content > div').css('height', ch).addClass('wf-mediabox-content-height');
+                    if (this.nodeName === "VIDEO") {
+                        cw = cw || this.videoWidth || 0;
+                        ch = ch || this.videoHeight || 0;
                     }
+
+                    // a default width
+                    cw = cw || 640;
+
+                    // check for 4:3 aspect ratio, otherwise assume 16:9
+                    if (cw && ch) {
+                        var ratio = ch / cw;
+
+                        if (ratio === 0.75) {
+                            $('.wf-mediabox-content').addClass('wf-mediabox-content-ratio-4by3');
+                        } else if (ratio !== 0.5625) {
+                            var pct = Math.floor(ch / cw * 100);
+
+                            if (ratio > 1) {
+                                pct = Math.floor(cw / ch * 100);
+                            }
+
+                            $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
+                        }
+                    }
+
+                    // store width
+                    popup.width = cw;
+
+                    // update popup
+                    self.updateBodyWidth(cw);
                 }
 
-                // show info
-                self.showInfo();
-            }).on('error', function(e) {
-                if (this.src === "#") {
-                    return;
+                $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
+
+                // trigger display
+                $('.wf-mediabox').addClass('wf-mediabox-show');
+
+                // Show Information
+                $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').addClass('wf-info-show');
+
+                // Changes if scroll popup
+                if (s.scrolling === 'scroll') {
+                    $('body').addClass('wf-mediabox-scrolling');
+
+                    // scroll to popup body
+                    scrollIntoView('.wf-mediabox-body');
                 }
 
+                // move focus to an element
+                $('.wf-mediabox-focus').focus();
+
+            }).on('error', function (e) {
                 var n = this;
 
-                $('.wf-mediabox-container').removeClass('wf-mediabox-loading');
+                $('.wf-mediabox').removeClass('wf-mediabox-loading');
 
-                $('.wf-mediabox-content').addClass(function() {
+                $('.wf-mediabox-content').addClass(function () {
                     if (n.nodeName === "IMG") {
                         return "wf-mediabox-broken-image";
                     }
 
                     return "wf-mediabox-broken-media";
-                }).animate({
-                    'opacity': 1
-                }, fs).addClass('fade-in');
+                });
+
+                $('.wf-mediabox-body').addClass('wf-mediabox-transition').css('max-width', '').attr('aria-hidden', false);
 
                 $('.wf-mediabox-content > div').addClass('wf-icon-404');
             });
 
-            // clear loader after 1 second on object and embed tags
-            /*var timer = setTimeout(function() {
-                clearTimeout(timer);
-
-                $('.wf-mediabox-content-object, .wf-mediabox-content-embed').parent('.wf-mediabox-content').animate({
-                    'opacity': 1
-                }, fs).addClass('fade-in').parent('.wf-mediabox-container').removeClass('wf-mediabox-loading');
-
-            }, 1000);*/
-
-            $('img', '.wf-mediabox-content').attr('src', popup.src);
+            //$('.wf-mediabox.wf-mediabox-transition-slide-in').removeClass('wf-mediabox-transition-slide-in').addClass('wf-mediabox-transition-slide-out');
         },
         /**
          * Close the popup window. Destroy all objects
          */
-        close: function(keepopen) {
-            var self = this,
-                s = this.settings;
+        close: function (keepopen) {
+            var self = this;
 
-            var ss = s.scalespeed,
-                fs = s.fadespeed;
+            var transitionDuration = $('.wf-mediabox-container').css('transition-duration');
+            transitionDuration = (parseFloat(transitionDuration) * 1000) || 300;
 
-            // remove iframe src
-            $('iframe, video', '.wf-mediabox-content').attr('src', '');
+            //$('.wf-mediabox').removeClass('wf-mediabox-transition-slide-in, wf-mediabox-transition-slide-out').addClass('wf-mediabox-transition-scale');
 
-            // Destroy objects
-            $('.wf-mediabox-content').empty();
+            // Destroy objects after delay
+            $('.wf-mediabox-body').removeClass('wf-mediabox-transition');
+
+            var transitionTimer = setTimeout(function () {
+                // remove iframe src
+                $('iframe, video', '.wf-mediabox-content-item').attr('src', '');
+
+                $('.wf-mediabox-content-item').empty();
+                clearTimeout(transitionTimer);
+
+                if (!keepopen) {
+                    // remove events
+                    self.bind(false);
+
+                    // hide info divs
+                    $('.wf-mediabox-info-bottom, .wf-mediabox-info-top').hide();
+
+                    $('.wf-mediabox-frame').remove();
+
+                    var overlayDuration = $('.wf-mediabox-overlay').css('transition-duration');
+                    overlayDuration = (parseFloat(overlayDuration) * 1000) || 300;
+
+                    $('.wf-mediabox').removeClass('wf-mediabox-open wf-mediabox-show');
+
+                    // sert overlay opacity
+                    $('.wf-mediabox-overlay').css('opacity', 0);
+
+                    var overlayTimer = setTimeout(function () {
+                        $('.wf-mediabox').remove();
+
+                        $('body').removeClass('wf-mediabox-scrolling');
+
+                        clearTimeout(overlayTimer);
+                    }, overlayDuration);
+
+                    // restore focus to the activator
+                    if (self.activator) {
+                        $(self.activator).focus();
+                    }
+                }
+
+            }, transitionDuration);
 
             // Hide closelink
             $('.wf-mediabox-close').hide();
 
             window.clearInterval(autoplayInterval);
 
-            if (!keepopen) {
-                // hide info divs
-                $('.wf-mediabox-info-bottom, .wf-mediabox-info-top').hide();
-
-                // reset popups
-                var popups = this.getPopups();
-
-                /*while (this.popups.length > popups.length) {
-                 // this.popups.pop();
-                 }*/
-
-                $('.wf-mediabox-frame').remove();
-
-                if (s.overlayopacity) {
-                    // Fade out overlay
-                    $('.wf-mediabox-overlay').animate({
-                        'opacity': 0
-                    }, fs, function() {
-                        // remove frame and page
-                        $('.wf-mediabox').remove();
-                    });
-                } else {
-                    var duration = $('.wf-mediabox-overlay').css('transition-duration');
-                    duration = (parseFloat(duration) * 1000) || 500;
-
-                    $('.wf-mediabox').removeClass('wf-mediabox-open');
-
-                    var timer = setTimeout(function() {
-                        $('.wf-mediabox').remove();
-                        clearTimeout(timer);
-                    }, duration);
-                }
-            }
             return false;
         }
     };

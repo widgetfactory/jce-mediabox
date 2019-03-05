@@ -20,6 +20,59 @@
         return true;
     }
 
+    /**
+     * Parse the URI into component parts
+     * https://github.com/tinymce/tinymce/blob/master/js/tinymce/classes/util/URI.js
+     */
+    function parseURL(url) {
+        var o = {};
+
+        url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
+
+        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function (i, v) {
+            var s = url[i];
+            if (s) {
+                o[v] = s;
+            }
+        });
+
+        return o;
+    }
+
+    function buildURL(o) {
+        var url = '';
+
+        if (o.protocol) {
+            url += o.protocol + '://';
+        }
+
+        if (o.userInfo) {
+            url += o.userInfo + '@';
+        }
+
+        if (o.host) {
+            url += o.host;
+        }
+
+        if (o.port) {
+            url += ':' + o.port;
+        }
+
+        if (o.path) {
+            url += o.path;
+        }
+
+        if (o.query) {
+            url += '?' + o.query;
+        }
+
+        if (o.anchor) {
+            url += '#' + o.anchor;
+        }
+
+        return url;
+    }
+
     function createObject(data, embed) {
         delete data.group;
         delete data.title;
@@ -63,7 +116,7 @@
         return html;
     }
 
-    function createIframe(src) {
+    function createIframe(src, attribs) {
         // create html
         return '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
     }
@@ -81,6 +134,7 @@
             return /\.swf\b/.test(data.src);
         };
     });
+
     WFMediaBox.Plugin.add('flv', function () {
         this.type = "object";
         this.html = function (data) {
@@ -107,6 +161,45 @@
             return /\.(flv|f4v)\b/.test(data.src);
         };
     });
+
+    /**
+     * HTML5 Video
+     */
+    WFMediaBox.Plugin.add('video', function () {
+        this.type = "video";
+
+        // create image html (leave src blank)
+        this.html = function (data) {
+            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'],
+                n;
+
+            var params = data.params || {};
+
+            for (n in params) {
+                attribs.push(n + '="' + params[n] + '"');
+            }
+
+            if (!params.autoplay) {
+                attribs.push('controls');
+            }
+
+            var video = $('<video ' + attribs.join(' ') + ' />').on('loadedmetadata', function(e) {
+                $(this).attr({'width' : this.videoWidth || '', 'height' : this.videoHeight || ''});
+            });
+
+            return video;
+        };
+
+        this.is = function (data) {
+            var src = data.src;
+
+            // remove query to test extension
+            src = src.split('?')[0];
+
+            return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(src)) && WFMediaBox.Env.video;
+        };
+    });
+    
     /*WFMediaBox.Plugin.add('metacafe', function(v) {
      this.attributes = {
 
@@ -206,6 +299,11 @@
                 if (b && !c) {
                     c = '.com';
                 }
+                
+                // replace first ampersand with question mark
+                if (d.indexOf('?') === -1) {
+                    d = d.replace(/&/, '?');
+                }
 
                 return 'youtube' + c + '/embed/' + d;
             });
@@ -216,19 +314,49 @@
             // force ssl
             v = v.replace(/^http:\/\//, 'https://');
 
-            v += '?html5=1';
-
             return v;
         }
+
         // default 16:9 size
         this.width = 560;
+
         // declare type
         this.type = "iframe";
+
         // create html
         this.html = function (data) {
-            return $(createIframe(processURL(data.src)));
+            var src = processURL(data.src), ifr = $(createIframe(src));
+            
+            if (data.params) {
+                var allow = ['accelerometer', 'encrypted-media', 'gyroscope', 'picture-in-picture', 'allowfullscreen'];
+                
+                $.each(data.params, function(key, value) {
+                    if (!!value) {
+                       allow.push(key);
+                    }
+                });
+
+                if (allow.length) {
+                    $(ifr).attr('allow', allow.join(';'));
+                }
+
+                var params = $.param(data.params);
+
+                if (params) {
+                    if (src.indexOf('?') !== -1) {
+                        src += '&' + params;
+                    } else {
+                        src += '?' + params;
+                    }
+                    
+                    $(ifr).attr('src', src);
+                }
+            }
+            
+            return ifr;
         };
     });
+
     WFMediaBox.Plugin.add('vimeo', function () {
 
         this.is = function (data) {
@@ -236,7 +364,7 @@
         };
 
         function processURL(s) {
-            s = s.replace(/(player\/)?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function (a, b, c, d, e) {
+            s = s.replace(/(player[\/\.])?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function (a, b, c, d, e) {
                 if (b) {
                     return a;
                 }
@@ -256,6 +384,41 @@
             return $(createIframe(processURL(data.src)));
         };
     });
+
+    $('.wf-mediabox').on('wfmediabox:plugin', function(e, data) {
+        
+        function isImage(data) {
+            var src = data.src;
+            // remove query to test extension
+            src = src.split('?')[0];
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
+        }
+
+        if (isImage(data)) {
+            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" />');
+
+            if (data.params) {
+                $.each(data.params, function(name, value) {
+                    if (name === "srcset") {
+                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
+                            if (islocal(match)) {
+                                return WFMediaBox.site + match;
+                            }
+
+                            return match;
+                        });
+                    }
+
+                    $img.attr(name, value);
+                });
+            }
+
+            return $img;
+        }
+
+        return "";
+    });
+
     /**
      * Image
      */
@@ -264,68 +427,62 @@
 
         // create image html (leave src blank)
         this.html = function (data) {
-            return '<img src="#" class="wf-mediabox-img" alt="' + decodeURIComponent(data.title || "") + '" />';
+            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" />');
+
+            if (data.params) {
+                $.each(data.params, function(name, value) {
+                    if (name === "srcset") {
+                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
+                            if (islocal(match)) {
+                                return WFMediaBox.site + match;
+                            }
+
+                            return match;
+                        });
+                    }
+
+                    $img.attr(name, value);
+                });
+            }
+
+            return $img;
         };
 
         this.is = function (data) {
             var src = data.src;
             // remove query to test extension
             src = src.split('?')[0];
-            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif)$/i.test(src);
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
         };
     });
-    /**
-     * HTML5 Video
-     */
-    WFMediaBox.Plugin.add('video', function () {
-        this.type = "video";
-
-        // create image html (leave src blank)
-        this.html = function (data) {
-            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'],
-                n;
-
-            var params = data.params || {};
-
-            for (n in params) {
-                attribs.push(n + '="' + params[n] + '"');
-            }
-
-            if (!params.autoplay) {
-                attribs.push('controls');
-            }
-
-            if (data.width) {
-                attribs.push('width="' + data.width + '"');
-            }
-
-            if (data.height) {
-                attribs.push('height="' + data.height + '"');
-            }
-
-            return '<video ' + attribs.join(' ') + '></video>';
-        };
-
-        this.is = function (data) {
-            return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(data.src)) && WFMediaBox.Env.video;
-        };
-    });
+    
     /**
      * PDF
      */
     WFMediaBox.Plugin.add('pdf', function () {
         this.type = "iframe";
+
         // create html
         this.html = function (data) {
-            return $('<iframe src="' + data.src + '" frameborder="0" />');
-        };
+            var label = data.title || 'PDF Iframe';
 
-        this.height = '100%';
+            data.width  = data.width    || '100%';
+            data.height = data.height   || '100%';
+            
+            var iframe = $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').on('load', function() {
+                if (data.height) {
+                    $('.wf-mediabox-content').css('height', data.height).addClass('wf-mediabox-content-height');
+                }
+            });
+
+            return iframe;
+        };
 
         this.is = function (data) {
             return data.type === "pdf" || /\.pdf$/i.test(data.src);
         };
     });
+
     /**
      * Ajax / Internal Content
      */
@@ -334,25 +491,65 @@
 
         this.html = function (data) {
             var html = "";
-            var src = data.src;
 
-            if (islocal(src) && src.indexOf('tmpl=component') === -1) {
-                src += /\?/.test(src) ? '&tmpl=component' : '?tmpl=component';
+            var src = data.src;
+            var uri = parseURL(src);
+
+            if (islocal(src)) {
+                if (!uri.query) {
+                    uri.query = 'tmpl=component';
+                } else if (uri.query.indexOf('tmpl=component') == -1) {
+                    uri.query += '&tmpl=component';
+                }
             }
 
-            var iframe = $('<iframe src="' + src + '" />').load(function () {
-                var n = this,
+            // rebuild src
+            src = buildURL(uri);
+
+            data.width  = data.width    || '100%';
+            data.height = data.height   || '100%';
+
+            var iframe = $('<iframe src="' + src + '" />').on('load', function () {
+                var n = this, $parent = $(this).parent(),
                     html = this.contentWindow.document.body.innerHTML;
 
                 // append html to created parent
-                $(this).parent().append(html);
+                $parent.append(html);
+
+                if (uri.anchor) {
+                    var elm = $parent.find('#' + uri.anchor).get(0);
+
+                    if (elm) {
+                        elm.scrollIntoView();
+                    }
+                }
 
                 // remove iframe
                 window.setTimeout(function () {
                     $(n).remove();
                 }, 10);
 
-                WFMediaBox.create(WFMediaBox.getPopups('', $(this).parent()));
+                // process anchors
+                $parent.find('a[href^="#"]').on('click', function(e) {
+                    e.preventDefault();
+
+                    var id = $(this).attr('href'), elm = $parent.find(id).get(0);
+
+                    if (elm) {
+                        elm.scrollIntoView();
+                    }
+                });
+
+                WFMediaBox.create(WFMediaBox.getPopups('', $parent));
+
+                // add passed in styles
+                if (data.style) {                                
+                    $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').css(data.style).get(0).style.cssText + '}').insertBefore($parent);
+                }
+
+                if (data.height) {
+                    $('.wf-mediabox-content').css('height', data.height).addClass('wf-mediabox-content-height');
+                }
             });
 
             return iframe;
@@ -391,12 +588,25 @@
 
         this.html = function (data) {
             var src = data.src;
+            var uri = parseURL(src);
 
-            if (islocal(src) && src.indexOf('tmpl=component') === -1) {
-                src += /\?/.test(src) ? '&tmpl=component' : '?tmpl=component';
+            data.width  = data.width    || '100%';
+            data.height = data.height   || '100%';
+
+            if (islocal(src)) {
+                if (!uri.query) {
+                    uri.query = 'tmpl=component';
+                } else if (uri.query.indexOf('tmpl=component') == -1) {
+                    uri.query += '&tmpl=component';
+                }
             }
-            
-            return $('<iframe src="' + src + '" frameborder="0" />');
+
+            // rebuild src
+            src = buildURL(uri);
+
+            var html = createIframe(src);
+
+            return $(html);
         };
 
         this.is = function (data) {

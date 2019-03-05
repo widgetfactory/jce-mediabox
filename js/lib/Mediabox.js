@@ -822,7 +822,7 @@ if (window.jQuery === "undefined") {
 
                 // Create overlay
                 if (s.overlay === 1) {
-                    $('<div class="wf-mediabox-overlay" tabindex="-1" />').appendTo($page).css('background-color', s.overlaycolor).css('');
+                    $('<div class="wf-mediabox-overlay" tabindex="-1" />').appendTo($page).css('background-color', s.overlaycolor);
                 }
 
                 // Create Frame and body with theme content

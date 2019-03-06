@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
- .wf-mediabox-theme-squeeze .wf-mediabox-frame {
+.wf-mediabox-theme-squeeze .wf-mediabox-frame {
 	padding: 1em;
 }
 
@@ -17,56 +17,49 @@
 	overflow: inherit;
 }
 
-.wf-mediabox-theme-squeeze .wf-mediabox-info-bottom {
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-info-bottom {}
 
 .wf-mediabox-theme-squeeze .wf-mediabox-loader {}
 
-.wf-mediabox-theme-squeeze .wf-mediabox-nav {
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-nav {}
 
-.wf-mediabox-theme-squeeze .wf-mediabox-caption {
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-caption {}
 
 .wf-mediabox-theme-squeeze .wf-mediabox-close,
 .wf-mediabox-theme-squeeze .wf-mediabox-prev,
 .wf-mediabox-theme-squeeze .wf-mediabox-next {
-	border-radius: 100%;
-	box-shadow: 1px 1px 0.25em #000;
-	height: 1.2em;
-	left: auto;
 	line-height: 1em;
 	position: absolute;
 	text-align: center;
-	width: 1.5em;
-	z-index: 1;
 	color: #fff;
-	background-color: #000;
 }
 
-.wf-mediabox-theme-squeeze .wf-mediabox-close:after,
-.wf-mediabox-theme-squeeze .wf-mediabox-prev:after,
-.wf-mediabox-theme-squeeze .wf-mediabox-next:after {
-	font-size: 1.75em;
+.wf-mediabox-theme-squeeze .wf-mediabox-close:before,
+.wf-mediabox-theme-squeeze .wf-mediabox-prev:before,
+.wf-mediabox-theme-squeeze .wf-mediabox-next:before {
+	content: "";
+	border-radius: 100%;
+	box-shadow: 1px 1px 0.25em #000;
+	background-color: #000;
+	width: 1.2em;
+	height: 1.2em;
+	position: absolute;
+	z-index: -1;
+	left: 0.4em;
+	top: 0.3em;
+	box-sizing: border-box;
 }
 
 .wf-mediabox-theme-squeeze .wf-mediabox-close {
-	right: -0.75em;
-	top: -0.75em;
+	right: -1em;
+	top: -1em;
 }
 
-.wf-mediabox-theme-squeeze .wf-mediabox-prev {
-	left: 0.75em;
-	top: 2.5em;
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-prev {}
 
-.wf-mediabox-theme-squeeze .wf-mediabox-next {
-	right: 0.75em;
-	top: 2.5em;
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-next {}
 
-.wf-mediabox-theme-squeeze .wf-mediabox-numbers {
-}
+.wf-mediabox-theme-squeeze .wf-mediabox-numbers {}
 
 .wf-mediabox-theme-squeeze .wf-mediabox-numbers button.active {
 	background-color: #000;

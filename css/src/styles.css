@@ -122,6 +122,7 @@
     border-radius: 100%;
     font-size: 14px;
     text-align: center;
+    cursor: pointer;
 }
 
 .wf-mediabox-numbers button:hover {

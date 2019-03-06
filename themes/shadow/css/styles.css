@@ -85,6 +85,7 @@
 .wf-mediabox-theme-shadow .wf-mediabox-close:after {
   content:"\00d7";
   line-height: 1;
+  font-size: 1.75em;
 }
 
 .wf-mediabox-theme-shadow .wf-mediabox-numbers button {

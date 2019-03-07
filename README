@@ -1,17 +1,5 @@
-JCE MediaBox
-============================
-Create "Lightbox" style popups for Joomla!
+# JCE MediaBox
+A Joomla plugin for creating responsive lightbox-style popups
 
-Requirements
-------------
-
-* PHP 5.2+
-* IE 7/8/9, Firefox 3.6+, Chrome 10+, Opera 10+, Safari 5+
-
-
-Download
----------
-
-Get the source code from GIT:
-
-git clone git://github.com/widgetfactory/jce-mediabox.git
+## Installation
+Install using the Joomla Extensions Installer - https://docs.joomla.org/Installing_an_extension

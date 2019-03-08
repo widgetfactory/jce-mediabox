@@ -1416,10 +1416,6 @@ if (window.jQuery === "undefined") {
                         } else if (ratio !== 0.5625) {
                             var pct = Math.floor(ch / cw * 100);
 
-                            if (ratio > 1) {
-                                pct = Math.floor(cw / ch * 100);
-                            }
-
                             $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
                         }
                     }

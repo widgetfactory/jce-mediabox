@@ -18,7 +18,7 @@
                 }
 
                 // JCE MediaBox parameter format eg: title[title]
-                if (/\w+\[[^\]]+\]/.test(s)) {
+                if (/\w+\[[^\]]+\]/.test(s)) {                    
                     s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
 
                         return '"' + b + '":"' + Entities.encode($.trim(c)) + '"' + (d ? ',' : '');

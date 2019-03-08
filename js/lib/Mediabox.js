@@ -434,7 +434,7 @@ if (window.jQuery === "undefined") {
                 n.removeAttribute('data-mediabox');
 
                 // parse paramter string to object
-                if (/&\[\]\{\}/.test(data)) {
+                if (re.test(data)) {
                     o = MediaBox.Parameter.parse(data);
                 }
             }

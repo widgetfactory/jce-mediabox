@@ -77,7 +77,7 @@ class plgSystemJCEMediabox extends JPlugin
     {
         $app = JFactory::getApplication();
 
-        if ($app->isAdmin()) {
+        if ($app->isClient('administrator')) {
             return;
         }
 

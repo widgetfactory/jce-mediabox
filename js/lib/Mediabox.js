@@ -646,10 +646,13 @@ if (window.jQuery === "undefined") {
                 });
 
                 if (s.icons === 1 && !$(this).hasClass('noicon')) {
-                    var $img = $('img:first', this).after('<span class="wf-icon-zoom-image" />');
+                    var $img = $('img:first', this);
 
                     if ($img.length) {
                         var styles = {};
+
+                        // add zoom image icon
+                        $img.after('<span class="wf-icon-zoom-image" />');
 
                         var flt = $img.css('float');
                         // transfer float

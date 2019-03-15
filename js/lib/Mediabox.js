@@ -1427,8 +1427,7 @@ if (window.jQuery === "undefined") {
                     self.updateBodyWidth(cw);
                 }
 
-                $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
-
+                
                 // trigger display
                 $('.wf-mediabox').addClass('wf-mediabox-show');
 
@@ -1443,8 +1442,12 @@ if (window.jQuery === "undefined") {
                     scrollIntoView('.wf-mediabox-body');
                 }
 
+                $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
+
+
                 // move focus to an element
                 $('.wf-mediabox-focus').focus();
+                
 
             }).on('error', function (e) {
                 var n = this;

@@ -1011,15 +1011,22 @@ if (window.jQuery === "undefined") {
             }
 
             // constrain width
-            w = Math.min(w, fw);  
+            w = Math.min(w, fw);
 
-            $('.wf-mediabox-body').css('max-width',  w);
+            // get mediabox height
+            h = $('.wf-mediabox-body').height();
 
-            while($('.wf-mediabox-body').height() > fh) {
+            // calculate ratio
+            var ratio = w / h;  
+
+            // adjust width until height is less than the frame height
+            while(h > fh) {
                 w = w - 10;
-
-                $('.wf-mediabox-body').css('max-width', w);
+                h = w * ratio;
             }
+
+            // set the body width
+            $('.wf-mediabox-body').css('max-width',  w);
         },
 
         /**

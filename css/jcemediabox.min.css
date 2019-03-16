@@ -17,7 +17,7 @@
     position: relative;
     width: auto;
     height: auto;
-    white-space: nowrap;
+    white-space: normal;
     cursor: inherit;
     -webkit-tap-highlight-color: transparent;
     line-height: normal;

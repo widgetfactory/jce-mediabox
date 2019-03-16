@@ -542,9 +542,11 @@
 
                 WFMediaBox.create(WFMediaBox.getPopups('', $parent));
 
-                // add passed in styles
-                if (data.style) {                                
-                    $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').css(data.style).get(0).style.cssText + '}').insertBefore($parent);
+                if (data.params) {
+                    // add passed in styles
+                    if (data.params.style) {                                                
+                        $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').attr('style', data.params.style).get(0).style.cssText + '}').insertBefore($parent);
+                    }
                 }
 
                 if (data.height) {

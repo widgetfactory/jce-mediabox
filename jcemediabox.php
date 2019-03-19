@@ -147,7 +147,7 @@ class plgSystemJCEMediabox extends JPlugin
         self::$theme = $params->get('theme', 'standard');
 
         if ($params->get('dynamic_themes', 0)) {
-            self::$theme = $app->input->getWord('theme', $params->get('theme', 'standard'));
+            self::$theme = $app->input->getWord('theme', self::$theme);
         }
 
         $config = array(

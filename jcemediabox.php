@@ -58,7 +58,7 @@ class plgSystemJCEMediabox extends JPlugin
     {
         JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
-        $words = array('close', 'next', 'previous', 'cancel', 'numbers_count');
+        $words = array('close', 'next', 'previous', 'cancel', 'numbers', 'numbers_count');
 
         $v = array();
 

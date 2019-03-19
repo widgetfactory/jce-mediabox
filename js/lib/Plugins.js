@@ -469,13 +469,7 @@
             data.width  = data.width    || '100%';
             data.height = data.height   || '100%';
             
-            var iframe = $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').on('load', function() {
-                if (data.height) {
-                    $('.wf-mediabox-content').css('height', data.height).addClass('wf-mediabox-content-height');
-                }
-            });
-
-            return iframe;
+            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />');
         };
 
         this.is = function (data) {
@@ -547,10 +541,6 @@
                     if (data.params.style) {                                                
                         $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').attr('style', data.params.style).get(0).style.cssText + '}').insertBefore($parent);
                     }
-                }
-
-                if (data.height) {
-                    $('.wf-mediabox-content').css('height', data.height).addClass('wf-mediabox-content-height');
                 }
             });
 

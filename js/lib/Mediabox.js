@@ -15,7 +15,7 @@ if (window.jQuery === "undefined") {
 
     function scrollIntoView(el, pos) {
         var supported = 'scrollBehavior' in document.documentElement.style;
-        
+
         if (supported) {
             try {
                 $(el).get(0).scrollIntoView({
@@ -23,16 +23,15 @@ if (window.jQuery === "undefined") {
                 });
 
                 return;
-            } catch (e) {
-            }
+            } catch (e) {}
         }
-        
+
         // fallback to manual calculation
         var boxCenter = $(el).offset().top + $(el).outerHeight(true) / 2;
         var windowCenter = window.innerHeight / 2;
 
         window.scrollTo(0, boxCenter - windowCenter);
-        
+
     }
 
     var MediaBox = {
@@ -715,6 +714,8 @@ if (window.jQuery === "undefined") {
                     return self.start(o, i);
                 });
             });
+
+            self.auto();
         },
         /**
          * Public popup method
@@ -983,7 +984,7 @@ if (window.jQuery === "undefined") {
                     return;
                 }
 
-                self.updateBodyWidth(popup.width);
+                self.updateBodyWidth(popup);
 
             }, 100);
 
@@ -999,7 +1000,9 @@ if (window.jQuery === "undefined") {
             }
         },
 
-        updateBodyWidth: function (w) {
+        updateBodyWidth: function (popup) {
+            var w, h, ratio;
+
             var fw = $('.wf-mediabox-frame').width();
             var fh = $('.wf-mediabox-frame').height();
 
@@ -1010,23 +1013,37 @@ if (window.jQuery === "undefined") {
                 fh = $(window).height() - parseInt(framePadding) * 2;
             }
 
-            // constrain width
-            w = Math.min(w, fw);
+            popup.height = popup.height || fh;
 
-            // get mediabox height
-            h = $('.wf-mediabox-body').height();
+            // get mediabox height as biggest value of passed in height or popup body height
+            popup.height = Math.max(popup.height, $('.wf-mediabox-body').height());
 
-            // calculate ratio
-            var ratio = w / h;  
+            w = MediaBox.Tools.parseWidth(popup.width);
+            h = MediaBox.Tools.parseHeight(popup.height);
 
-            // adjust width until height is less than the frame height
-            while(h > fh) {
-                w = w - 10;
-                h = w * ratio;
+            var dim = MediaBox.Tools.resize(w, h, fw, fh);
+
+            var bw = dim.width;
+
+            // set the width as calculated
+            $('.wf-mediabox-body').css('max-width', bw);
+
+            if ($('.wf-mediabox-content-item').hasClass('wf-mediabox-content-ratio')) {
+                return;
+            }
+
+            // get the resultant height
+            var bh = $('.wf-mediabox-body').height();
+
+            ratio = w / h;
+
+            while (bh > fh) {
+                bw = bw - 2;
+                bh = ratio * bw;
             }
 
             // set the body width
-            $('.wf-mediabox-body').css('max-width',  w);
+            $('.wf-mediabox-body').css('max-width', bw);
         },
 
         /**
@@ -1377,9 +1394,6 @@ if (window.jQuery === "undefined") {
             var cw = popup.width || '';
             var ch = popup.height || '';
 
-            cw = MediaBox.Tools.parseWidth(cw);
-            ch = MediaBox.Tools.parseHeight(ch);
-
             $('.wf-mediabox-content').removeClass('wf-mediabox-broken-image wf-mediabox-broken-media');
             $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404');
 
@@ -1397,17 +1411,22 @@ if (window.jQuery === "undefined") {
                 // remove padding
                 $('.wf-mediabox-content-item').css('padding-bottom', '');
 
+                // trigger display
+                $('.wf-mediabox').addClass('wf-mediabox-show');
+
+                // Show Information
+                $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').addClass('wf-info-show');
+
                 if (this.nodeName === "IMG") {
 
                     // use passed in width or the images actual width, whichever is less
                     cw = cw || this.naturalWidth || this.width;
+                    ch = ch || this.naturalHeight || this.height;
 
                     // store width
                     popup.width = cw;
-
-                    // update popup
-                    self.updateBodyWidth(cw);
-
+                    // store height
+                    popup.height = ch;
                 } else {
                     if (this.nodeName === "VIDEO") {
                         cw = cw || this.videoWidth || 0;
@@ -1419,30 +1438,34 @@ if (window.jQuery === "undefined") {
 
                     // check for 4:3 aspect ratio, otherwise assume 16:9
                     if (cw && ch) {
-                        var ratio = ch / cw;
+                        // process passed in values
+                        var w = MediaBox.Tools.parseWidth(cw);
+                        var h = MediaBox.Tools.parseHeight(ch);
+
+                        var ratio = parseFloat((h / w).toFixed(2));
 
                         if (ratio === 0.75) {
                             $('.wf-mediabox-content').addClass('wf-mediabox-content-ratio-4by3');
-                        } else if (ratio !== 0.5625) {
-                            var pct = Math.floor(ch / cw * 100);
-
+                        } else if (ratio !== 0.56) {                            
+                            // remove border padding and info box
+                            h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
+                        
+                            var pct = Math.floor(h / w * 100);
                             $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
                         }
+
+                        // store height
+                        popup.height = ch;
                     }
+
+                    $('.wf-mediabox-content-item').addClass('wf-mediabox-content-ratio');
 
                     // store width
                     popup.width = cw;
-
-                    // update popup
-                    self.updateBodyWidth(cw);
                 }
 
-                
-                // trigger display
-                $('.wf-mediabox').addClass('wf-mediabox-show');
-
-                // Show Information
-                $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').addClass('wf-info-show');
+                // update popup width
+                self.updateBodyWidth(popup);
 
                 // Changes if scroll popup
                 if (s.scrolling === 'scroll') {
@@ -1454,10 +1477,9 @@ if (window.jQuery === "undefined") {
 
                 $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
 
-
                 // move focus to an element
                 $('.wf-mediabox-focus').focus();
-                
+
 
             }).on('error', function (e) {
                 var n = this;

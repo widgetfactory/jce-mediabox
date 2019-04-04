@@ -245,7 +245,12 @@
         this.type = "iframe";
         // create html
         this.html = function (data) {
-            return $(createIframe(processURL(data.src)));
+            var ifr = $(createIframe(processURL(data.src)));
+
+            // identify as a video to force aspect ratio
+            $(ifr).addClass('wf-mediabox-iframe-video');
+            
+            return ifr;
         };
     });
     WFMediaBox.Plugin.add('quicktime', function () {
@@ -352,6 +357,8 @@
                     $(ifr).attr('src', src);
                 }
             }
+            // identify as a video to force aspect ratio
+            $(ifr).addClass('wf-mediabox-iframe-video');
             
             return ifr;
         };
@@ -377,11 +384,18 @@
             return s;
         }
         this.width = 500;
+
         // declare type
         this.type = "iframe";
+
         // create html
         this.html = function (data) {
-            return $(createIframe(processURL(data.src)));
+            var ifr = $(createIframe(processURL(data.src)));
+
+            // identify as a video to force aspect ratio
+            $(ifr).addClass('wf-mediabox-iframe-video');
+            
+            return ifr;
         };
     });
 

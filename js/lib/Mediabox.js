@@ -447,8 +447,6 @@ if (window.jQuery === "undefined") {
                 if (attrName && attrName.indexOf('data-mediabox-') !== -1) {
                     var attr = attrName.replace('data-mediabox-', '');
                     o[attr] = attrs[i].value;
-
-                    //n.removeAttribute('data-mediabox-' + attr);
                 }
             }
 
@@ -641,7 +639,15 @@ if (window.jQuery === "undefined") {
                 }
 
                 $(this).attr('class', function (i, v) {
-                    return v.replace(/icon-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, 'wf-icon-zoom-$1$2');
+                    return v.replace(/(zoom|icon)-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, function(match, prefix, pos1, pos2) {
+                        var str = 'wf-icon-zoom-' + pos1;
+
+                        if (pos2) {
+                            str += pos2;
+                        }
+
+                        return str;
+                    });
                 });
 
                 if (s.icons === 1 && !$(this).hasClass('noicon')) {
@@ -1013,37 +1019,39 @@ if (window.jQuery === "undefined") {
                 fh = $(window).height() - parseInt(framePadding) * 2;
             }
 
-            popup.height = popup.height || fh;
-
-            // get mediabox height as biggest value of passed in height or popup body height
-            popup.height = Math.max(popup.height, $('.wf-mediabox-body').height());
-
             w = MediaBox.Tools.parseWidth(popup.width);
-            h = MediaBox.Tools.parseHeight(popup.height);
+            h = MediaBox.Tools.parseHeight(popup.height || fh);
+
+            if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
+                // remove border padding and info box
+                h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
+                
+                var pct = Math.floor(h / w * 100);
+                $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
+            }
 
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
 
             var bw = dim.width;
+ 
+            // clamp width
+            //w = Math.min(w, fw);
 
             // set the width as calculated
             $('.wf-mediabox-body').css('max-width', bw);
 
-            if ($('.wf-mediabox-content-item').hasClass('wf-mediabox-content-ratio')) {
-                return;
-            }
-
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            ratio = w / h;
+            ratio = bh / bw;
 
             while (bh > fh) {
-                bw = bw - 2;
-                bh = ratio * bw;
+                bw = bw - 16;
+                bh = ratio * bw + 16;
             }
 
             // set the body width
-            $('.wf-mediabox-body').css('max-width', bw);
+           $('.wf-mediabox-body').css('max-width', bw);
         },
 
         /**
@@ -1294,6 +1302,7 @@ if (window.jQuery === "undefined") {
             if (plugin) {
                 html = plugin.html(popup);
                 type = plugin.type;
+
                 // pass plugin width to popup
                 if (!popup.width && plugin.width) {
                     popup.width = plugin.width;
@@ -1391,8 +1400,8 @@ if (window.jQuery === "undefined") {
             // current popup
             var popup = this.items[this.index];
 
-            var cw = popup.width || '';
-            var ch = popup.height || '';
+            var cw = popup.width    || 0;
+            var ch = popup.height   || 0;
 
             $('.wf-mediabox-content').removeClass('wf-mediabox-broken-image wf-mediabox-broken-media');
             $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404');
@@ -1423,6 +1432,9 @@ if (window.jQuery === "undefined") {
                     cw = cw || this.naturalWidth || this.width;
                     ch = ch || this.naturalHeight || this.height;
 
+                    // add box padding if any
+                    cw = cw + ($('.wf-mediabox-body').width() - $('.wf-mediabox-content').width());
+
                     // store width
                     popup.width = cw;
                     // store height
@@ -1444,24 +1456,25 @@ if (window.jQuery === "undefined") {
 
                         var ratio = parseFloat((h / w).toFixed(2));
 
+                        // force 16:9 ratio for video
+                        if ($(this).hasClass('wf-mediabox-iframe-video')) {
+                            ratio = 0.56;
+                        }
+
                         if (ratio === 0.75) {
                             $('.wf-mediabox-content').addClass('wf-mediabox-content-ratio-4by3');
-                        } else if (ratio !== 0.56) {                            
-                            // remove border padding and info box
-                            h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
-                        
-                            var pct = Math.floor(h / w * 100);
-                            $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
+                        } else if (ratio !== 0.56) {
+                            $('.wf-mediabox-content').addClass('wf-mediabox-content-ratio-flex');
                         }
 
                         // store height
-                        popup.height = ch;
+                        //popup.height = ch;
                     }
 
                     $('.wf-mediabox-content-item').addClass('wf-mediabox-content-ratio');
 
                     // store width
-                    popup.width = cw;
+                    //popup.width = cw;
                 }
 
                 // update popup width

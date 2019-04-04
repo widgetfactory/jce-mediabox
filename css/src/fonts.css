@@ -7,7 +7,10 @@
   font-style: normal;
 }
 
-[class^="wf-icon-"], [class*=" wf-icon-"] {
+[class^="wf-icon-"],
+[class*=" wf-icon-"],
+[class^="wf-icon-"]:before,
+[class*=" wf-icon-"]:before {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'mediabox' !important;
   speak: none;
@@ -26,40 +29,50 @@
 .wf-icon-search:before {
   content: "\f002";
 }
+
 .wf-icon-next-squeeze:after {
   content: "\f01d";
   font-size: 1.5em;
 }
+
 .wf-icon-prev-squeeze:after {
   content: "\f01e";
   font-size: 1.5em;
 }
+
 .wf-icon-close-squeeze:after {
   content: "\f05c";
   font-size: 1.5em;
 }
+
 .wf-icon-prev-shadow:before {
   content: "\f04a";
 }
+
 .wf-icon-next-shadow:before {
   content: "\f04e";
 }
+
 .wf-icon-close-standard:before {
   content: "\f057";
   font-size: 1.5em;
 }
+
 .wf-icon-zoom-link:before,
 .wf-icon-link:before {
   content: "\f08e";
 }
+
 .wf-icon-prev-standard:before {
   content: "\f0a8";
   font-size: 1.5em;
 }
+
 .wf-icon-next-standard:before {
   content: "\f0a9";
   font-size: 1.5em;
 }
+
 .wf-icon-404:before {
   content: "\f119";
   font-size: 6em;

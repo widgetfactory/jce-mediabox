@@ -696,9 +696,10 @@ if (window.jQuery === "undefined") {
 
                         // reset image margin, padding and border
                         $img.css({
-                            'margin': '',
-                            'padding': '',
-                            'border': ''
+                            'margin': 0,
+                            'padding': 0,
+                            'border': 'inherit',
+                            'float': 'none'
                         });
 
                         // set applied styles to span

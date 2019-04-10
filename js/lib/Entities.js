@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var entities = {
         '\"': '&quot;',
         "'": '&#39;',
@@ -8,18 +8,23 @@
     };
 
     var Entities = {
-        encode: function(s) {
-            return ('' + s).replace(/[<>&\"\']/g, function(c) {
+        encode: function (str) {
+            return ('' + str).replace(/[<>&\"\']/g, function (c) {
                 return entities[c] || c;
             });
         },
-        decode: function(s) {
+        decode: function (str) {
             var el;
 
-            el = document.createElement("div");
-            el.innerHTML = s;
+            // try decode encoded URI
+            try {
+                str = decodeURIComponent(str);
+            } catch (e) {}
 
-            return el.innerHTML || s;
+            el = document.createElement("div");
+            el.innerHTML = str;
+
+            return el.innerHTML || str;
         }
     };
 

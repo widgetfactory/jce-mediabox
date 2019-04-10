@@ -639,7 +639,7 @@ if (window.jQuery === "undefined") {
                 }
 
                 $(this).attr('class', function (i, v) {
-                    return v.replace(/(zoom|icon)-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, function(match, prefix, pos1, pos2) {
+                    return v.replace(/(zoom|icon)-(top|right|bottom|left|center)(-(top|right|bottom|left|center))?/, function (match, prefix, pos1, pos2) {
                         var str = 'wf-icon-zoom-' + pos1;
 
                         if (pos2) {
@@ -1026,7 +1026,7 @@ if (window.jQuery === "undefined") {
             if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
                 // remove border padding and info box
                 h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
-                
+
                 var pct = Math.floor(h / w * 100);
                 $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
             }
@@ -1034,7 +1034,7 @@ if (window.jQuery === "undefined") {
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
 
             var bw = dim.width;
- 
+
             // clamp width
             //w = Math.min(w, fw);
 
@@ -1052,7 +1052,7 @@ if (window.jQuery === "undefined") {
             }
 
             // set the body width
-           $('.wf-mediabox-body').css('max-width', bw);
+            $('.wf-mediabox-body').css('max-width', bw);
         },
 
         /**
@@ -1401,8 +1401,8 @@ if (window.jQuery === "undefined") {
             // current popup
             var popup = this.items[this.index];
 
-            var cw = popup.width    || 0;
-            var ch = popup.height   || 0;
+            var cw = popup.width || 0;
+            var ch = popup.height || 0;
 
             $('.wf-mediabox-content').removeClass('wf-mediabox-broken-image wf-mediabox-broken-media');
             $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404');

@@ -174,8 +174,13 @@ class plgSystemJCEMediabox extends JPlugin
             JHtml::_('jquery.framework');
         }
 
-        $document->addScript($this->getURL() . '/js/jcemediabox.min.js?' . $this->getEtag('js/jcemediabox.min.js'));
-        $document->addStyleSheet($this->getURL() . '/css/jcemediabox.min.css?' . $this->getEtag('css/jcemediabox.min.css'));
+        $document->addScript($this->getURL() . '/js/jcemediabox.min.js', array(
+            'version' => $this->getEtag('js/jcemediabox.min.js')
+        ));
+
+        $document->addStyleSheet($this->getURL() . '/css/jcemediabox.min.css', array(
+            'version' => $this->getEtag('css/jcemediabox.min.css')
+        ));
 
         $document->addScriptDeclaration('jQuery(document).ready(function(){WFMediaBox.init(' . json_encode($config) . ');});');
 

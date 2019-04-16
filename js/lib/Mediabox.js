@@ -1475,7 +1475,7 @@ if (window.jQuery === "undefined") {
                     $('.wf-mediabox-content-item').addClass('wf-mediabox-content-ratio');
 
                     // store width
-                    //popup.width = cw;
+                    popup.width = cw;
                 }
 
                 // update popup width

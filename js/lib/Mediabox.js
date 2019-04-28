@@ -826,6 +826,7 @@ if (window.jQuery === "undefined") {
                 if (MediaBox.Env.ie6) {
                     $page.addClass('ie6');
                 }
+                
                 // add ios identifier
                 if (MediaBox.Env.iOS) {
                     $page.addClass('ios');
@@ -852,7 +853,7 @@ if (window.jQuery === "undefined") {
 
                 // add iPad scroll fix
                 if (MediaBox.Env.iOS) {
-                    $('.wf-mediabox-content').css('webkitOverflowScrolling', 'touch');
+                    $('.wf-mediabox-content').css({'webkitOverflowScrolling' : 'touch', 'overflow': 'auto'});
                 }
 
                 // Add close function to frame on click
@@ -1023,20 +1024,21 @@ if (window.jQuery === "undefined") {
             w = MediaBox.Tools.parseWidth(popup.width);
             h = MediaBox.Tools.parseHeight(popup.height || fh);
 
+            // clamp width to frame (device) width
+            w = Math.min(w, fw);
+
             if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
                 // remove border padding and info box
                 h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
 
                 var pct = Math.floor(h / w * 100);
+
                 $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
             }
 
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
 
             var bw = dim.width;
-
-            // clamp width
-            //w = Math.min(w, fw);
 
             // set the width as calculated
             $('.wf-mediabox-body').css('max-width', bw);
@@ -1394,9 +1396,7 @@ if (window.jQuery === "undefined") {
          */
         animate: function () {
             var self = this,
-                s = this.settings,
-                ss = s.scalespeed || 1000,
-                fs = s.fadespeed || 1000;
+                s = this.settings;
 
             // current popup
             var popup = this.items[this.index];

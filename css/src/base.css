@@ -367,8 +367,9 @@
     height: auto;
 }
 
-.wf-mediabox-page.idevice .wf-mediabox-content {
+.wf-mediabox.ios .wf-mediabox-content {
     overflow: scroll;
+    -webkit-overflow-scrolling:touch;
 }
 
 .wf-mediabox-ajax {

@@ -19,12 +19,18 @@
 
                 // JCE MediaBox parameter format eg: title[title]
                 if (/\w+\[[^\]]+\]/.test(s)) {                    
-                    s = s.replace(/([\w]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
+                    
+                    var items = [];
 
-                        return '"' + b + '":"' + Entities.encode($.trim(c)) + '"' + (d ? ',' : '');
-                    });
+                    $.each(s.split(';'), function(i, item) {
+                        var matches = item.match(/([\w]+)\[([^\]]+)\]/);
 
-                    return $.parseJSON('{' + s + '}');
+                        if (matches.length == 3) {
+                            items.push('"' + matches[1] + '":"' + matches[2] + '"');
+                        }
+                    });                   
+
+                    return $.parseJSON('{' + items.join(',') + '}');
                 }
 
                 if (s.indexOf('=') !== -1) {

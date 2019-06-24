@@ -31,25 +31,6 @@ jimport('joomla.plugin.plugin');
  */
 class plgSystemJCEMediabox extends JPlugin
 {
-    private $version = '@@version@@';
-
-    private static $theme;
-
-    protected function getPath()
-    {
-        return JPATH_PLUGINS . '/system/jcemediabox';
-    }
-
-    protected function getURL()
-    {
-        return JURI::base(true) . '/plugins/system/jcemediabox';
-    }
-
-    protected function getEtag($file)
-    {
-        return md5_file($this->getPath() . '/' . $file);
-    }
-
     /**
      * Create a list of translated labels for popup window
      * @return Key : Value labels string
@@ -69,6 +50,14 @@ class plgSystemJCEMediabox extends JPlugin
         return $v;
     }
 
+    private function getAssetPath($relative)
+    {
+        $path = __DIR__ . '/' . $relative;
+        $hash = md5_file($path);
+        
+        return JURI::base(true) . '/plugins/system/jcemediabox/' . $relative . '?' . $hash;
+    }
+
     /**
      * OnAfterRoute function
      * @return Boolean true
@@ -77,7 +66,8 @@ class plgSystemJCEMediabox extends JPlugin
     {
         $app = JFactory::getApplication();
 
-        if ($app->isClient('administrator')) {
+        // only in "site"
+        if ($app->getClientId() !== 0) {
             return;
         }
 
@@ -144,15 +134,15 @@ class plgSystemJCEMediabox extends JPlugin
             }
         }
 
-        self::$theme = $params->get('theme', 'standard');
+        $theme = $params->get('theme', 'standard');
 
         if ($params->get('dynamic_themes', 0)) {
-            self::$theme = $app->input->getWord('theme', self::$theme);
+            $theme = $app->input->getWord('theme', $theme);
         }
 
         $config = array(
             'base' => JURI::base(true) . '/',
-            'theme' => self::$theme,
+            'theme' => $theme,
             'mediafallback' => (int) $params->get('mediafallback', 0),
             'mediaselector' => $params->get('mediaselector', 'audio,video'),
             'width' => $params->get('width', ''),
@@ -174,13 +164,8 @@ class plgSystemJCEMediabox extends JPlugin
             JHtml::_('jquery.framework');
         }
 
-        $document->addScript($this->getURL() . '/js/jcemediabox.min.js', array(
-            'version' => $this->getEtag('js/jcemediabox.min.js')
-        ));
-
-        $document->addStyleSheet($this->getURL() . '/css/jcemediabox.min.css', array(
-            'version' => $this->getEtag('css/jcemediabox.min.css')
-        ));
+        $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
+        $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
         $document->addScriptDeclaration('jQuery(document).ready(function(){WFMediaBox.init(' . json_encode($config) . ');});');
 

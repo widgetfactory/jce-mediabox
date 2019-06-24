@@ -23,7 +23,7 @@ if (window.jQuery === "undefined") {
                 });
 
                 return;
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // fallback to manual calculation
@@ -453,7 +453,7 @@ if (window.jQuery === "undefined") {
             return o;
         },
 
-        preloadMedia: function () {},
+        preloadMedia: function () { },
 
         /**
          * Process a popup link and return properties object
@@ -826,7 +826,7 @@ if (window.jQuery === "undefined") {
                 if (MediaBox.Env.ie6) {
                     $page.addClass('ie6');
                 }
-                
+
                 // add ios identifier
                 if (MediaBox.Env.iOS) {
                     $page.addClass('ios');
@@ -853,7 +853,7 @@ if (window.jQuery === "undefined") {
 
                 // add iPad scroll fix
                 if (MediaBox.Env.iOS) {
-                    $('.wf-mediabox-content').css({'webkitOverflowScrolling' : 'touch', 'overflow': 'auto'});
+                    $('.wf-mediabox-content').css({ 'webkitOverflowScrolling': 'touch', 'overflow': 'auto' });
                 }
 
                 // Add close function to frame on click
@@ -1009,16 +1009,16 @@ if (window.jQuery === "undefined") {
         },
 
         updateBodyWidth: function (popup) {
-            var w, h, ratio;
+            var w, h, ratio, m = 0;
 
             var fw = $('.wf-mediabox-frame').width();
             var fh = $('.wf-mediabox-frame').height();
 
             if (this.settings.scrolling === "scroll") {
-                var framePadding = $('.wf-mediabox-frame').css('padding-left');
+                var framePaddingLeft = $('.wf-mediabox-frame').css('padding-left'), framePaddingTop = $('.wf-mediabox-frame').css('padding-top');
 
-                fw = $(window).width() - parseInt(framePadding) * 2;
-                fh = $(window).height() - parseInt(framePadding) * 2;
+                fw = $(window).width() - parseInt(framePaddingLeft) * 2;
+                fh = $(window).height() - parseInt(framePaddingTop) * 2;
             }
 
             w = MediaBox.Tools.parseWidth(popup.width);
@@ -1036,9 +1036,7 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
             }
 
-            var dim = MediaBox.Tools.resize(w, h, fw, fh);
-
-            var bw = dim.width;
+            var dim = MediaBox.Tools.resize(w, h, fw, fh), bw = dim.width;
 
             // set the width as calculated
             $('.wf-mediabox-body').css('max-width', bw);
@@ -1046,15 +1044,28 @@ if (window.jQuery === "undefined") {
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            ratio = bh / bw;
+            // find ratio
+            /* ratio = (bh / bw).toFixed(1);
 
-            while (bh > fh) {
-                bw = bw - 16;
-                bh = ratio * bw + 16;
+             while(bh > fh) {
+                bw = Math.max(260, bw - 16);
+                bh = ratio * bw;
+            }
+            
+            // set the body width
+            $('.wf-mediabox-body').css('max-width', Math.floor(bw)); */
+
+            while ($('.wf-mediabox-body').height() > fh) {
+                bw = Math.max(260, bw - 16);
+
+                if (bw < dim.width / 2) {
+                    break;
+                }
+
+                $('.wf-mediabox-body').css('max-width', Math.floor(bw));
             }
 
-            // set the body width
-            $('.wf-mediabox-body').css('max-width', bw);
+           
         },
 
         /**
@@ -1433,6 +1444,10 @@ if (window.jQuery === "undefined") {
                     cw = cw || this.naturalWidth || this.width;
                     ch = ch || this.naturalHeight || this.height;
 
+                    // parse to integer value
+                    cw = MediaBox.Tools.parseWidth(cw);
+                    ch = MediaBox.Tools.parseWidth(ch);
+
                     // add box padding if any
                     cw = cw + ($('.wf-mediabox-body').width() - $('.wf-mediabox-content').width());
 
@@ -1458,7 +1473,7 @@ if (window.jQuery === "undefined") {
                         var ratio = parseFloat((h / w).toFixed(2));
 
                         // force 16:9 ratio for video
-                        if ($(this).hasClass('wf-mediabox-iframe-video')) {
+                        if ($(this).hasClass('wf-mediabox-iframe-video') || $(this).hasClass('wf-mediabox-video')) {
                             ratio = 0.56;
                         }
 

@@ -683,22 +683,12 @@ if (window.jQuery === "undefined") {
                                 // Set padding
                                 $img.parent().css('padding-' + pos, p);
                             }
-
-                            // Set border
-                            $.each(['width', 'style', 'color'], function (i, prop) {
-                                var v = $img.css('border-' + pos + '-' + prop);
-
-                                if (v !== "inherit" && v !== "initial") {
-                                    styles['border-' + pos + '-' + prop] = v;
-                                }
-                            });
                         });
 
                         // reset image margin, padding and border
                         $img.css({
                             'margin': 0,
                             'padding': 0,
-                            'border': 'inherit',
                             'float': 'none'
                         });
 

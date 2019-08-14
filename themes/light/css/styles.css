@@ -10,8 +10,7 @@
  * other free or open source software licenses.
  */
 
-.wf-mediabox-theme-light .wf-mediabox-frame {
-}
+.wf-mediabox-theme-light .wf-mediabox-frame {}
 
 .wf-mediabox-theme-light .wf-mediabox-loader {}
 
@@ -48,14 +47,13 @@
 	top: 0;
 }
 
-.wf-mediabox-theme-light .wf-mediabox-nav {
-}
+.wf-mediabox-theme-light .wf-mediabox-nav {}
 
-.wf-mediabox-theme-light .wf-mediabox-caption:empty + .wf-mediabox-nav {
+.wf-mediabox-theme-light .wf-mediabox-caption:empty+.wf-mediabox-nav {
 	padding: 1.5em 0;
 }
 
-.wf-mediabox-theme-light .wf-mediabox-caption:empty + .wf-mediabox-nav > * {
+.wf-mediabox-theme-light .wf-mediabox-caption:empty+.wf-mediabox-nav>* {
 	top: 1em;
 }
 
@@ -113,7 +111,6 @@
 	content: "\00bb";
 	left: auto;
 	right: -1px;
-
 	box-shadow: rgba(0, 0, 0, 0.3) -2px 2px 2px;
 }
 

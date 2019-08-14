@@ -335,9 +335,16 @@
             if (data.params) {
                 var allow = ['accelerometer', 'encrypted-media', 'gyroscope', 'picture-in-picture', 'allowfullscreen'];
                 
+                var params = {};
+
                 $.each(data.params, function(key, value) {
-                    if (!!value) {
-                       allow.push(key);
+                    if (key.indexOf('youtube-') !== -1) {
+                        key = key.replace('youtube-', '');
+                        params[key] = value;
+
+                        if (!!value) {
+                            allow.push(key);
+                         }
                     }
                 });
 
@@ -345,7 +352,7 @@
                     $(ifr).attr('allow', allow.join(';'));
                 }
 
-                var params = $.param(data.params);
+                params = $.param(params);
 
                 if (params) {
                     if (src.indexOf('?') !== -1) {
@@ -383,6 +390,7 @@
 
             return s;
         }
+
         this.width = 500;
 
         // declare type
@@ -390,10 +398,33 @@
 
         // create html
         this.html = function (data) {
-            var ifr = $(createIframe(processURL(data.src)));
+            var src = processURL(data.src), ifr = $(createIframe(src));
 
             // identify as a video to force aspect ratio
             $(ifr).addClass('wf-mediabox-iframe-video');
+
+            if (data.params) {
+                var params = {};
+
+                $.each(data.params, function(key, value) {
+                    if (key.indexOf('vimeo-') !== -1) {
+                        key = key.replace('vimeo-', '');
+                        params[key] = value;
+                    }
+                });
+                
+                params = $.param(params);
+
+                if (params) {
+                    if (src.indexOf('?') !== -1) {
+                        src += '&' + params;
+                    } else {
+                        src += '?' + params;
+                    }
+                    
+                    $(ifr).attr('src', src);
+                }
+            }
             
             return ifr;
         };

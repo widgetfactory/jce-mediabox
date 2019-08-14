@@ -1054,8 +1054,6 @@ if (window.jQuery === "undefined") {
 
                 $('.wf-mediabox-body').css('max-width', Math.floor(bw));
             }
-
-           
         },
 
         /**
@@ -1439,7 +1437,7 @@ if (window.jQuery === "undefined") {
                     ch = MediaBox.Tools.parseWidth(ch);
 
                     // add box padding if any
-                    cw = cw + ($('.wf-mediabox-body').width() - $('.wf-mediabox-content').width());
+                    //cw = cw + ($('.wf-mediabox-body').width() - $('.wf-mediabox-content').width());
 
                     // store width
                     popup.width = cw;

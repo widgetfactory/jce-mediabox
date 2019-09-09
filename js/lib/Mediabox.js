@@ -1212,8 +1212,8 @@ if (window.jQuery === "undefined") {
 
                         var title = this.items[i].title || n;
 
-                        // Craete Numbers link
-                        var link = $('<button aria-label="' + title + '" tabindex="0" />').html(n);
+                        // Create Numbers link
+                        var link = $('<button aria-label="' + title + '" tabindex="0" class="wf-mediabox-number" />').html(n);
 
                         if (this.index === i) {
                             $(link).addClass('active');

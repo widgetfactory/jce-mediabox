@@ -119,6 +119,27 @@ if (window.jQuery === "undefined") {
             if (settings.mediafallback === 1) {
                 self.mediaFallback();
             }
+
+            // convert legacy tooltips
+            $('.jcetooltip, .jce_tooltip').each(function() {
+                var text = $(this).attr('title') || '', title = '';
+
+                // Split tooltip text ie: title::text
+                if (text.indexOf('::') !== -1) {
+                    var parts = text.split('::');
+                    title = $.trim(parts[0]);
+                    text = $.trim(parts[1]);
+                }
+
+                // reset title
+                $(this).attr('title', text);
+
+                if (window.UIkit) {
+                    UIkit.tooltip(this, {title : text});
+                } else if (typeof $.fn.tooltip !== 'undefined') {
+                    $('.jcetooltip, .jce_tooltip').tooltip({'title' : text});
+                }
+            });
         },
 
         resolveMediaPath: function (s, absolute) {

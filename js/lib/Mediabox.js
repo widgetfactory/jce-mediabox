@@ -488,7 +488,7 @@ if (window.jQuery === "undefined") {
                 match;
 
             // get src value from href attribute
-            var src = el.href;
+            var src = el.getAttribute('href');
 
             // not a popup link
             if (!src) {
@@ -588,8 +588,9 @@ if (window.jQuery === "undefined") {
                 type: type
             });
 
-            // Remove type
-            el.href = el.href.replace(/&type=(ajax|text\/html|text\/xml)/, '');
+            // Remove type and update href
+            src = src.replace(/&type=(ajax|text\/html|text\/xml)/, '');
+            el.setAttribute('href', src);
 
             return o;
         },

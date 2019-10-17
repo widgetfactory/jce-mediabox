@@ -1037,7 +1037,7 @@ if (window.jQuery === "undefined") {
             h = MediaBox.Tools.parseHeight(popup.height || fh);
 
             // clamp width to frame (device) width
-            w = Math.min(w, fw);
+            //w = Math.min(w, fw);
 
             if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
                 // remove border padding and info box

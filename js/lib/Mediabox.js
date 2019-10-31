@@ -12,6 +12,7 @@ if (window.jQuery === "undefined") {
 
 (function ($) {
     var autoplayInterval;
+    
 
     function scrollIntoView(el, pos) {
         var supported = 'scrollBehavior' in document.documentElement.style;
@@ -121,7 +122,7 @@ if (window.jQuery === "undefined") {
             }
 
             // convert legacy tooltips
-            $('.jcetooltip, .jce_tooltip').each(function() {
+            $('.jcetooltip, .jce_tooltip').each(function () {
                 var text = $(this).attr('title') || '', title = '';
 
                 // Split tooltip text ie: title::text
@@ -135,9 +136,9 @@ if (window.jQuery === "undefined") {
                 $(this).attr('title', text);
 
                 if (window.UIkit) {
-                    UIkit.tooltip(this, {title : text});
+                    UIkit.tooltip(this, { title: text });
                 } else if (typeof $.fn.tooltip !== 'undefined') {
-                    $('.jcetooltip, .jce_tooltip').tooltip({'title' : text});
+                    $('.jcetooltip, .jce_tooltip').tooltip({ 'title': text });
                 }
             });
         },
@@ -1006,7 +1007,7 @@ if (window.jQuery === "undefined") {
 
                 self.updateBodyWidth(popup);
 
-            }, 100);
+            }, 300);
 
             $(window).on('resize.wf-mediabox, orientationchange.wf-mediabox', resize);
 
@@ -1036,9 +1037,6 @@ if (window.jQuery === "undefined") {
             w = MediaBox.Tools.parseWidth(popup.width);
             h = MediaBox.Tools.parseHeight(popup.height || fh);
 
-            // clamp width to frame (device) width
-            //w = Math.min(w, fw);
-
             if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
                 // remove border padding and info box
                 h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
@@ -1048,6 +1046,10 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
             }
 
+            // clamp window height and width (iPhone 6 375px - 20px)
+            //fh = Math.max(fh, 355);
+            //fw = Math.max(fw, 355);
+
             var dim = MediaBox.Tools.resize(w, h, fw, fh), bw = dim.width;
 
             // set the width as calculated
@@ -1056,26 +1058,43 @@ if (window.jQuery === "undefined") {
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            // find ratio
-            /* ratio = (bh / bw).toFixed(1);
+            if (bw > bh) {
+                // find ratio
+                ratio = (bh / bw).toFixed(1);
+            } else {
+                ratio = (bw / bh).toFixed(1);
+            }
 
-             while(bh > fh) {
+            if (bh > fh) {
+
+                bw = ratio * (fh - 16);
+
+                $('.wf-mediabox-body').css('max-width', bw);
+            }
+
+            /*while(bh > fh) {
                 bw = Math.max(260, bw - 16);
                 bh = ratio * bw;
             }
             
             // set the body width
-            $('.wf-mediabox-body').css('max-width', Math.floor(bw)); */
+            $('.wf-mediabox-body').css('max-width', bw);
 
-            while ($('.wf-mediabox-body').height() > fh) {
-                bw = Math.max(260, bw - 16);
+            var bh = $('.wf-mediabox-body').height();
+
+            while (bh > fh) {
+                bw = Math.max(355, bw - 16);
 
                 if (bw < dim.width / 2) {
                     break;
                 }
-
+                
+                // set the body width
                 $('.wf-mediabox-body').css('max-width', Math.floor(bw));
-            }
+
+                // ... and update the resultant height value
+                bh = $('.wf-mediabox-body').height();
+            }*/
         },
 
         /**

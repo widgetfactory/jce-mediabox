@@ -82,7 +82,7 @@
 
         var attribs = ['id', 'name', 'style', 'codebase', 'classid', 'type', 'data'];
 
-        var html = '<object ';
+        var html = '<object class="wf-mediabox-focus"';
         // custom attributes
         for (var n in data) {
             if (attribs.indexOf(n) !== -1 && typeof data[n] === "string") {
@@ -170,7 +170,7 @@
 
         // create image html (leave src blank)
         this.html = function (data) {
-            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video"'],
+            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video wf-mediabox-focus"'],
                 n;
 
             var params = data.params || {};
@@ -183,7 +183,7 @@
                 attribs.push('controls');
             }
 
-            var video = $('<video ' + attribs.join(' ') + ' />').on('loadedmetadata', function(e) {
+            var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function(e) {
                 $(this).attr({'width' : this.videoWidth || '', 'height' : this.videoHeight || ''});
             });
 
@@ -436,11 +436,11 @@
             var src = data.src;
             // remove query to test extension
             src = src.split('?')[0];
-            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|apng|gif|bmp|tif|webp)$/i.test(src);
         }
 
         if (isImage(data)) {
-            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" />');
+            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
 
             if (data.params) {
                 $.each(data.params, function(name, value) {
@@ -472,7 +472,7 @@
 
         // create image html (leave src blank)
         this.html = function (data) {
-            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" />');
+            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
 
             if (data.params) {
                 $.each(data.params, function(name, value) {
@@ -548,7 +548,7 @@
             data.width  = data.width    || '100%';
             data.height = data.height   || '100%';
 
-            var iframe = $('<iframe src="' + src + '" />').on('load', function () {
+            var iframe = $('<iframe src="' + src + '" />').on('mediabox:load', function () {
                 var n = this, $parent = $(this).parent(),
                     html = this.contentWindow.document.body.innerHTML;
 
@@ -641,9 +641,9 @@
             // rebuild src
             src = buildURL(uri);
 
-            var html = createIframe(src);
+            var ifr = createIframe(src);
 
-            return $(html);
+            return $(ifr);
         };
 
         this.is = function (data) {

@@ -336,10 +336,15 @@ if (window.jQuery === "undefined") {
                 labels = o.labels;
 
             if (s) {
-                s = s.replace(/\{\{(\w+?)\}\}/g, function (a, b) {
-                    return labels[b] || a;
-                });
+                if (s.substr(0, 2) === '{{') {
+                    s = s.replace(/\{\{(\w+?)\}\}/g, function (a, b) {
+                        return labels[b] || a;
+                    });
+                } else {
+                    s = labels[s] || s;
+                }
             }
+
             return s;
         },
 
@@ -508,13 +513,20 @@ if (window.jQuery === "undefined") {
 
             // set title
             var title = data.title || el.title || '';
+
             // set caption
             var caption = data.caption || '';
+
             // set type
             var type = data.type || el.type || '';
 
             // get rel attribute value
             var rel = el.rel || '';
+
+            // skip pdf files on iOS
+            if (MediaBox.Env.iOS && (/\.pdf$/i.test(src) || type === 'pdf')) {
+                return;
+            }
 
             // Process and cleanup rel attribute (legacy)
             if (!/\w+\[[^\]]+\]/.test(rel)) {
@@ -1058,17 +1070,15 @@ if (window.jQuery === "undefined") {
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            if (bw > bh) {
-                // find ratio
-                ratio = (bh / bw).toFixed(1);
-            } else {
+            // find ratio
+            if (fw > fh) {
                 ratio = (bw / bh).toFixed(1);
+            } else {
+                ratio = (bh / bw).toFixed(1);
             }
 
             if (bh > fh) {
-
                 bw = ratio * (fh - 16);
-
                 $('.wf-mediabox-body').css('max-width', bw);
             }
 
@@ -1176,6 +1186,14 @@ if (window.jQuery === "undefined") {
 
             // remove existing focus
             $('.wf-mediabox-focus').removeClass('wf-mediabox-focus');
+
+            // download
+            // remove existing
+            $('a[download]', '.wf-mediabox-content').remove();
+            
+            if (popup.params.download) {
+                $('<a href="' + popup.src + '" target="_blank" download>' + this.translate('download') + '</a>').appendTo('.wf-mediabox-content');
+            }
 
             // Optional Element Caption/Title
 
@@ -1535,10 +1553,20 @@ if (window.jQuery === "undefined") {
 
                 $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
 
-                // move focus to an element
+                // focus item
                 $('.wf-mediabox-focus').focus();
 
+                // focus iframe window
+                if (this.nodeName === 'IFRAME') {
+                    var ifr = this;
 
+                    setTimeout(function() {
+                        ifr.contentWindow.focus();
+                    }, 10);
+                }
+
+                // trigger custom load event
+                $(this).trigger('mediabox:load');
             }).on('error', function (e) {
                 var n = this;
 

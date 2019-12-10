@@ -48,6 +48,12 @@
     font-size: 1.5em;
 }
 
+.wf-mediabox-close:before,
+.wf-mediabox-prev:before,
+.wf-mediabox-next:before {
+    line-height: inherit;
+}
+
 
 /*.wf-mediabox-close:after, .wf-mediabox-prev:after, .wf-mediabox-next:after {
     color: #fff;
@@ -179,6 +185,24 @@
     height: 2em;
     vertical-align: middle;
     line-height: 1.75;
+}
+
+.wf-mediabox-content a[download] {
+    padding: 0.5em 0;
+    display: block;
+    text-align: right;
+    text-decoration: none;
+    color: #444;
+}
+
+.wf-mediabox-content a[download]:active,
+.wf-mediabox-content a[download]:visited {
+    text-decoration: none;
+    color: #444;
+}
+
+.wf-mediabox-content a[download]:hover {
+    text-decoration: underline;
 }
 
 .wf-mediabox-broken-image img {

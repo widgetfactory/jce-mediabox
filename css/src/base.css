@@ -284,6 +284,26 @@
     /*flex: 1 0 auto;*/
 }
 
+.wf-mediabox-content-item > figure {
+    margin: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: block;
+}
+
+.wf-mediabox-content-item > figure > figcaption {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    display: block;
+    bottom: 0;
+    background: #fff;
+    padding: 0.25em;
+}
+
 .wf-mediabox-scroll .wf-mediabox-content-image {
     overflow: auto;
 }

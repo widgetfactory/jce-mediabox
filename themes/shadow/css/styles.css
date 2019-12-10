@@ -14,6 +14,7 @@
 .wf-mediabox-theme-shadow .wf-mediabox-body {
   box-shadow: none;
 }
+
 .wf-mediabox-theme-shadow .wf-mediabox-body:after {
   background-color: #000;
 }
@@ -56,15 +57,18 @@
   background-color: transparent;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-close, .wf-mediabox-theme-shadow .wf-mediabox-prev, .wf-mediabox-theme-shadow .wf-mediabox-next {
+.wf-mediabox-theme-shadow .wf-mediabox-close,
+.wf-mediabox-theme-shadow .wf-mediabox-prev,
+.wf-mediabox-theme-shadow .wf-mediabox-next {
   display: block;
   left: auto;
   z-index: 1;
-	float: right;
-	position: relative;
+  float: right;
+  position: relative;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-prev, .wf-mediabox-theme-shadow .wf-mediabox-next {
+.wf-mediabox-theme-shadow .wf-mediabox-prev,
+.wf-mediabox-theme-shadow .wf-mediabox-next {
   border: none;
   border-radius: 0;
   background-color: transparent;
@@ -72,7 +76,9 @@
   top: 0;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-close:after, .wf-mediabox-theme-shadow .wf-mediabox-prev:after, .wf-mediabox-theme-shadow .wf-mediabox-next:after {
+.wf-mediabox-theme-shadow .wf-mediabox-close:after,
+.wf-mediabox-theme-shadow .wf-mediabox-prev:after,
+.wf-mediabox-theme-shadow .wf-mediabox-next:after {
   color: #fff;
   display: block;
   font-family: Arial;
@@ -83,7 +89,7 @@
 }
 
 .wf-mediabox-theme-shadow .wf-mediabox-close:after {
-  content:"\00d7";
+  content: "\00d7";
   line-height: 1;
   font-size: 1.75em;
 }
@@ -98,11 +104,17 @@
   text-decoration: underline;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-prev, .wf-mediabox-theme-shadow .wf-mediabox-next {
+.wf-mediabox-theme-shadow .wf-mediabox-prev,
+.wf-mediabox-theme-shadow .wf-mediabox-next {
   color: #fff;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-close:hover, .wf-mediabox-theme-shadow .wf-mediabox-next:hover, .wf-mediabox-theme-shadow .wf-mediabox-prev:hover, .wf-mediabox-theme-shadow .wf-mediabox-close:focus, .wf-mediabox-theme-shadow .wf-mediabox-next:focus, .wf-mediabox-theme-shadow .wf-mediabox-prev:focus {
+.wf-mediabox-theme-shadow .wf-mediabox-close:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-next:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-prev:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-close:focus,
+.wf-mediabox-theme-shadow .wf-mediabox-next:focus,
+.wf-mediabox-theme-shadow .wf-mediabox-prev:focus {
   background-color: transparent;
   color: #fff;
 }
@@ -118,7 +130,12 @@
   margin-top: 0;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-cancel:active, .wf-mediabox-theme-shadow .wf-mediabox-cancel:visited, .wf-mediabox-theme-shadow .wf-mediabox-numbers a:active, .wf-mediabox-theme-shadow .wf-mediabox-numbers a:visited, .wf-mediabox-theme-shadow .wf-mediabox-numbers a:link, .wf-mediabox-theme-shadow .wf-mediabox-numbers a:hover {
+.wf-mediabox-theme-shadow .wf-mediabox-cancel:active,
+.wf-mediabox-theme-shadow .wf-mediabox-cancel:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-numbers a:active,
+.wf-mediabox-theme-shadow .wf-mediabox-numbers a:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-numbers a:link,
+.wf-mediabox-theme-shadow .wf-mediabox-numbers a:hover {
   text-decoration: none;
   color: #ffffff;
 }
@@ -138,11 +155,26 @@
   margin: 0.5em;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-caption h4, .wf-mediabox-theme-shadow .wf-mediabox-caption p {
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p {
   color: #ffffff;
 }
 
-.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:active, .wf-mediabox-theme-shadow .wf-mediabox-caption p a:active, .wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:hover, .wf-mediabox-theme-shadow .wf-mediabox-caption p a:hover, .wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:visited, .wf-mediabox-theme-shadow .wf-mediabox-caption p a:visited, .wf-mediabox-theme-shadow .wf-mediabox-caption h4 a, .wf-mediabox-theme-shadow .wf-mediabox-caption p a {
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:active,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:active,
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a {
   color: #ffffff;
   text-decoration: underline;
+}
+
+.wf-mediabox-theme-shadow .wf-mediabox-content a[download] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: #fff;
 }

@@ -692,7 +692,9 @@ if (window.jQuery === "undefined") {
                         var styles = {};
 
                         // add zoom image icon
-                        $img.after('<span class="wf-icon-zoom-image" />');
+                        $('<span class="wf-icon-zoom-image" />').html(function() {
+                            return MediaBox.getSVGIcon('search');
+                        }).insertAfter($img);
 
                         var flt = $img.css('float');
                         // transfer float
@@ -732,13 +734,18 @@ if (window.jQuery === "undefined") {
                         // add zoom class
                         $(this).addClass('wf-zoom-image');
                     } else {
-                        $(this).append('<i class="wf-icon-zoom-link" />');
+                        $('<span class="wf-icon-zoom-link" />').html(function(){
+                            return MediaBox.getSVGIcon('link');
+                        }).appendTo(this).find('svg').css('fill', $(this).css('color'));
                     }
                 }
 
                 // Add click event to link
                 $(this).on('click', function (e) {
                     e.preventDefault();
+
+                    // update the src attribute value, this allows it to be changed dynamically by javsacript
+                    o.src = this.getAttribute('href');
 
                     // set as lightbox activator
                     self.activator = this;
@@ -894,19 +901,31 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-close, .wf-mediabox-cancel').on('click', function (e) {
                     e.preventDefault();
                     self.close();
-                }).attr('tabindex', 0);
+                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                    if (val) {
+                        $(this).append(MediaBox.getSVGIcon(val));
+                    }
+                });
 
                 // Setup Next link event
                 $('.wf-mediabox-next').on('click', function (e) {
                     e.preventDefault();
                     self.nextItem();
-                }).attr('tabindex', 0);
+                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                    if (val) {
+                        $(this).append(MediaBox.getSVGIcon(val));
+                    }
+                });
 
                 // Setup Previous link event
                 $('.wf-mediabox-prev').on('click', function (e) {
                     e.preventDefault();
                     self.previousItem();
-                }).attr('tabindex', 0);
+                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                    if (val) {
+                        $(this).append(MediaBox.getSVGIcon(val));
+                    }
+                });
 
                 // store html
                 $('.wf-mediabox-numbers').data('html', $('.wf-mediabox-numbers').html()).attr('aria-hidden', true);
@@ -1034,7 +1053,7 @@ if (window.jQuery === "undefined") {
         },
 
         updateBodyWidth: function (popup) {
-            var w, h, ratio, m = 0;
+            var w, h, ratio, m = 0, ww = $(window).width(), wh = $(window).height();
 
             var fw = $('.wf-mediabox-frame').width();
             var fh = $('.wf-mediabox-frame').height();
@@ -1042,20 +1061,32 @@ if (window.jQuery === "undefined") {
             if (this.settings.scrolling === "scroll") {
                 var framePaddingLeft = $('.wf-mediabox-frame').css('padding-left'), framePaddingTop = $('.wf-mediabox-frame').css('padding-top');
 
-                fw = $(window).width() - parseInt(framePaddingLeft) * 2;
-                fh = $(window).height() - parseInt(framePaddingTop) * 2;
+                fw = ww - parseInt(framePaddingLeft) * 2;
+                fh = wh - parseInt(framePaddingTop) * 2;
             }
 
             w = MediaBox.Tools.parseWidth(popup.width);
             h = MediaBox.Tools.parseHeight(popup.height || fh);
 
             if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
-                // remove border padding and info box
-                h = h - ($('.wf-mediabox-body').height() - $('.wf-mediabox-content').height());
+                // get size of border padding and info box
+                //var modw = $('.wf-mediabox-body').width() - $('.wf-mediabox-content').width();
+                var modh = $('.wf-mediabox-body').height() - $('.wf-mediabox-content').height();
 
-                var pct = Math.floor(h / w * 100);
+                /*
+                // remove from frame width
+                w = w - modw;
+                // remove from frame height
+                h = h - modh;
 
-                $('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
+                // get proportional percentage
+                var pct = Math.floor(h / w * 100);*/
+
+                // border padding + info box + frame padding
+                modh = modh + (wh - fh);
+
+                //$('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
+                $('.wf-mediabox-content-item').css('height', 'calc(100vh - ' + modh + 'px)');
             }
 
             // clamp window height and width (iPhone 6 375px - 20px)
@@ -1463,7 +1494,7 @@ if (window.jQuery === "undefined") {
             var ch = popup.height || 0;
 
             $('.wf-mediabox-content').removeClass('wf-mediabox-broken-image wf-mediabox-broken-media');
-            $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404');
+            $('.wf-mediabox-content .wf-icon-404').removeClass('wf-icon-404').find('svg').remove();
 
             $('.wf-mediabox-caption').removeClass('wf-mediabox-caption-hidden');
 
@@ -1582,7 +1613,11 @@ if (window.jQuery === "undefined") {
 
                 $('.wf-mediabox-body').addClass('wf-mediabox-transition').css('max-width', '').attr('aria-hidden', false);
 
-                $('.wf-mediabox-content > div').addClass('wf-icon-404');
+                $('.wf-mediabox').addClass('wf-mediabox-show');
+
+                $('.wf-mediabox-content > div').addClass('wf-icon-404').html(function() {
+                    return MediaBox.getSVGIcon('404');
+                });
             });
 
             //$('.wf-mediabox.wf-mediabox-transition-slide-in').removeClass('wf-mediabox-transition-slide-in').addClass('wf-mediabox-transition-slide-out');

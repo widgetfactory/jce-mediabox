@@ -1,7 +1,7 @@
 /**
  * Squeeze Template
  * @package		JCE MediaBox
- * @copyright	Copyright (C) 2009 - 2019 Ryan Demmer. All rights reserved.
+ * @copyright	Copyright (C) 2009 - 2020 Ryan Demmer. All rights reserved.
  * @license		GNU/GPL
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -53,6 +53,12 @@
 .wf-mediabox-theme-squeeze .wf-mediabox-close {
 	right: -1em;
 	top: -1em;
+}
+
+.wf-mediabox-theme-squeeze .wf-mediabox-close > svg,
+.wf-mediabox-theme-squeeze .wf-mediabox-next > svg,
+.wf-mediabox-theme-squeeze .wf-mediabox-prev > svg {
+	fill: #fff;
 }
 
 .wf-mediabox-theme-squeeze .wf-mediabox-prev {}

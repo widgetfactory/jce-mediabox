@@ -3,13 +3,14 @@ WFMediaBox.Theme.add("light", function () {
         {
             "div": {
                 "class": "wf-mediabox-container",
-                "content": [{
+                "content": [
+                    {
                         "div": {
                             "class": "wf-mediabox-content",
                             "content": [
                                 {
-                                    "div" : {
-                                        "class" : "wf-mediabox-content-item"
+                                    "div": {
+                                        "class": "wf-mediabox-content-item"
                                     }
                                 },
                                 {
@@ -38,7 +39,8 @@ WFMediaBox.Theme.add("light", function () {
                         "nav": {
                             "class": "wf-mediabox-nav",
                             "role": "navigation",
-                            "content": [{
+                            "content": [
+                                {
                                     "button": {
                                         "class": "wf-mediabox-close",
                                         "title": "{{close}}",

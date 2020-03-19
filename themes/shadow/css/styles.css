@@ -67,6 +67,14 @@
   position: relative;
 }
 
+.wf-mediabox-theme-shadow .wf-mediabox-prev>svg,
+.wf-mediabox-theme-shadow .wf-mediabox-next>svg {
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
 .wf-mediabox-theme-shadow .wf-mediabox-prev,
 .wf-mediabox-theme-shadow .wf-mediabox-next {
   border: none;
@@ -86,6 +94,11 @@
   line-height: 2;
   text-align: center;
   text-decoration: none;
+}
+
+.wf-mediabox-theme-shadow .wf-mediabox-prev>svg,
+.wf-mediabox-theme-shadow .wf-mediabox-next>svg {
+  fill: #fff;
 }
 
 .wf-mediabox-theme-shadow .wf-mediabox-close:after {

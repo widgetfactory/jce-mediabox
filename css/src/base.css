@@ -284,7 +284,7 @@
     /*flex: 1 0 auto;*/
 }
 
-.wf-mediabox-content-item > figure {
+.wf-mediabox-content-item>figure {
     margin: 0;
     position: absolute;
     width: 100%;
@@ -294,7 +294,7 @@
     display: block;
 }
 
-.wf-mediabox-content-item > figure > figcaption {
+.wf-mediabox-content-item>figure>figcaption {
     text-align: center;
     position: absolute;
     width: 100%;
@@ -324,6 +324,10 @@
 
 .wf-mediabox-content-ratio-4by3 .wf-mediabox-content-item {
     padding-bottom: 75%;
+}
+
+.wf-mediabox-content-ratio-flex .wf-mediabox-content-item {
+    padding-bottom: 0;
 }
 
 /*.wf-mediabox-content-iframe::after,
@@ -390,7 +394,7 @@
 
 .wf-mediabox.ios .wf-mediabox-content {
     overflow: scroll;
-    -webkit-overflow-scrolling:touch;
+    -webkit-overflow-scrolling: touch;
 }
 
 .wf-mediabox-ajax {
@@ -445,7 +449,8 @@ a.wf-mediabox-img {
     visibility: visible;
 }
 
-.wf-icon-zoom-image:before {
+.wf-icon-zoom-image:before,
+.wf-icon-zoom-image>svg {
     color: #fff;
     font-size: 24px;
     height: 24px;
@@ -459,12 +464,23 @@ a.wf-mediabox-img {
     right: 5px;
 }
 
+.wf-icon-zoom-image>svg {
+    fill: #fff;
+    transform: scale(-1);
+}
+
 .wf-zoom-image-invert .wf-icon-zoom-image:before {
     color: #444;
 }
 
+.wf-zoom-image-invert .wf-icon-zoom-image>svg {
+    fill: #444;
+}
+
 .wf-icon-zoom-top-left .wf-icon-zoom-image:before,
-.wf-icon-zoom-left-top .wf-icon-zoom-image:before {
+.wf-icon-zoom-left-top .wf-icon-zoom-image:before,
+.wf-icon-zoom-top-left .wf-icon-zoom-image>svg,
+.wf-icon-zoom-left-top .wf-icon-zoom-image>svg {
     top: 5px;
     bottom: auto;
     left: 5px;
@@ -472,13 +488,17 @@ a.wf-mediabox-img {
 }
 
 .wf-icon-zoom-top-right .wf-icon-zoom-image:before,
-.wf-icon-zoom-right-top .wf-icon-zoom-image:before {
+.wf-icon-zoom-right-top .wf-icon-zoom-image:before,
+.wf-icon-zoom-top-right .wf-icon-zoom-image>svg,
+.wf-icon-zoom-right-top .wf-icon-zoom-image>svg {
     top: 5px;
     bottom: auto;
 }
 
 .wf-icon-zoom-bottom-left .wf-icon-zoom-image:before,
-.wf-icon-zoom-left-bottom .wf-icon-zoom-image:before {
+.wf-icon-zoom-left-bottom .wf-icon-zoom-image:before,
+.wf-icon-zoom-bottom-left .wf-icon-zoom-image>svg,
+.wf-icon-zoom-left-bottom .wf-icon-zoom-image>svg {
     top: auto;
     bottom: 5px;
     left: 5px;
@@ -486,7 +506,9 @@ a.wf-mediabox-img {
 }
 
 .wf-icon-zoom-center-top .wf-icon-zoom-image:before,
-.wf-icon-zoom-top-center .wf-icon-zoom-image:before {
+.wf-icon-zoom-top-center .wf-icon-zoom-image:before,
+.wf-icon-zoom-center-top .wf-icon-zoom-image>svg,
+.wf-icon-zoom-top-center .wf-icon-zoom-image>svg {
     left: 50%;
     margin-left: -12px;
     top: 5px;
@@ -495,7 +517,9 @@ a.wf-mediabox-img {
 }
 
 .wf-icon-zoom-center-bottom .wf-icon-zoom-image:before,
-.wf-icon-zoom-bottom-center .wf-icon-zoom-image:before {
+.wf-icon-zoom-bottom-center .wf-icon-zoom-image:before,
+.wf-icon-zoom-center-bottom .wf-icon-zoom-image>svg,
+.wf-icon-zoom-bottom-center .wf-icon-zoom-image>svg {
     left: 50%;
     margin-left: -12px;
     right: auto;
@@ -511,7 +535,10 @@ a.wf-mediabox-img {
 
 .wf-icon-zoom-center-left .wf-icon-zoom-image:before,
 .wf-icon-zoom-left-center .wf-icon-zoom-image:before,
-.wf-icon-zoom-left .wf-icon-zoom-image:before {
+.wf-icon-zoom-left .wf-icon-zoom-image:before,
+.wf-icon-zoom-center-left .wf-icon-zoom-image>svg,
+.wf-icon-zoom-left-center .wf-icon-zoom-image>svg,
+.wf-icon-zoom-left .wf-icon-zoom-image>svg {
     margin-top: -12px;
     top: 50%;
     bottom: auto;
@@ -519,7 +546,8 @@ a.wf-mediabox-img {
     right: auto;
 }
 
-.wf-icon-zoom-center .wf-icon-zoom-image:before {
+.wf-icon-zoom-center .wf-icon-zoom-image:before,
+.wf-icon-zoom-center .wf-icon-zoom-image>svg {
     margin-top: -12px;
     margin-left: -12px;
     top: 50%;
@@ -553,6 +581,15 @@ a.wf-mediabox-img {
 .wf-icon-zoom-link:before {
     padding: 0 0 0 5px;
     vertical-align: middle;
+}
+
+.wf-icon-zoom-link>svg {
+    padding: 2px 0 0 5px;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    transform: scaleY(-1);
+    line-height: 1;
 }
 
 a.wfpopup.noshow,
@@ -591,4 +628,17 @@ a.wfpopup.hide {
 
 .wf-mediabox figcaption {
     text-align: initial;
+}
+
+.wf-icon-404 {
+    visibility: visible;
+    background-color: #fff;
+}
+
+.wf-icon-404>svg {
+    width: 5em;
+    height: 5em;
+    margin: auto;
+    transform: scale(-1);
+    fill: #444;
 }

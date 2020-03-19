@@ -42,6 +42,13 @@
     line-height: 2em;
 }
 
+.wf-mediabox-close > svg,
+.wf-mediabox-prev > svg,
+.wf-mediabox-next > svg {
+    fill: #444;
+    vertical-align: middle;
+}
+
 .wf-mediabox-close:after,
 .wf-mediabox-prev:after,
 .wf-mediabox-next:after {
@@ -96,6 +103,15 @@
     color: #888;
     text-decoration: none;
     outline: none;
+}
+
+.wf-mediabox-close:focus > svg,
+.wf-mediabox-prev:focus > svg,
+.wf-mediabox-next:focus > svg,
+.wf-mediabox-close:hover > svg,
+.wf-mediabox-prev:hover > svg,
+.wf-mediabox-next:hover > svg {
+    fill: #888;
 }
 
 .wf-mediabox-prev {

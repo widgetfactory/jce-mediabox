@@ -3,19 +3,21 @@ WFMediaBox.Theme.add("squeeze", function () {
         {
             "div": {
                 "class": "wf-mediabox-container",
-                "content": [{
-                    "button": {
-                        "class": "wf-mediabox-close wf-icon-close-squeeze",
-                        "title": "{{close}}",
-                        "aria-label": "{{close}}"
-                    }
-                },{
+                "content": [
+                    {
+                        "button": {
+                            "class": "wf-mediabox-close",
+                            "title": "{{close}}",
+                            "aria-label": "{{close}}",
+                            "svg-icon": "close:squeeze"
+                        }
+                    }, {
                         "div": {
                             "class": "wf-mediabox-content",
                             "content": [
                                 {
-                                    "div" : {
-                                        "class" : "wf-mediabox-content-item"
+                                    "div": {
+                                        "class": "wf-mediabox-content-item"
                                     }
                                 }
                             ]
@@ -33,16 +35,18 @@ WFMediaBox.Theme.add("squeeze", function () {
                             "content": [
                                 {
                                     "button": {
-                                        "class": "wf-mediabox-prev wf-icon-prev-squeeze",
+                                        "class": "wf-mediabox-prev",
                                         "title": "{{previous}}",
-                                        "aria-label": "{{previous}}"
+                                        "aria-label": "{{previous}}",
+                                        "svg-icon": "prev:squeeze"
                                     }
                                 },
                                 {
                                     "button": {
-                                        "class": "wf-mediabox-next wf-icon-next-squeeze",
+                                        "class": "wf-mediabox-next",
                                         "title": "{{next}}",
-                                        "aria-label": "{{next}}"
+                                        "aria-label": "{{next}}",
+                                        "svg-icon": "next:squeeze"
                                     }
                                 },
                                 {

@@ -25,10 +25,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.wf-icon-zoom-image:before,
+/*.wf-icon-zoom-image:before,
 .wf-icon-search:before {
   content: "\f002";
-}
+}*/
 
 .wf-icon-next-squeeze:after {
   content: "\f01d";
@@ -58,10 +58,10 @@
   font-size: 1.5em;
 }
 
-.wf-icon-zoom-link:before,
+/*.wf-icon-zoom-link:before,
 .wf-icon-link:before {
   content: "\f08e";
-}
+}*/
 
 .wf-icon-prev-standard:before {
   content: "\f0a8";

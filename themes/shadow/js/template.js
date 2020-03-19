@@ -55,16 +55,18 @@ WFMediaBox.Theme.add("shadow", function () {
                                 },
                                 {
                                     "button": {
-                                        "class": "wf-mediabox-next wf-icon-next-shadow",
+                                        "class": "wf-mediabox-next",
                                         "title": "{{next}}",
-                                        "aria-label": "{{next}}"
+                                        "aria-label": "{{next}}",
+                                        "svg-icon": "next:shadow"
                                     }
                                 },
                                 {
                                     "button": {
-                                        "class": "wf-mediabox-prev wf-icon-prev-shadow",
+                                        "class": "wf-mediabox-prev",
                                         "title": "{{previous}}",
-                                        "aria-label": "{{previous}}"
+                                        "aria-label": "{{previous}}",
+                                        "svg-icon": "prev:shadow"
                                     }
                                 }
                             ]

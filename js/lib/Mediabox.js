@@ -117,9 +117,9 @@ if (window.jQuery === "undefined") {
             self.create();
 
             // activate mediaelement
-            if (settings.mediafallback === 1) {
+            /*if (settings.mediafallback === 1) {
                 self.mediaFallback();
-            }
+            }*/
 
             // convert legacy tooltips
             $('.jcetooltip, .jce_tooltip').each(function () {

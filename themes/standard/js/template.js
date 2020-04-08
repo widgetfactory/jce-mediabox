@@ -4,7 +4,7 @@
     });
 })(jQuery);
 
-WFMediaBox.Theme.add("standard", function () {
+WfMediabox.Theme.add("standard", function () {
     return [
         {
             "div": {

@@ -140,8 +140,8 @@
         return parent;
     };
 
-    window.MediaBox.Addons = Addons;
+    window.WfMediabox.Addons = Addons;
 
-    window.MediaBox.Plugin = Addons.Plugin;
-    window.MediaBox.Theme = Addons.Theme;
+    window.WfMediabox.Plugin = Addons.Plugin;
+    window.WfMediabox.Theme = Addons.Theme;
 })(jQuery);

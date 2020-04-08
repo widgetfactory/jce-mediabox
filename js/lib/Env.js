@@ -170,5 +170,5 @@
         audio: audio
     };
 
-    window.MediaBox.Env = Env;
+    window.WfMediabox.Env = Env;
 })();

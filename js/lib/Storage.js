@@ -56,5 +56,5 @@
         }
     };
 
-    window.MediaBox.Storage = Storage;
+    window.WfMediabox.Storage = Storage;
 })();

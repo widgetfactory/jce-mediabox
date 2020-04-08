@@ -61,5 +61,5 @@
         }
     };
 
-    window.MediaBox.Mimetype = Mimetype;
+    window.WfMediabox.Mimetype = Mimetype;
 })();

@@ -107,5 +107,5 @@
         return h;
     };
 
-    window.MediaBox.Tools = Tools;
+    window.WfMediabox.Tools = Tools;
 })(jQuery);

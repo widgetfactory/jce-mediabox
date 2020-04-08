@@ -1,4 +1,4 @@
-WFMediaBox.Theme.add("uikit", function () {
+WfMediabox.Theme.add("uikit", function () {
     return [{
         "div": {
             "class": "wf-mediabox-container uk-modal-dialog uk-modal-dialog-lightbox uk-slidenav-position",

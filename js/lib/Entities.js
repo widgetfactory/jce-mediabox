@@ -28,5 +28,5 @@
         }
     };
 
-    window.MediaBox.Entities = Entities;
+    window.WfMediabox.Entities = Entities;
 })();

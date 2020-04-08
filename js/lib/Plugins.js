@@ -11,10 +11,10 @@
  * other free or open source software licenses.
  *
  */
-(function ($, WFMediaBox) {
+(function ($, WfMediabox) {
     function islocal(s) {
         if (/^([a-z]+)?:\/\//.test(s)) {
-            return new RegExp('(' + WFMediaBox.site + ')').test(s);
+            return new RegExp('(' + WfMediabox.site + ')').test(s);
         }
 
         return true;
@@ -121,7 +121,7 @@
         return '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
     }
 
-    WFMediaBox.Plugin.add('flash', function () {
+    WfMediabox.Plugin.add('flash', function () {
         this.type = "object";
         this.html = function (data) {
             data.type = "application/x-shockwave-flash";
@@ -135,15 +135,15 @@
         };
     });
 
-    WFMediaBox.Plugin.add('flv', function () {
+    WfMediabox.Plugin.add('flv', function () {
         this.type = "object";
         this.html = function (data) {
-            var swf = WFMediaBox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
+            var swf = WfMediabox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
 
             data.type = "application/x-shockwave-flash";
-            data.data = WFMediaBox.resolveMediaPath(swf);
+            data.data = WfMediabox.resolveMediaPath(swf);
 
-            data.flashvars = 'src=' + WFMediaBox.resolveMediaPath(data.src, true);
+            data.flashvars = 'src=' + WfMediabox.resolveMediaPath(data.src, true);
 
             if (typeof data.controls === "undefined") {
                 data.controls = "true";
@@ -165,7 +165,7 @@
     /**
      * HTML5 Video
      */
-    WFMediaBox.Plugin.add('video', function () {
+    WfMediabox.Plugin.add('video', function () {
         this.type = "video";
 
         // create image html (leave src blank)
@@ -196,11 +196,11 @@
             // remove query to test extension
             src = src.split('?')[0];
 
-            return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(src)) && WFMediaBox.Env.video;
+            return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(src)) && WfMediabox.Env.video;
         };
     });
     
-    /*WFMediaBox.Plugin.add('metacafe', function(v) {
+    /*WfMediabox.Plugin.add('metacafe', function(v) {
      this.attributes = {
 
      return {
@@ -222,7 +222,7 @@
      * Daily Motion - http://www.dailymotion.com
      * @param {String} v URL
      */
-    WFMediaBox.Plugin.add('dailymotion', function () {
+    WfMediabox.Plugin.add('dailymotion', function () {
         this.is = function (data) {
             return /dai\.?ly(motion)/.test(data.src);
         };
@@ -253,7 +253,7 @@
             return ifr;
         };
     });
-    WFMediaBox.Plugin.add('quicktime', function () {
+    WfMediabox.Plugin.add('quicktime', function () {
         var n;
 
         this.html = function (data) {
@@ -271,7 +271,7 @@
             return /\.(mov)\b/.test(data.src);
         };
     });
-    WFMediaBox.Plugin.add('windowsmedia', function () {
+    WfMediabox.Plugin.add('windowsmedia', function () {
 
         this.type = "object";
         this.html = function (data) {
@@ -290,7 +290,7 @@
      * Youtube - http://www.youtube.com
      * @param {String} v URL
      */
-    WFMediaBox.Plugin.add('youtube', function () {
+    WfMediabox.Plugin.add('youtube', function () {
         var self = this;
 
         this.is = function (data) {
@@ -371,7 +371,7 @@
         };
     });
 
-    WFMediaBox.Plugin.add('vimeo', function () {
+    WfMediabox.Plugin.add('vimeo', function () {
 
         this.is = function (data) {
             return /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.test(data.src);
@@ -430,7 +430,7 @@
         };
     });
 
-    $('.wf-mediabox').on('wfmediabox:plugin', function(e, data) {
+    $('.wf-mediabox').on('WfMediabox:plugin', function(e, data) {
         
         function isImage(data) {
             var src = data.src;
@@ -447,7 +447,7 @@
                     if (name === "srcset") {
                         value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
                             if (islocal(match)) {
-                                return WFMediaBox.site + match;
+                                return WfMediabox.site + match;
                             }
 
                             return match;
@@ -467,7 +467,7 @@
     /**
      * Image
      */
-    WFMediaBox.Plugin.add('image', function () {
+    WfMediabox.Plugin.add('image', function () {
         this.type = "image";
 
         // create image html (leave src blank)
@@ -479,7 +479,7 @@
                     if (name === "srcset") {
                         value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
                             if (islocal(match)) {
-                                return WFMediaBox.site + match;
+                                return WfMediabox.site + match;
                             }
 
                             return match;
@@ -504,7 +504,7 @@
     /**
      * PDF
      */
-    WFMediaBox.Plugin.add('pdf', function () {
+    WfMediabox.Plugin.add('pdf', function () {
         this.type = "iframe";
 
         // create html
@@ -525,7 +525,7 @@
     /**
      * Ajax / Internal Content
      */
-    WFMediaBox.Plugin.add('content', function () {
+    WfMediabox.Plugin.add('content', function () {
         this.type = "ajax";
 
         this.html = function (data) {
@@ -579,7 +579,7 @@
                     }
                 });
 
-                WFMediaBox.create(WFMediaBox.getPopups('', $parent));
+                WfMediabox.create(WfMediabox.getPopups('', $parent));
 
                 if (data.params) {
                     // add passed in styles
@@ -599,7 +599,7 @@
     /**
      * Dom Element
      */
-    WFMediaBox.Plugin.add('dom', function () {
+    WfMediabox.Plugin.add('dom', function () {
         this.type = "dom";
 
         this.html = function (data) {
@@ -619,7 +619,7 @@
     /**
      * IFrame
      */
-    WFMediaBox.Plugin.add('iframe', function () {
+    WfMediabox.Plugin.add('iframe', function () {
 
         this.type = "iframe";
 
@@ -650,4 +650,4 @@
             return !data.type || data.type === "iframe";
         };
     });
-})(jQuery, WFMediaBox);
+})(jQuery, WfMediabox);

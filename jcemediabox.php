@@ -167,7 +167,7 @@ class plgSystemJCEMediabox extends JPlugin
         $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
-        $document->addScriptDeclaration('jQuery(document).ready(function(){WFMediaBox.init(' . json_encode($config) . ');});');
+        $document->addScriptDeclaration('jQuery(document).ready(function(){WfMediabox.init(' . json_encode($config) . ');});');
 
         return true;
     }

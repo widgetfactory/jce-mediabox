@@ -71,5 +71,5 @@
         }
     };
 
-    window.MediaBox.Parameter = Parameter;
-})(jQuery, MediaBox.Entities);
+    window.WfMediabox.Parameter = Parameter;
+})(jQuery, WfMediabox.Entities);

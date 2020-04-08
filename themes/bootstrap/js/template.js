@@ -1,4 +1,4 @@
-WFMediaBox.Theme.add("bootstrap", function () {
+WfMediabox.Theme.add("bootstrap", function () {
     return [{
         "div": {
             "class": "wf-mediabox-container modal",

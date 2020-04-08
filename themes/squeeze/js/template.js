@@ -1,4 +1,4 @@
-WFMediaBox.Theme.add("squeeze", function () {
+WfMediabox.Theme.add("squeeze", function () {
     return [
         {
             "div": {

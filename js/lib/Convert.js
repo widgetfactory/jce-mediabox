@@ -84,5 +84,5 @@
         }
     };
 
-    window.MediaBox.Convert = Convert;
-})(jQuery, MediaBox.Parameter);
+    window.WfMediabox.Convert = Convert;
+})(jQuery, WfMediabox.Parameter);

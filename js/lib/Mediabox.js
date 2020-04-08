@@ -108,12 +108,6 @@ if (window.jQuery === "undefined") {
             // get site url
             this.site = this.getSite();
 
-            // init on ready
-            // add DOM support for IE < 9
-            if (!MediaBox.Env.video || !MediaBox.Env.audio) {
-                document.createElement('source');
-            }
-
             self.create();
 
             // convert legacy tooltips
@@ -136,25 +130,6 @@ if (window.jQuery === "undefined") {
                     $('.jcetooltip, .jce_tooltip').tooltip({ 'title': text });
                 }
             });
-        },
-
-        resolveMediaPath: function (s, absolute) {
-            function toAbsolute(url) {
-                var div = document.createElement('div');
-                div.innerHTML = '<a href="' + url + '">x</a>';
-
-                return div.firstChild.href;
-            }
-
-            if (s && s.indexOf('://') === -1 && s.charAt(0) !== '/') {
-                s = this.settings.base + s;
-            }
-
-            if (absolute) {
-                return toAbsolute(s);
-            }
-
-            return s;
         },
 
         /**

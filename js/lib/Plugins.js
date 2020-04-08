@@ -135,33 +135,6 @@
         };
     });
 
-    WfMediabox.Plugin.add('flv', function () {
-        this.type = "object";
-        this.html = function (data) {
-            var swf = WfMediabox.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
-
-            data.type = "application/x-shockwave-flash";
-            data.data = WfMediabox.resolveMediaPath(swf);
-
-            data.flashvars = 'src=' + WfMediabox.resolveMediaPath(data.src, true);
-
-            if (typeof data.controls === "undefined") {
-                data.controls = "true";
-            }
-
-            data.flashvars += '&controls=' + data.controls;
-
-            delete data.src;
-            delete data.controls;
-
-            return $(createObject(data));
-        };
-
-        this.is = function (data) {
-            return /\.(flv|f4v)\b/.test(data.src);
-        };
-    });
-
     /**
      * HTML5 Video
      */

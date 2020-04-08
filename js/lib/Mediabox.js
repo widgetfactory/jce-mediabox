@@ -116,11 +116,6 @@ if (window.jQuery === "undefined") {
 
             self.create();
 
-            // activate mediaelement
-            /*if (settings.mediafallback === 1) {
-                self.mediaFallback();
-            }*/
-
             // convert legacy tooltips
             $('.jcetooltip, .jce_tooltip').each(function () {
                 var text = $(this).attr('title') || '', title = '';
@@ -160,160 +155,6 @@ if (window.jQuery === "undefined") {
             }
 
             return s;
-        },
-
-        mediaFallback: function () {
-            var self = this;
-
-            // process video
-            var selector = this.settings.mediaselector;
-            var elms = $(selector);
-            var swf = this.settings.mediaplayer || 'plugins/system/jcemediabox/mediaplayer/mediaplayer.swf';
-
-            var supportMap = {
-                'video': {
-                    'h264': ['video/mp4', 'video/mpeg'],
-                    'webm': ['video/webm'],
-                    'ogg': ['video/ogg']
-                },
-                'audio': {
-                    'mp3': ['audio/mp3', 'audio/mpeg'],
-                    'ogg': ['audio/ogg'],
-                    'webm': ['audio/webm']
-                }
-            };
-
-            function checkSupport(name, type) {
-                var hasSupport = false;
-
-                for (var n in supportMap[name]) {
-                    if (supportMap[name][n].indexOf(type) !== -1) {
-                        hasSupport = Env[name] && !!Env[name][n];
-                    }
-                }
-
-                return hasSupport;
-            }
-
-            $(elms).each(function (i, el) {
-                var type = el.getAttribute('type'),
-                    src = el.getAttribute('src'),
-                    name = el.nodeName.toLowerCase(),
-                    hasSupport = false;
-
-                // no src attribute set, try finding in <source>
-                if (!src || !type) {
-                    $('source[type]', el).each(function (i, n) {
-                        src = n.getAttribute('src'), type = n.getAttribute('type');
-
-                        // video/x-flv not supported by any browser
-                        if (type !== "video/x-flv") {
-                            hasSupport = checkSupport(name, type);
-                        }
-
-                        if (!hasSupport) {
-                            return false;
-                        }
-                    });
-
-                    // check for flv fallback
-                    if (!hasSupport && name === "video") {
-                        var source = $('source[type="video/x-flv"]', el);
-
-                        if (source.length) {
-                            src = $(source).attr('src'), type = "video/x-flv";
-                        }
-                    }
-                } else {
-                    hasSupport = checkSupport(name, type);
-                }
-
-                // can't do anything without these!
-                if (!src || !type) {
-                    return;
-                }
-
-                // native audio/video support (exclude flv)
-                if (hasSupport) {
-                    return;
-                }
-
-                var w = el.getAttribute('width'),
-                    h = el.getAttribute('height');
-                var html = '',
-                    flashvars = [];
-
-                // not custom player
-                if (!self.settings.mediaplayer) {
-                    flashvars.push('file=' + self.resolveMediaPath(src, true));
-                }
-
-                $.each(['autoplay', 'loop', 'preload', 'controls'], function (i, at) {
-                    var v = el.getAttribute(at);
-
-                    if (typeof v !== "undefined" && v !== null) {
-                        if (v === at) {
-                            v = true;
-                        }
-
-                        flashvars.push(at + '=' + v);
-                    }
-
-                });
-
-                var i, attrs = el.attributes;
-
-                for (i = attrs.length - 1; i >= 0; i--) {
-                    var attrName = attrs[i].name;
-                    if (attrName && (attrName.indexOf('data-video-') !== -1 || attrName.indexOf('data-audio-') !== -1)) {
-                        var name = attrName.replace(/data-(video|audio)-/i, '');
-                        var value = attrs[i].value;
-
-                        if (typeof value !== "undefined" || value !== null) {
-                            flashvars.push(name + '=' + value);
-                        }
-                    }
-                }
-
-                html += '<object class="wf-mediaplayer-object" data="' + self.resolveMediaPath(swf) + '" type="application/x-shockwave-flash"';
-
-                if (w) {
-                    html += ' width="' + w + '"';
-                }
-
-                if (h) {
-                    html += ' height="' + h + '"';
-                }
-
-                html += '>';
-
-                html += '<param name="movie" value="' + self.resolveMediaPath(swf) + '" />';
-                html += '<param name="flashvars" value="' + flashvars.join('&') + '" />';
-                html += '<param name="allowfullscreen" value="true" />';
-                html += '<param name="wmode" value="transparent" />';
-
-                var poster = el.getAttribute('poster');
-
-                if (poster) {
-                    html += '<img src="' + self.resolveMediaPath(poster) + '" alt="" />';
-                }
-
-                html += '<i>Flash is required to play this video. <a href="https://get.adobe.com/flashplayer" target="_blank">Get Adobe® Flash Player</a></i>';
-                html += '</object>';
-
-                var div = document.createElement('span');
-                div.innerHTML = html;
-
-                var o = div.firstChild;
-
-                if (o && o.nodeName === "OBJECT") {
-                    el.parentNode.replaceChild(o, el);
-
-                    if (poster) {
-                        o.style.backgroundImage = "url('" + resolveMediaPath(poster) + "')";
-                    }
-                }
-            });
         },
 
         /**
@@ -1686,6 +1527,6 @@ if (window.jQuery === "undefined") {
     };
 
     // Export MediaBox as WFMediaBox/jcepopup in global namespace
-    window.MediaBox = window.WFMediaBox = window.jcepopup = MediaBox;
+    window.WfMediabox = window.jcepopup = MediaBox;
 
 })(jQuery);

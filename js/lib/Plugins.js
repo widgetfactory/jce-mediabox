@@ -172,25 +172,7 @@
             return (/video\/(mp4|mpeg|webm|ogg)/.test(data.type) || /\.(mp4|webm|ogg)\b/.test(src)) && WfMediabox.Env.video;
         };
     });
-    
-    /*WfMediabox.Plugin.add('metacafe', function(v) {
-     this.attributes = {
 
-     return {
-     width: 400,
-     height: 345,
-     type: 'flash',
-     attributes: {
-     'wmode': 'opaque',
-     'src': (function() {
-     s.replace(/watch/i, 'fplayer');
-     })();
-     }
-     };
-     }
-
-     return /metacafe(.+)\/(watch|fplayer)\/(.+)/.test(v);
-     });*/
     /**
      * Daily Motion - http://www.dailymotion.com
      * @param {String} v URL

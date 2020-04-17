@@ -898,8 +898,11 @@ if (window.jQuery === "undefined") {
                 // get proportional percentage
                 var pct = Math.floor(h / w * 100);*/
 
+                // clamp height
+                h = Math.min(h, fh);
+
                 // border padding + info box + frame padding
-                modh = modh + (wh - fh);
+                modh = modh + (wh - h);
 
                 //$('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
                 $('.wf-mediabox-content-item').css('height', 'calc(100vh - ' + modh + 'px)');

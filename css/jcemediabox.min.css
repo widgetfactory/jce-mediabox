@@ -14,6 +14,7 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: inherit;
     text-shadow: none;
+    text-transform: none;
     float: none;
     position: relative;
     width: auto;
@@ -29,6 +30,10 @@
     max-width: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -webkit-appearance: none;
 }
 
 .wf-mediabox-scrolling {
@@ -420,6 +425,12 @@ a.wf-mediabox-img {
     /*flex: 0 1 auto;*/
 }
 
+/* button overrides */
+.wf-mediabox-nav button {
+    padding: 0 !important;
+    font-size: inherit !important;
+}
+
 .wf-mediabox-caption,
 .wf-mediabox-caption h4,
 .wf-mediabox-caption p {
@@ -791,7 +802,7 @@ a.wfpopup.hide {
     width: 100%;
     height: 100%;
     border-radius: 100%;
-    font-size: 14px;
+    font-size: 14px !important;
     text-align: center;
     cursor: pointer;
 }

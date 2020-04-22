@@ -13,6 +13,7 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: inherit;
     text-shadow: none;
+    text-transform: none;
     float: none;
     position: relative;
     width: auto;
@@ -28,6 +29,10 @@
     max-width: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -webkit-appearance: none;
 }
 
 .wf-mediabox-scrolling {
@@ -417,6 +422,12 @@ a.wf-mediabox-img {
 .wf-mediabox-nav {
     display: block;
     /*flex: 0 1 auto;*/
+}
+
+/* button overrides */
+.wf-mediabox-nav button {
+    padding: 0 !important;
+    font-size: inherit !important;
 }
 
 .wf-mediabox-caption,

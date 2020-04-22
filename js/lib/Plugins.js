@@ -174,6 +174,40 @@
     });
 
     /**
+     * HTML5 Audio
+     */
+    WfMediabox.Plugin.add('audio', function () {
+        this.type = "audio";
+
+        // create image html (leave src blank)
+        this.html = function (data) {
+            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-audio wf-mediabox-focus"'],
+                n;
+
+            var params = data.params || {};
+
+            for (n in params) {
+                attribs.push(n + '="' + params[n] + '"');
+            }
+
+            if (!params.autoplay) {
+                attribs.push('controls');
+            }
+
+            return $('<audio ' + attribs.join(' ') + ' tabindex="0" />');
+        };
+
+        this.is = function (data) {
+            var src = data.src;
+
+            // remove query to test extension
+            src = src.split('?')[0];
+
+            return (/audio\/(mp3|mpeg|oga|x-wav)/.test(data.type) || /\.(mp3|oga|wav|m4a)\b/.test(src)) && WfMediabox.Env.audio;
+        };
+    });
+
+    /**
      * Daily Motion - http://www.dailymotion.com
      * @param {String} v URL
      */

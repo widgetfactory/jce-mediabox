@@ -1370,7 +1370,7 @@ if (window.jQuery === "undefined") {
                         var ratio = parseFloat((h / w).toFixed(2));
 
                         // force 16:9 ratio for video
-                        if ($(this).hasClass('wf-mediabox-iframe-video') || $(this).hasClass('wf-mediabox-video')) {
+                        if ($(this).is('.wf-mediabox-iframe-video, .wf-mediabox-video, .wf-mediabox-audio')) {
                             ratio = 0.56;
                         }
 

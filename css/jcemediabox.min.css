@@ -393,6 +393,10 @@
     height: auto;
 }
 
+.wf-mediabox-content-audio audio {
+    min-height: 40px;
+}
+
 .wf-mediabox.ios .wf-mediabox-content {
     overflow: scroll;
     -webkit-overflow-scrolling: touch;

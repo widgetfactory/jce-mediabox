@@ -812,6 +812,7 @@ a.wfpopup.hide {
     text-decoration: none;
     color: inherit;
     background-color: transparent;
+    background-image: none;
 }
 
 .wf-mediabox-numbers button.active {

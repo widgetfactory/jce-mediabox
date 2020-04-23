@@ -1198,7 +1198,7 @@ if (window.jQuery === "undefined") {
             $('.wf-mediabox-container, .wf-mediabox-cancel').show();
 
             // set loader
-            $('.wf-mediabox').addClass('wf-mediabox-loading').find('.wf-mediabox-loading').attr('aria-hidden', false);
+            $('.wf-mediabox').addClass('wf-mediabox-loading').find('.wf-mediabox-loader').attr('aria-hidden', false);
 
             // get current popup item
             popup = this.items[n];
@@ -1223,12 +1223,15 @@ if (window.jQuery === "undefined") {
                 if (!popup.height && plugin.height) {
                     popup.height = plugin.height;
                 }
+
+                popup.type = type;
             }
 
             // update classes
             $('.wf-mediabox-content').attr('class', 'wf-mediabox-content').addClass('wf-mediabox-content-' + type).css('height', '');
 
-            $('.wf-mediabox-content-item').html(html);
+            // pass through plugin html to popup
+            popup.html = html;
 
             // re-set with updated parameters
             this.items[n] = popup;
@@ -1322,7 +1325,24 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-body').css('max-width', 640);
             }
 
-            $('img, iframe, video, audio, object, embed', '.wf-mediabox-content').one('load loadedmetadata', function (e) {
+            // create loader cache
+            var $cache = $('<div class="wf-mediabox-cache" />');
+
+            if (popup.type == 'iframe' || popup.type == 'ajax') {
+                $('.wf-mediabox-content-item').html(popup.html);
+            } else {
+                $cache.html(popup.html).appendTo('.wf-mediabox');
+            }
+
+            function itemLoaded(e) {
+                // remove loader cache
+                $cache.empty().remove();
+                
+                // append media element to popup content if it isn't an iframe (iframe will reload if appended)
+                if (this.nodeName !== "IFRAME") {
+                    $('.wf-mediabox-content-item').html(popup.html);
+                }
+
                 // update loader
                 $('.wf-mediabox').removeClass('wf-mediabox-loading').find('.wf-mediabox-loading').attr('aria-hidden', true);
 
@@ -1417,8 +1437,13 @@ if (window.jQuery === "undefined") {
 
                 // trigger custom load event
                 $(this).trigger('mediabox:load');
-            }).on('error', function (e) {
+            }
+
+            function itemError() {
                 var n = this;
+
+                // remove loader cache
+                $cache.empty().remove();
 
                 $('.wf-mediabox').removeClass('wf-mediabox-loading');
 
@@ -1437,7 +1462,9 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-content > div').addClass('wf-icon-404').html(function() {
                     return MediaBox.getSVGIcon('404');
                 });
-            });
+            }
+
+            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', itemLoaded).on('error', itemError);
 
             //$('.wf-mediabox.wf-mediabox-transition-slide-in').removeClass('wf-mediabox-transition-slide-in').addClass('wf-mediabox-transition-slide-out');
         },

@@ -48,6 +48,11 @@
     font-size: 16px;
 }
 
+.wf-mediabox-cache {
+    position: absolute;
+    left: -99999px;
+}
+
 .wf-mediabox-scrolling .wf-mediabox {
     position: absolute;
     top: 0;

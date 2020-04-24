@@ -1334,7 +1334,7 @@ if (window.jQuery === "undefined") {
                 $cache.html(popup.html).appendTo('.wf-mediabox');
             }
 
-            function itemLoaded(e) {
+            function itemLoaded() {
                 // remove loader cache
                 $cache.empty().remove();
                 
@@ -1356,7 +1356,6 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-info-top, .wf-mediabox-info-bottom').addClass('wf-info-show');
 
                 if (this.nodeName === "IMG") {
-
                     // use passed in width or the images actual width, whichever is less
                     cw = cw || this.naturalWidth || this.width;
                     ch = ch || this.naturalHeight || this.height;
@@ -1464,7 +1463,14 @@ if (window.jQuery === "undefined") {
                 });
             }
 
-            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', itemLoaded).on('error', itemError);
+            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', function(e) {
+                var node = this;
+
+                setTimeout(function() {
+                    itemLoaded.apply(node);
+                }, 300);
+
+            }).on('error', itemError);
 
             //$('.wf-mediabox.wf-mediabox-transition-slide-in').removeClass('wf-mediabox-transition-slide-in').addClass('wf-mediabox-transition-slide-out');
         },

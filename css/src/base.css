@@ -473,7 +473,7 @@ a.wf-mediabox-img {
 .wf-icon-zoom-image>svg {
     color: #fff;
     font-size: 24px;
-    height: 24px;
+    height: 28px;
     position: absolute;
     text-align: center;
     width: 24px;
@@ -482,6 +482,7 @@ a.wf-mediabox-img {
     bottom: 5px;
     left: auto;
     right: 5px;
+    z-index: 1;
 }
 
 .wf-icon-zoom-image>svg {

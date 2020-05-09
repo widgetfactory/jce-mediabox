@@ -73,6 +73,23 @@
         return url;
     }
 
+    function createComponentURL(src) {
+        var uri = parseURL(src);
+
+        if (islocal(src)) {            
+            if (!uri.query) {
+                uri.query = 'tmpl=component';
+            } else if (uri.query.indexOf('tmpl') == -1) {
+                uri.query += '&tmpl=component';
+            }
+        }
+
+        // rebuild src
+        src = buildURL(uri);
+
+        return src;
+    }
+
     function createObject(data, embed) {
         delete data.group;
         delete data.title;
@@ -156,8 +173,8 @@
                 attribs.push('controls');
             }
 
-            var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function(e) {
-                $(this).attr({'width' : this.videoWidth || '', 'height' : this.videoHeight || ''});
+            var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function (e) {
+                $(this).attr({ 'width': this.videoWidth || '', 'height': this.videoHeight || '' });
             });
 
             return video;
@@ -238,7 +255,7 @@
 
             // identify as a video to force aspect ratio
             $(ifr).addClass('wf-mediabox-iframe-video');
-            
+
             return ifr;
         };
     });
@@ -293,7 +310,7 @@
                 if (b && !c) {
                     c = '.com';
                 }
-                
+
                 // replace first ampersand with question mark
                 if (d.indexOf('?') === -1) {
                     d = d.replace(/&/, '?');
@@ -320,20 +337,20 @@
         // create html
         this.html = function (data) {
             var src = processURL(data.src), ifr = $(createIframe(src));
-            
+
             if (data.params) {
                 var allow = ['accelerometer', 'encrypted-media', 'gyroscope', 'picture-in-picture', 'allowfullscreen'];
-                
+
                 var params = {};
 
-                $.each(data.params, function(key, value) {
+                $.each(data.params, function (key, value) {
                     if (key.indexOf('youtube-') !== -1) {
                         key = key.replace('youtube-', '');
                         params[key] = value;
 
                         if (!!value) {
                             allow.push(key);
-                         }
+                        }
                     }
                 });
 
@@ -349,13 +366,13 @@
                     } else {
                         src += '?' + params;
                     }
-                    
+
                     $(ifr).attr('src', src);
                 }
             }
             // identify as a video to force aspect ratio
             $(ifr).addClass('wf-mediabox-iframe-video');
-            
+
             return ifr;
         };
     });
@@ -395,13 +412,13 @@
             if (data.params) {
                 var params = {};
 
-                $.each(data.params, function(key, value) {
+                $.each(data.params, function (key, value) {
                     if (key.indexOf('vimeo-') !== -1) {
                         key = key.replace('vimeo-', '');
                         params[key] = value;
                     }
                 });
-                
+
                 params = $.param(params);
 
                 if (params) {
@@ -410,17 +427,17 @@
                     } else {
                         src += '?' + params;
                     }
-                    
+
                     $(ifr).attr('src', src);
                 }
             }
-            
+
             return ifr;
         };
     });
 
-    $('.wf-mediabox').on('WfMediabox:plugin', function(e, data) {
-        
+    $('.wf-mediabox').on('WfMediabox:plugin', function (e, data) {
+
         function isImage(data) {
             var src = data.src;
             // remove query to test extension
@@ -432,9 +449,9 @@
             var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
 
             if (data.params) {
-                $.each(data.params, function(name, value) {
+                $.each(data.params, function (name, value) {
                     if (name === "srcset") {
-                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
+                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function (match) {
                             if (islocal(match)) {
                                 return WfMediabox.site + match;
                             }
@@ -464,9 +481,9 @@
             var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
 
             if (data.params) {
-                $.each(data.params, function(name, value) {
+                $.each(data.params, function (name, value) {
                     if (name === "srcset") {
-                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function(match) {
+                        value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function (match) {
                             if (islocal(match)) {
                                 return WfMediabox.site + match;
                             }
@@ -489,7 +506,7 @@
             return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
         };
     });
-    
+
     /**
      * PDF
      */
@@ -500,14 +517,14 @@
         this.html = function (data) {
             var label = data.title || 'PDF Iframe';
 
-            data.width  = data.width    || '100%';
-            data.height = data.height   || '100%';
-            
+            data.width = data.width || '100%';
+            data.height = data.height || '100%';
+
             return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />');
         };
 
         this.is = function (data) {
-            return data.type === "pdf" || /\.pdf$/i.test(data.src);
+            return data.type === "pdf" || /application\/(x-)?pdf/.test(data.type) || /\.pdf$/i.test(data.src);
         };
     });
 
@@ -518,24 +535,11 @@
         this.type = "ajax";
 
         this.html = function (data) {
-            var html = "";
+            // create component src
+            src = createComponentURL(data.src);
 
-            var src = data.src;
-            var uri = parseURL(src);
-
-            if (islocal(src)) {
-                if (!uri.query) {
-                    uri.query = 'tmpl=component';
-                } else if (uri.query.indexOf('tmpl=component') == -1) {
-                    uri.query += '&tmpl=component';
-                }
-            }
-
-            // rebuild src
-            src = buildURL(uri);
-
-            data.width  = data.width    || '100%';
-            data.height = data.height   || '100%';
+            data.width = data.width || '100%';
+            data.height = data.height || '100%';
 
             var iframe = $('<iframe src="' + src + '" />').on('mediabox:load', function () {
                 var n = this, $parent = $(this).parent(),
@@ -558,7 +562,7 @@
                 }, 10);
 
                 // process anchors
-                $parent.find('a[href^="#"]').on('click', function(e) {
+                $parent.find('a[href^="#"]').on('click', function (e) {
                     e.preventDefault();
 
                     var id = $(this).attr('href'), elm = $parent.find(id).get(0);
@@ -572,7 +576,7 @@
 
                 if (data.params) {
                     // add passed in styles
-                    if (data.params.style) {                                                
+                    if (data.params.style) {
                         $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').attr('style', data.params.style).get(0).style.cssText + '}').insertBefore($parent);
                     }
                 }
@@ -613,23 +617,13 @@
         this.type = "iframe";
 
         this.html = function (data) {
-            var src = data.src;
-            var uri = parseURL(src);
+            data.width = data.width || '100%';
+            data.height = data.height || '100%';
 
-            data.width  = data.width    || '100%';
-            data.height = data.height   || '100%';
+            // create component src
+            src = createComponentURL(data.src);
 
-            if (islocal(src)) {
-                if (!uri.query) {
-                    uri.query = 'tmpl=component';
-                } else if (uri.query.indexOf('tmpl=component') == -1) {
-                    uri.query += '&tmpl=component';
-                }
-            }
-
-            // rebuild src
-            src = buildURL(uri);
-
+            // create iframe markup
             var ifr = createIframe(src);
 
             return $(ifr);

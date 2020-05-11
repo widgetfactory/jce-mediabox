@@ -74,6 +74,10 @@
     }
 
     function createComponentURL(src) {
+        if (!WfMediabox.settings.convert_local_url) {
+            return src;
+        }
+        
         var uri = parseURL(src);
 
         if (islocal(src)) {            

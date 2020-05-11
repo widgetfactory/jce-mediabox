@@ -45,6 +45,7 @@ if (window.jQuery === "undefined") {
                 "next": "Next",
                 "previous": "Previous"
             },
+            convert_local_url : true,
             autoplay: 0
         },
         // array of popup links / objects

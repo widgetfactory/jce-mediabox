@@ -113,7 +113,7 @@ if (window.jQuery === "undefined") {
 
             // convert legacy tooltips
             $('.jcetooltip, .jce_tooltip').each(function () {
-                var text = $(this).attr('title') || '', title = '';
+                var text = $(this).attr('title') || '', title = '', cls = $(this).attr('class');
 
                 // Split tooltip text ie: title::text
                 if (text.indexOf('::') !== -1) {
@@ -125,10 +125,14 @@ if (window.jQuery === "undefined") {
                 // reset title
                 $(this).attr('title', text);
 
-                if (window.UIkit) {
-                    UIkit.tooltip(this, { title: text });
+                // extact position if any
+                var pos = /tooltip-(top|bottom|left|right)/.exec(cls);
+                pos = pos ? pos[1] : 'top';
+                
+                if (window.UIkit && UIkit.tooltip) {
+                    UIkit.tooltip(this, { title: text, position: pos });
                 } else if (typeof $.fn.tooltip !== 'undefined') {
-                    $('.jcetooltip, .jce_tooltip').tooltip({ 'title': text });
+                    $('.jcetooltip, .jce_tooltip').tooltip({ 'title': text, placement: pos });
                 }
             });
         },

@@ -595,7 +595,7 @@ if (window.jQuery === "undefined") {
                     'title': title,
                     'group': group,
                     'type': type,
-                    'params': params
+                    'params': params || {}
                 });
             }
 

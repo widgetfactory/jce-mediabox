@@ -21,10 +21,10 @@
     };
 
     window.WfMediabox.getSVGIcon = function (name, attribs) {
-        var $html = $('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024"><g stroke="none" stroke-width="1"></g><path></path></svg>');
+        var $svg = $('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024"><g stroke="none" stroke-width="1"></g><path></path></svg>');
 
         // set passed in attributes
-        $html.attr(attribs || {});
+        $svg.attr(attribs || {});
 
         var parts = name.split(':'), icon = parts[0], theme = parts[1] || '', data = svg[icon];
 
@@ -36,8 +36,8 @@
             return '';
         }
 
-        $html.find('path').attr('d', data);
-
-        return $html.get(0).outerHTML;
+        $svg.find('path').attr('d', data);
+        
+        return $('<div />').append($svg).html();
     };
 })(jQuery);

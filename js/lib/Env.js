@@ -30,6 +30,7 @@
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
     Android = /Android/.test(userAgent);
+    Mobile = iDevice || Android;
 
     /*
      * From Modernizr v2.0.6
@@ -167,7 +168,16 @@
          * @type Object
          * @final
          */
-        audio: audio
+        audio: audio,
+
+        /**
+        * Constant that is true if the os is Mobile.
+         *
+         * @property mobile
+         * @type Boolean
+         * @final
+         */
+        mobile: Mobile
     };
 
     window.WfMediabox.Env = Env;

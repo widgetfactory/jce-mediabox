@@ -1,65 +1,111 @@
-(function() {
-    var Mimetype = {
+(function ($) {
+    var lookup = {};
+    var mimes = {};
 
-        get: function(c) {
-            var ci, cb, mt;
+    // Media types supported by this plugin
+    var mediaTypes = {
+        // Type, clsid, mime types, codebase
+        "flash": {
+            classid: "CLSID:D27CDB6E-AE6D-11CF-96B8-444553540000",
+            type: "application/x-shockwave-flash",
+            codebase: "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,1,53,64"
+        },
+        "shockwave": {
+            classid: "CLSID:166B1BCA-3F9C-11CF-8075-444553540000",
+            type: "application/x-director",
+            codebase: "http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=10,2,0,023"
+        },
+        "windowsmedia": {
+            classid: "CLSID:6BF52A52-394A-11D3-B153-00C04F79FAA6",
+            type: "application/x-mplayer2",
+            codebase: "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=10,00,00,3646"
+        },
+        "quicktime": {
+            classid: "CLSID:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B",
+            type: "video/quicktime",
+            codebase: "http://www.apple.com/qtactivex/qtplugin.cab#version=7,3,0,0"
+        },
+        "divx": {
+            classid: "CLSID:67DABFBF-D0AB-41FA-9C46-CC0F21721616",
+            type: "video/divx",
+            codebase: "http://go.divx.com/plugin/DivXBrowserPlugin.cab"
+        },
+        "realmedia": {
+            classid: "CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA",
+            type: "audio/x-pn-realaudio-plugin"
+        },
+        "java": {
+            classid: "CLSID:8AD9C840-044E-11D1-B3E9-00805F499D93",
+            type: "application/x-java-applet",
+            codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_5_0-windows-i586.cab#Version=1,5,0,0"
+        },
+        "silverlight": {
+            classid: "CLSID:DFEAF541-F3E1-4C24-ACAC-99C30715084A",
+            type: "application/x-silverlight-2"
+        },
+        "video": {
+            type: 'video/mpeg'
+        },
+        "audio": {
+            type: 'audio/mpeg'
+        },
+        "iframe": {}
+    };
 
-            c = /(director|windowsmedia|mplayer|quicktime|real|divx|flash|pdf)/.exec(c);
+    // Parses the default mime types string into a mimes lookup map
+    (function (data) {
+        var items = data.split(/,/),
+            i, y, ext;
 
-            switch (c[1]) {
-                case 'director':
-                case 'application/x-director':
-                    ci = '166b1bca-3f9c-11cf-8075-444553540000';
-                    cb = 'http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=8,5,1,0';
-                    mt = 'application/x-director';
-                    break;
-                case 'windowsmedia':
-                case 'mplayer':
-                case 'application/x-mplayer2':
-                    ci = '6bf52a52-394a-11d3-b153-00c04f79faa6';
-                    cb = 'http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701';
-                    mt = 'application/x-mplayer2';
-                    break;
-                case 'quicktime':
-                case 'video/quicktime':
-                    ci = '02bf25d5-8c17-4b23-bc80-d3488abddc6b';
-                    cb = 'http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0';
-                    mt = 'video/quicktime';
-                    break;
-                case 'real':
-                case 'realaudio':
-                case 'audio/x-pn-realaudio-plugin':
-                    ci = 'cfcdaa03-8be4-11cf-b84b-0020afbbccfa';
-                    cb = '';
-                    mt = 'audio/x-pn-realaudio-plugin';
-                    break;
-                case 'divx':
-                case 'video/divx':
-                    ci = '67dabfbf-d0ab-41fa-9c46-cc0f21721616';
-                    cb = 'http://go.divx.com/plugin/DivXBrowserPlugin.cab';
-                    mt = 'video/divx';
-                    break;
-                case 'pdf':
-                case 'application/pdf':
-                    ci = 'ca8a9780-280d-11cf-a24d-444553540000';
-                    cb = '';
-                    mt = 'application/pdf';
-                    break;
-                default:
-                case 'flash':
-                case 'application/x-shockwave-flash':
-                    ci = 'd27cdb6e-ae6d-11cf-96b8-444553540000';
-                    cb = 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,124,0';
-                    mt = 'application/x-shockwave-flash';
-                    break;
+        for (i = 0; i < items.length; i += 2) {
+            ext = items[i + 1].split(/ /);
+
+            for (y = 0; y < ext.length; y++) {
+                mimes[ext[y]] = items[i];
             }
-            return {
-                'classid'   : ci,
-                'codebase'  : cb,
-                'mediatype' : mt
-            };
+        }
+    })(
+        "application/x-director,dcr," +
+        "video/divx,divx," +
+        "application/pdf,pdf," +
+        "application/x-shockwave-flash,swf swfl," +
+        "audio/mpeg,mpga mpega mp2 mp3," +
+        "audio/ogg,ogg spx oga," +
+        "audio/x-wav,wav," +
+        "video/mpeg,mpeg mpg mpe," +
+        "video/mp4,mp4 m4v," +
+        "video/ogg,ogg ogv," +
+        "video/webm,webm," +
+        "video/quicktime,qt mov," +
+        "video/x-flv,flv," +
+        "video/vnd.rn-realvideo,rv", +
+        "video/3gpp,3gp," +
+        "video/x-matroska,mkv"
+    );
+
+    $.each(mediaTypes, function (key, value) {
+        value.name = key;
+
+        if (value.classid) {
+            lookup[value.classid] = value;
+        }
+
+        if (value.type) {
+            lookup[value.type] = value;
+        }
+
+        lookup[key.toLowerCase()] = value;
+    });
+
+    var Mimetype = {
+        props: function (value) {
+            return lookup[value] || false;
+        },
+
+        guess: function(value) {
+            return mimes[value] || false;
         }
     };
 
     window.WfMediabox.Mimetype = Mimetype;
-})();
+})(jQuery);

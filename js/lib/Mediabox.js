@@ -345,7 +345,7 @@ if (window.jQuery === "undefined") {
             var rel = el.rel || '';
 
             // skip pdf files on iOS
-            if (MediaBox.Env.iOS && (/\.pdf$/i.test(src) || type === 'pdf')) {
+            if (MediaBox.Env.mobile && (/\.pdf$/i.test(src) || type === 'pdf')) {
                 return;
             }
 

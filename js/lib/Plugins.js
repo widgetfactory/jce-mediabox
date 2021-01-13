@@ -163,8 +163,8 @@
         this.type = "video";
 
         // create image html (leave src blank)
-        this.html = function (data) {
-            var attribs = ['src="' + data.src + '"', 'class="wf-mediabox-video wf-mediabox-focus"'],
+        this.html = function (data) {            
+            var attribs = ['class="wf-mediabox-video wf-mediabox-focus"'],
                 n;
 
             var params = data.params || {};
@@ -177,9 +177,16 @@
                 attribs.push('controls');
             }
 
+            if (WfMediabox.Env.mobile) {
+                attribs.push('playsinline');
+            }
+
+            var ext  = data.src.split('.').pop();
+            var type = WfMediabox.Mimetype.guess(ext) || 'video/mpeg';
+
             var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function (e) {
                 $(this).attr({ 'width': this.videoWidth || '', 'height': this.videoHeight || '' });
-            });
+            }).append('<source src="' + data.src + '" type="' + type + '" />');
 
             return video;
         };

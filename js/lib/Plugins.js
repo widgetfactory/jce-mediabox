@@ -12,6 +12,11 @@
  *
  */
 (function ($, WfMediabox) {
+    function isBool(attr) {
+        var map = ['async', 'checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected', 'autoplay', 'loop', 'controls', 'itemscope', 'playsinline', 'contenteditable', 'spellcheck', 'contextmenu', 'draggable', 'hidden'];
+        return $.inArray(attr, map) !== -1;
+    }
+
     function islocal(s) {
         if (/^([a-z]+)?:\/\//.test(s)) {
             return new RegExp('(' + WfMediabox.site + ')').test(s);
@@ -77,10 +82,10 @@
         if (!WfMediabox.settings.convert_local_url) {
             return src;
         }
-        
+
         var uri = parseURL(src);
 
-        if (islocal(src)) {            
+        if (islocal(src)) {
             if (!uri.query) {
                 uri.query = 'tmpl=component';
             } else if (uri.query.indexOf('tmpl') == -1) {
@@ -163,14 +168,18 @@
         this.type = "video";
 
         // create image html (leave src blank)
-        this.html = function (data) {            
+        this.html = function (data) {
             var attribs = ['class="wf-mediabox-video wf-mediabox-focus"'],
                 n;
 
             var params = data.params || {};
 
             for (n in params) {
-                attribs.push(n + '="' + params[n] + '"');
+                if (isBool(n)) {
+                    attribs.push(n);
+                } else {
+                    attribs.push(n + '="' + params[n] + '"');
+                }
             }
 
             if (!params.autoplay) {
@@ -181,7 +190,7 @@
                 attribs.push('playsinline');
             }
 
-            var ext  = data.src.split('.').pop();
+            var ext = data.src.split('.').pop();
             var type = WfMediabox.Mimetype.guess(ext) || 'video/mpeg';
 
             var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function (e) {
@@ -215,7 +224,11 @@
             var params = data.params || {};
 
             for (n in params) {
-                attribs.push(n + '="' + params[n] + '"');
+                if (isBool(n)) {
+                    attribs.push(n);
+                } else {
+                    attribs.push(n + '="' + params[n] + '"');
+                }
             }
 
             if (!params.autoplay) {

@@ -12,7 +12,7 @@ if (window.jQuery === "undefined") {
 
 (function ($) {
     var autoplayInterval;
-    
+
 
     function scrollIntoView(el, pos) {
         var supported = 'scrollBehavior' in document.documentElement.style;
@@ -45,7 +45,7 @@ if (window.jQuery === "undefined") {
                 "next": "Next",
                 "previous": "Previous"
             },
-            convert_local_url : true,
+            convert_local_url: true,
             autoplay: 0
         },
         // array of popup links / objects
@@ -128,7 +128,7 @@ if (window.jQuery === "undefined") {
                 // extact position if any
                 var pos = /tooltip-(top|bottom|left|right)/.exec(cls);
                 pos = pos ? pos[1] : 'top';
-                
+
                 if (window.UIkit && UIkit.tooltip) {
                     UIkit.tooltip(this, { title: text, position: pos });
                 } else if (typeof $.fn.tooltip !== 'undefined') {
@@ -513,7 +513,7 @@ if (window.jQuery === "undefined") {
                         var styles = {};
 
                         // add zoom image icon
-                        $('<span class="wf-icon-zoom-image" />').html(function() {
+                        $('<span class="wf-icon-zoom-image" />').html(function () {
                             return MediaBox.getSVGIcon('search');
                         }).insertAfter($img);
 
@@ -555,7 +555,7 @@ if (window.jQuery === "undefined") {
                         // add zoom class
                         $(this).addClass('wf-zoom-image');
                     } else {
-                        $('<span class="wf-icon-zoom-link" />').html(function(){
+                        $('<span class="wf-icon-zoom-link" />').html(function () {
                             return MediaBox.getSVGIcon('link');
                         }).appendTo(this).find('svg').css('fill', $(this).css('color'));
                     }
@@ -722,7 +722,7 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-close, .wf-mediabox-cancel').on('click', function (e) {
                     e.preventDefault();
                     self.close();
-                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                }).attr('tabindex', 0).attr('svg-icon', function (i, val) {
                     if (val) {
                         $(this).append(MediaBox.getSVGIcon(val));
                     }
@@ -732,7 +732,7 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-next').on('click', function (e) {
                     e.preventDefault();
                     self.nextItem();
-                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                }).attr('tabindex', 0).attr('svg-icon', function (i, val) {
                     if (val) {
                         $(this).append(MediaBox.getSVGIcon(val));
                     }
@@ -742,7 +742,7 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-prev').on('click', function (e) {
                     e.preventDefault();
                     self.previousItem();
-                }).attr('tabindex', 0).attr('svg-icon', function(i, val) {
+                }).attr('tabindex', 0).attr('svg-icon', function (i, val) {
                     if (val) {
                         $(this).append(MediaBox.getSVGIcon(val));
                     }
@@ -1045,7 +1045,7 @@ if (window.jQuery === "undefined") {
             // download
             // remove existing
             $('a[download]', '.wf-mediabox-content').remove();
-            
+
             if (popup.params.download) {
                 $('<a href="' + popup.src + '" target="_blank" download>' + this.translate('download') + '</a>').appendTo('.wf-mediabox-content');
             }
@@ -1343,7 +1343,7 @@ if (window.jQuery === "undefined") {
             function itemLoaded() {
                 // remove loader cache
                 $cache.empty().remove();
-                
+
                 // append media element to popup content if it isn't an iframe (iframe will reload if appended)
                 if (this.nodeName !== "IFRAME") {
                     $('.wf-mediabox-content-item').html(popup.html);
@@ -1435,9 +1435,16 @@ if (window.jQuery === "undefined") {
                 if (this.nodeName === 'IFRAME') {
                     var ifr = this;
 
-                    setTimeout(function() {
+                    setTimeout(function () {
                         ifr.contentWindow.focus();
                     }, 10);
+                }
+
+                // force autoplay in IE11
+                if (this.nodeName === 'VIDEO' || this.nodeName === 'AUDIO') {                    
+                    if (MediaBox.Env.ie && this.autoplay) {
+                        this.play();
+                    }
                 }
 
                 // trigger custom load event
@@ -1464,15 +1471,15 @@ if (window.jQuery === "undefined") {
 
                 $('.wf-mediabox').addClass('wf-mediabox-show');
 
-                $('.wf-mediabox-content > div').addClass('wf-icon-404').html(function() {
+                $('.wf-mediabox-content > div').addClass('wf-icon-404').html(function () {
                     return MediaBox.getSVGIcon('404');
                 });
             }
 
-            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', function(e) {
+            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', function (e) {
                 var node = this;
 
-                setTimeout(function() {
+                setTimeout(function () {
                     itemLoaded.apply(node);
                 }, 300);
 

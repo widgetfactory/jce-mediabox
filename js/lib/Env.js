@@ -20,13 +20,17 @@
 
     var nav = navigator, userAgent = nav.userAgent;
     var opera, webkit, ie, ie6, gecko, mac, iDevice, Android, video, audio;
-
     opera = window.opera && window.opera.buildNumber;
+    android = /Android/.test(userAgent);
     webkit = /WebKit/.test(userAgent);
     ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
     ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
+    ie = ie && !webkit;
     ie6 = ie && !window.XMLHttpRequest;
-    gecko = !webkit && /Gecko/.test(userAgent);
+    ie11 = userAgent.indexOf('Trident/') != -1 && (userAgent.indexOf('rv:') != -1 || nav.appName.indexOf('Netscape') != -1) ? 11 : false;
+    ie = ie || ie11;
+
+    gecko = !webkit && !ie && /Gecko/.test(userAgent);
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
     Android = /Android/.test(userAgent);

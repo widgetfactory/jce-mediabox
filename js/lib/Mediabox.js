@@ -660,6 +660,8 @@ if (window.jQuery === "undefined") {
 
                 return true;
             }
+
+            return false;
         },
         /**
          * Build Popup structure
@@ -1179,6 +1181,8 @@ if (window.jQuery === "undefined") {
                 // add focus to close button
                 $('.wf-mediabox-close').addClass('wf-mediabox-focus');
             }
+
+            $('.wf-mediabox-body').attr('data-mediabox-src', popup.src);
         },
         /**
          * Change the popup

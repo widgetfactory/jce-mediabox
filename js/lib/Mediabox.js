@@ -935,7 +935,7 @@ if (window.jQuery === "undefined") {
             }
 
             if (bh > fh) {
-                bw = ratio * (fh - 16);
+                bw = ratio * (fh - 16) - 32;
                 $('.wf-mediabox-body').css('max-width', bw);
             }
 

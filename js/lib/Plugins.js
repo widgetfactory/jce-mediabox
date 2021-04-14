@@ -572,6 +572,8 @@
                 // append html to created parent
                 $parent.append(html);
 
+                var uri = parseURL(this.src);
+
                 if (uri.anchor) {
                     var elm = $parent.find('#' + uri.anchor).get(0);
 

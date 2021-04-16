@@ -1181,6 +1181,10 @@ if (window.jQuery === "undefined") {
                 // add focus to close button
                 $('.wf-mediabox-close').addClass('wf-mediabox-focus');
             }
+
+            if (popup.params.css) {
+                $('.wf-mediabox-body').addClass(popup.params.css);
+            }
         },
         /**
          * Change the popup

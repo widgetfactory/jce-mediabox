@@ -575,7 +575,10 @@ if (window.jQuery === "undefined") {
                 });
             });
 
-            self.auto();
+            // trigger auto if there is no existing popup
+            if ($('.wf-mediabox').length === 0) {
+                self.auto();
+            }
         },
         /**
          * Public popup method

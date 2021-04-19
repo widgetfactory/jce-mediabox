@@ -569,6 +569,11 @@
                 var n = this, $parent = $(this).parent(),
                     html = this.contentWindow.document.body.innerHTML;
 
+                    // remove iframe
+                window.setTimeout(function () {
+                    $(n).remove();
+                }, 10);
+
                 // append html to created parent
                 $parent.append(html);
 
@@ -581,11 +586,6 @@
                         elm.scrollIntoView();
                     }
                 }
-
-                // remove iframe
-                window.setTimeout(function () {
-                    $(n).remove();
-                }, 10);
 
                 // process anchors
                 $parent.find('a[href^="#"]').on('click', function (e) {

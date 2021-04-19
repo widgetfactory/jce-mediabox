@@ -395,6 +395,10 @@
     height: 100%;
 }
 
+.wf-mediabox-content-ajax iframe {
+    visibility: hidden;
+}
+
 .wf-mediabox-content-image img,
 .wf-mediabox-content-audio audio {
     text-align: center;

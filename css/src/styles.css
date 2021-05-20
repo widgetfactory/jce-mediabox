@@ -42,9 +42,9 @@
     line-height: 2em;
 }
 
-.wf-mediabox-close > svg,
-.wf-mediabox-prev > svg,
-.wf-mediabox-next > svg {
+.wf-mediabox-close>svg,
+.wf-mediabox-prev>svg,
+.wf-mediabox-next>svg {
     fill: #444;
     vertical-align: middle;
 }
@@ -105,12 +105,12 @@
     outline: none;
 }
 
-.wf-mediabox-close:focus > svg,
-.wf-mediabox-prev:focus > svg,
-.wf-mediabox-next:focus > svg,
-.wf-mediabox-close:hover > svg,
-.wf-mediabox-prev:hover > svg,
-.wf-mediabox-next:hover > svg {
+.wf-mediabox-close:focus>svg,
+.wf-mediabox-prev:focus>svg,
+.wf-mediabox-next:focus>svg,
+.wf-mediabox-close:hover>svg,
+.wf-mediabox-prev:hover>svg,
+.wf-mediabox-next:hover>svg {
     fill: #888;
 }
 
@@ -305,3 +305,35 @@
 .wf-mediabox-prev:after, .wf-mediabox-next:after {
     font-size: 1em;
 }*/
+.wf-mediabox-thumbnails {
+    display: flex;
+    max-height: 4rem;
+    align-content: center;
+    justify-content: center;
+    flex-flow: row nowrap;
+    gap: 1%;
+    z-index: 10;
+    margin-top: -4em;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5em;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out 0s;
+    opacity: 0;
+}
+
+.wf-mediabox-container:hover .wf-mediabox-thumbnails {
+    opacity: 1;
+}
+
+.wf-mediabox-thumbnails img {
+    cursor: pointer;
+    object-fit: contain;
+    max-height: 4rem;
+    min-width: 1rem;
+    max-width: 4rem;
+    height: auto;
+}
+
+.wf-mediabox-thumbnails img.active {
+    outline: 1px solid #fff;
+}

@@ -1188,6 +1188,19 @@ if (window.jQuery === "undefined") {
             if (popup.params.css) {
                 $('.wf-mediabox-body').addClass(popup.params.css);
             }
+
+            // thumbnails
+            if (len > 1) {
+                $('.wf-mediabox-thumbnails').empty();
+                
+                $.each(this.items, function(i, item) {
+                    $('<img src="' + item.src + '" class="loading" />').on('click', function() {
+                        return self.queue(i);
+                    }).toggleClass('active', self.index == i).on('load', function() {
+                        $(this).removeClass('loading');
+                    }).appendTo('.wf-mediabox-thumbnails');
+                });
+            }
         },
         /**
          * Change the popup

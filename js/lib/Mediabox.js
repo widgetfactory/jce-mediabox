@@ -88,6 +88,16 @@ if (window.jQuery === "undefined") {
             return null;
         },
 
+        isPrint: function() {
+            var site = document.location.href;
+
+            if (site.indexOf('&print=1') !== -1) {                
+                return true;
+            }
+
+            return false;
+        },
+
         /**
          * Initializes MediaBox. This method will create a MediaBox based on various settings.
          *
@@ -102,6 +112,12 @@ if (window.jQuery === "undefined") {
          */
         init: function (settings) {
             var self = this;
+
+            // in print mode, remove the links so they don't display
+            if (this.isPrint()) {
+                $(this.settings.selector).children().unwrap();
+                return true;
+            }
 
             // extend settings with passed in object
             $.extend(this.settings, settings);

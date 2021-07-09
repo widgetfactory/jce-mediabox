@@ -479,6 +479,16 @@ if (window.jQuery === "undefined") {
             // get supplied elements or from jcepopup class
             this.elements = elements || this.getPopups();
 
+            function imageIsCentered(img) {
+                var elm = $(img).get(0);
+
+                if (elm.style.marginLeft == 'auto' && elm.style.marginRight == 'auto' && elm.style.display == 'block') {
+                    return true;
+                }
+
+                return false;
+            }
+
             // Iterate through all found or specified popup links
             $(this.elements).removeClass('jcelightbox jcebox jcepopup').addClass('wfpopup').each(function (i) {
                 var o = self.process(this);
@@ -534,6 +544,7 @@ if (window.jQuery === "undefined") {
                         }).insertAfter($img);
 
                         var flt = $img.css('float');
+
                         // transfer float
                         if (flt && flt !== "none") {
                             $img.parent().css('float', flt);
@@ -559,6 +570,17 @@ if (window.jQuery === "undefined") {
                             }
                         });
 
+                        if (imageIsCentered($img)) {
+                            // set max-width as image width
+                            styles['max-width'] = $img.width();
+                            // add centered class for margin:auto and display:block
+                            $(this).addClass('wf-mediabox-is-centered');
+
+                            // remove margins
+                            styles['margin-left'] = '';
+                            styles['margin-right'] = '';
+                        }
+
                         // reset image margin, padding and border
                         $img.css({
                             'margin': 0,
@@ -568,6 +590,7 @@ if (window.jQuery === "undefined") {
 
                         // set applied styles to span
                         $img.parent().css(styles);
+
                         // add zoom class
                         $(this).addClass('wf-zoom-image');
                     } else {
@@ -1489,7 +1512,7 @@ if (window.jQuery === "undefined") {
                 $(this).trigger('mediabox:load');
             }
 
-            function itemError() {
+            function itemError(e) {
                 var n = this;
 
                 // remove loader cache

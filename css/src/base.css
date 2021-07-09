@@ -465,6 +465,11 @@ a.wf-mediabox-img {
     display: block;
 }
 
+.wf-mediabox-is-centered {
+    display: block;
+    margin: auto;
+}
+
 .wf-zoom-image-hover .wf-icon-zoom-image {
     visibility: hidden;
 }

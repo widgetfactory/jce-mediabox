@@ -88,10 +88,10 @@ if (window.jQuery === "undefined") {
             return null;
         },
 
-        isPrint: function() {
+        isPrint: function () {
             var site = document.location.href;
 
-            if (site.indexOf('&print=1') !== -1) {                
+            if (site.indexOf('&print=1') !== -1) {
                 return true;
             }
 
@@ -1231,11 +1231,11 @@ if (window.jQuery === "undefined") {
             // thumbnails
             if (len > 1) {
                 $('.wf-mediabox-thumbnails').empty();
-                
-                $.each(this.items, function(i, item) {
-                    $('<img src="' + item.src + '" class="loading" />').on('click', function() {
+
+                $.each(this.items, function (i, item) {
+                    $('<img src="' + item.src + '" class="loading" />').on('click', function () {
                         return self.queue(i);
-                    }).toggleClass('active', self.index == i).on('load', function() {
+                    }).toggleClass('active', self.index == i).on('load', function () {
                         $(this).removeClass('loading');
                     }).appendTo('.wf-mediabox-thumbnails');
                 });
@@ -1502,7 +1502,7 @@ if (window.jQuery === "undefined") {
                 }
 
                 // force autoplay in IE11
-                if (this.nodeName === 'VIDEO' || this.nodeName === 'AUDIO') {                    
+                if (this.nodeName === 'VIDEO' || this.nodeName === 'AUDIO') {
                     if (MediaBox.Env.ie && this.autoplay) {
                         this.play();
                     }

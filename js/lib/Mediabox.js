@@ -161,7 +161,7 @@ if (window.jQuery === "undefined") {
         getPopups: function (s, p) {
             var selector = s || this.settings.selector;
 
-            return $(selector, p);
+            return $(selector, p).filter('a[href], area[href]');
         },
 
         /**

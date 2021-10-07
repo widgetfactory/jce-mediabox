@@ -544,7 +544,14 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />');
+            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('load', function () {
+                var self = this;
+                // small timeout then reset src to reset sizing
+                setTimeout(function() {
+                    self.src = data.src;
+                }, 10);
+                
+            });
         };
 
         this.is = function (data) {

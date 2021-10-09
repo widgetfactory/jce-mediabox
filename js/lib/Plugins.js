@@ -544,13 +544,19 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('load', function () {
+            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('mediabox:load', function () {
                 var self = this;
+
+                if (WfMediabox.Env.gecko) {
+                    return;
+                }
+
                 // small timeout then reset src to reset sizing
+                self.src = ''; 
+
                 setTimeout(function() {
-                    self.src = data.src;
-                }, 10);
-                
+                    self.src = data.src; 
+                }, 0);
             });
         };
 

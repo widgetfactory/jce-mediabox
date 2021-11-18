@@ -321,7 +321,7 @@
      * @param {String} v URL
      */
     WfMediabox.Plugin.add('youtube', function () {
-        var self = this;
+        var self = this, props = ['autoplay', 'cc_lang_pref', 'cc_load_policy', 'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy', 'list', 'listType', 'loop', 'modestbranding', 'origin', 'playlist', 'playsinline', 'rel', 'start', 'widget_referrer'];
 
         this.is = function (data) {
             return /youtu(\.)?be([^\/]+)?\/(.+)/.test(data.src);
@@ -370,9 +370,12 @@
                 $.each(data.params, function (key, value) {
                     if (key.indexOf('youtube-') !== -1) {
                         key = key.replace('youtube-', '');
+                    }
+
+                    if ($.inArray(props, key) != -1) {
                         params[key] = value;
 
-                        if (!!value) {
+                        if (key == 'autoplay' && !!value) {
                             allow.push(key);
                         }
                     }
@@ -408,12 +411,17 @@
         };
 
         function processURL(s) {
-            s = s.replace(/(player[\/\.])?vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/, function (a, b, c, d, e) {
-                if (b) {
-                    return a;
-                }
-                return 'player.vimeo.com/video/' + e;
-            });
+            if (s.indexOf('player.vimeo.com/video/') == -1) {
+                s = s.replace(/vimeo\.com\/(?:\w+\/){0,3}((?:[0-9]+\b)(?:\/[a-z0-9]+)?)/, function (match, value) {
+                    var hash = '', params = value.split('/'), id = params[0];
+                    
+                    if (params.length == 2) {
+                        hash = params[1];
+                    }
+
+                    return 'player.vimeo.com/video/' + id + (hash ? '?h=' + hash : '');
+                });
+            }
 
             // force ssl
             s = s.replace(/^http:\/\//, 'https://');
@@ -552,10 +560,10 @@
                 }
 
                 // small timeout then reset src to reset sizing
-                self.src = ''; 
+                self.src = '';
 
-                setTimeout(function() {
-                    self.src = data.src; 
+                setTimeout(function () {
+                    self.src = data.src;
                 }, 0);
             });
         };
@@ -582,7 +590,7 @@
                 var n = this, $parent = $(this).parent(),
                     html = this.contentWindow.document.body.innerHTML;
 
-                    // remove iframe
+                // remove iframe
                 window.setTimeout(function () {
                     $(n).remove();
                 }, 10);

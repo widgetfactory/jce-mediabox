@@ -977,33 +977,15 @@ if (window.jQuery === "undefined") {
             }
 
             if (bh > fh) {
-                bw = ratio * (fh - 16) - 32;
-                $('.wf-mediabox-body').css('max-width', bw);
-            }
+                //bw = ratio * (fh - 16) - 32;
 
-            /*while(bh > fh) {
-                bw = Math.max(260, bw - 16);
-                bh = ratio * bw;
-            }
-            
-            // set the body width
-            $('.wf-mediabox-body').css('max-width', bw);
-
-            var bh = $('.wf-mediabox-body').height();
-
-            while (bh > fh) {
-                bw = Math.max(355, bw - 16);
-
-                if (bw < dim.width / 2) {
-                    break;
+                while(bh > fh) {
+                    bw = Math.max(260, bw - 16);
+                    bh = ratio * bw;
                 }
-                
-                // set the body width
-                $('.wf-mediabox-body').css('max-width', Math.floor(bw));
 
-                // ... and update the resultant height value
-                bh = $('.wf-mediabox-body').height();
-            }*/
+                $('.wf-mediabox-body').css('max-width', bw - 16);
+            }
         },
 
         /**

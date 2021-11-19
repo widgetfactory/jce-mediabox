@@ -969,14 +969,14 @@ if (window.jQuery === "undefined") {
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            // find ratio
-            if (fw > fh) {
-                ratio = (bw / bh).toFixed(1);
-            } else {
-                ratio = (bh / bw).toFixed(1);
-            }
-
             if (bh > fh) {
+                // find ratio
+                if (bw > bh) {
+                    ratio = (bw / bh).toFixed(1);
+                } else {
+                    ratio = (bh / bw).toFixed(1);
+                }
+
                 //bw = ratio * (fh - 16) - 32;
 
                 while(bh > fh) {

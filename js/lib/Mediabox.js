@@ -969,22 +969,33 @@ if (window.jQuery === "undefined") {
             // get the resultant height
             var bh = $('.wf-mediabox-body').height();
 
-            if (bh > fh) {
-                // find ratio
-                if (bw > bh) {
-                    ratio = (bw / bh).toFixed(1);
-                } else {
-                    ratio = (bh / bw).toFixed(1);
+            // find ratio
+            if (fw > fh) {
+                ratio = (bw / bh).toFixed(1);
+
+                if (bh > fh) {
+                    bw = ratio * (fh - 16) - 32;
+                    $('.wf-mediabox-body').css('max-width', bw);
                 }
 
-                //bw = ratio * (fh - 16) - 32;
+            } else {
+                ratio = (bh / bw).toFixed(1);
 
-                while(bh > fh) {
-                    bw = Math.max(260, bw - 16);
-                    bh = ratio * bw;
+                if (bh > fh) {
+                    // find ratio
+                    if (bw > bh) {
+                        ratio = (bw / bh).toFixed(1);
+                    } else {
+                        ratio = (bh / bw).toFixed(1);
+                    }
+
+                    while (bh > fh) {
+                        bw = Math.max(260, bw - 16);
+                        bh = ratio * bw;
+                    }
+
+                    $('.wf-mediabox-body').css('max-width', bw - 16);
                 }
-
-                $('.wf-mediabox-body').css('max-width', bw - 16);
             }
         },
 

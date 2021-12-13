@@ -639,6 +639,8 @@ if (window.jQuery === "undefined") {
                     'type': type,
                     'params': params || {}
                 });
+
+                this.popups.push(o);
             }
 
             // process as an element
@@ -673,7 +675,7 @@ if (window.jQuery === "undefined") {
                 len;
 
             // build popup window
-            if (this.build()) {
+            if (this.build()) {                
                 if (p.group) {
                     $.each(this.popups, function (x, o) {
                         if (o.group === p.group) {

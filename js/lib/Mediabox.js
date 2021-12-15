@@ -629,7 +629,7 @@ if (window.jQuery === "undefined") {
          */
         open: function (data, title, group, type, params) {
             var i, x = 0,
-                o = {};
+                o = {}, found = false;
 
             if (typeof data === "string") {
                 $.extend(o, {
@@ -640,7 +640,15 @@ if (window.jQuery === "undefined") {
                     'params': params || {}
                 });
 
-                this.popups.push(o);
+                $.each(this.popups, function(i, obj) {
+                    if (obj.src == o.src) {
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    this.popups.push(o);
+                }
             }
 
             // process as an element

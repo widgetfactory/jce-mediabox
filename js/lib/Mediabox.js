@@ -640,6 +640,16 @@ if (window.jQuery === "undefined") {
                     'params': params || {}
                 });
 
+                // pass through width if set
+                if (o.params.width) {
+                    o.width = o.params.width;
+                }
+                
+                // pass through height if set
+                if (o.params.height) {
+                    o.height = o.params.height;
+                }
+
                 $.each(this.popups, function(i, obj) {
                     if (obj.src == o.src) {
                         found = true;

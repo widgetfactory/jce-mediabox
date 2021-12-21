@@ -25,7 +25,7 @@
                     $.each(s.split(';'), function(i, item) {
                         var matches = item.match(/([\w]+)\[([^\]]+)\]/);
 
-                        if (matches.length == 3) {
+                        if (matches && matches.length == 3) {
                             items.push('"' + matches[1] + '":"' + matches[2] + '"');
                         }
                     });                   

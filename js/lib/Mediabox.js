@@ -608,7 +608,9 @@ if (window.jQuery === "undefined") {
                     o.src = this.getAttribute('href');
 
                     // set as lightbox activator
-                    self.activator = this;
+                    if (!o.params.skipfocus) {
+                        self.activator = this;
+                    }
 
                     return self.start(o, i);
                 });

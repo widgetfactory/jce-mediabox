@@ -608,6 +608,10 @@ a.wf-mediabox-img {
     pointer-events: none;
 }
 
+area .wf-icon-zoom-link {
+    display: none;
+}
+
 .wf-icon-zoom-link:before {
     padding: 0 0 0 5px;
     vertical-align: middle;

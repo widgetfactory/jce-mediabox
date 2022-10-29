@@ -1006,13 +1006,13 @@ if (window.jQuery === "undefined") {
                 if (bh > fh) {
                     // find ratio
                     if (bw > bh) {
-                        ratio = (bw / bh).toFixed(1);
-                    } else {
                         ratio = (bh / bw).toFixed(1);
+                    } else {
+                        ratio = (bw / bh).toFixed(1);
                     }
 
-                    while (bh > fh) {
-                        bw = Math.max(260, bw - 16);
+                    while (bh > fh) {                        
+                        bw = Math.max(260, bw);
                         bh = ratio * bw;
                     }
 

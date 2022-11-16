@@ -52,10 +52,15 @@ class plgSystemJCEMediabox extends JPlugin
 
     private function getAssetPath($relative)
     {
+        $hash = '';
+        
         $path = __DIR__ . '/' . $relative;
-        $hash = md5_file($path);
 
-        return JURI::base(true) . '/plugins/system/jcemediabox/' . $relative . '?' . $hash;
+        if (is_file($path)) {
+            $hash = '?' . md5_file($path);
+        }
+
+        return JURI::base(true) . '/plugins/system/jcemediabox/' . $relative . $hash;
     }
 
     /**

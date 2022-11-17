@@ -2,7 +2,7 @@
 
 /**
  * @package JCE MediaBox
- * @copyright Copyright (C) 2006-2017 Ryan Demmer. All rights reserved.
+ * @copyright @@copyright@@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL 3, see LICENCE
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -31,6 +31,8 @@ jimport('joomla.plugin.plugin');
  */
 class plgSystemJCEMediabox extends JPlugin
 {
+    protected $version = '@@version@@';
+    
     /**
      * Create a list of translated labels for popup window
      * @return Key : Value labels string
@@ -52,13 +54,7 @@ class plgSystemJCEMediabox extends JPlugin
 
     private function getAssetPath($relative)
     {
-        $hash = '';
-        
-        $path = __DIR__ . '/' . $relative;
-
-        if (is_file($path)) {
-            $hash = '?' . md5_file($path);
-        }
+        $hash = '?' . md5($this->version);
 
         return JURI::base(true) . '/plugins/system/jcemediabox/' . $relative . $hash;
     }

@@ -39,7 +39,7 @@ if (window.jQuery === "undefined") {
         util: {},
         // default settings object
         settings: {
-            selector: '.jcepopup, .wfpopup, [data-mediabox]',
+            selector: '.jcepopup,.wfpopup,[data-mediabox],.jcebox',
             labels: {
                 "close": "Close",
                 "next": "Next",

@@ -329,7 +329,7 @@
 
         function processURL(v) {
             v = v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
-                d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
+                d = d.replace(/(watch\?v=|v\/|embed\/|live\/)/, '');
 
                 if (b && !c) {
                     c = '.com';

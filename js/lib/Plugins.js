@@ -377,6 +377,9 @@
 
                         if (key == 'autoplay' && !!value) {
                             allow.push(key);
+
+                            // add mute
+                            params.mute = 1;
                         }
                     }
                 });

@@ -163,6 +163,7 @@ class plgSystemJCEMediabox extends JPlugin
             'close' => (int) $params->get('close', 2),
             'scrolling' => (string) $params->get('scrolling', 'fixed'),
             'labels' => $this->getLabels(),
+            'swipe' => (bool) $params->get('swipe', 1)
         );
 
         if ($this->params->get('jquery', 1)) {

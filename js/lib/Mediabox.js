@@ -646,13 +646,13 @@ if (window.jQuery === "undefined") {
                 if (o.params.width) {
                     o.width = o.params.width;
                 }
-                
+
                 // pass through height if set
                 if (o.params.height) {
                     o.height = o.params.height;
                 }
 
-                $.each(this.popups, function(i, obj) {
+                $.each(this.popups, function (i, obj) {
                     if (obj.src == o.src) {
                         found = true;
                     }
@@ -695,7 +695,7 @@ if (window.jQuery === "undefined") {
                 len;
 
             // build popup window
-            if (this.build()) {                
+            if (this.build()) {
                 if (p.group) {
                     $.each(this.popups, function (x, o) {
                         if (o.group === p.group) {
@@ -866,48 +866,49 @@ if (window.jQuery === "undefined") {
                     self.addListener(e);
                 });
 
-                var xDown, yDown;
+                if (s.swipe !== false) {
+                    var xDown, yDown;
 
-                // touch events
-                $('.wf-mediabox-body').on('touchstart', function (e) {
-                    // single finger swipe only
-                    if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
-                        return;
-                    }
-
-                    xDown = e.originalEvent.touches[0].clientX;
-                    yDown = e.originalEvent.touches[0].clientY;
-
-                }).on('touchmove', function (e) {
-                    if (!xDown || !yDown) {
-                        return;
-                    }
-                    // single finger swipe only
-                    if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
-                        return;
-                    }
-
-                    var xUp = e.originalEvent.touches[0].clientX;
-                    var yUp = e.originalEvent.touches[0].clientY;
-
-                    var xDiff = xDown - xUp;
-                    var yDiff = yDown - yUp;
-
-                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                        /*most significant*/
-                        if (xDiff > 0) {
-                            self.nextItem();
-                        } else {
-                            self.previousItem();
+                    // touch events
+                    $('.wf-mediabox-body').on('touchstart', function (e) {
+                        // single finger swipe only
+                        if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
+                            return;
                         }
 
-                        e.preventDefault();
-                    }
-                    /* reset values */
-                    xDown = null;
-                    yDown = null;
-                });
+                        xDown = e.originalEvent.touches[0].clientX;
+                        yDown = e.originalEvent.touches[0].clientY;
 
+                    }).on('touchmove', function (e) {
+                        if (!xDown || !yDown) {
+                            return;
+                        }
+                        // single finger swipe only
+                        if (e.originalEvent.touches.length !== 1 || self.items.length === 1) {
+                            return;
+                        }
+
+                        var xUp = e.originalEvent.touches[0].clientX;
+                        var yUp = e.originalEvent.touches[0].clientY;
+
+                        var xDiff = xDown - xUp;
+                        var yDiff = yDown - yUp;
+
+                        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                            /*most significant*/
+                            if (xDiff > 0) {
+                                self.nextItem();
+                            } else {
+                                self.previousItem();
+                            }
+
+                            e.preventDefault();
+                        }
+                        /* reset values */
+                        xDown = null;
+                        yDown = null;
+                    });
+                }
             } else {
                 $(document).off('keydown.wf-mediabox');
 
@@ -1011,7 +1012,7 @@ if (window.jQuery === "undefined") {
                         ratio = (bw / bh).toFixed(1);
                     }
 
-                    while (bh > fh) {                        
+                    while (bh > fh) {
                         bw = Math.max(260, bw);
                         bh = ratio * bw;
                     }

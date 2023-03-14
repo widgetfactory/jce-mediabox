@@ -44,6 +44,11 @@
                     <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_SCROLL</option>
                 </field>
 
+                <field name="swipe" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SWIPE" description="PLG_SYSTEM_JCEMEDIABOX_SWIPE_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
                 <field name="icons" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_ICONS" description="PLG_SYSTEM_JCEMEDIABOX_ICONS_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

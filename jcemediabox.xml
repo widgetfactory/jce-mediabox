@@ -99,6 +99,6 @@
     </languages>
 
     <updateservers>
-        <server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/mediabox/plg_system_jcemediabox2.xml]]></server>
+        <server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/mediabox/plg_system_jcemediabox.xml]]></server>
     </updateservers>
 </extension>

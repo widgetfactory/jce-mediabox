@@ -42,10 +42,6 @@ extract($displayData);
  * @var   array    $options         Options available for this field.
  */
 
-// Including fallback code for HTML5 non supported browsers.
-JHtml::_('jquery.framework');
-JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
-
 /**
  * The format of the input tag to be filled in using sprintf.
  *     %1 - id
@@ -78,8 +74,8 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 
 			// In case there is no stored value, use the option's default state.
 			$checked        = (!$hasValue && $option->checked) ? 'checked' : $checked;
-			$optionClass    = !empty($option->class) ? 'class="' . $option->class . '"' : '';
-			$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
+            $optionClass    = !empty($option->class) ? 'class="form-check-input ' . $option->class . '"' : ' class="form-check-input"';
+            $optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
 
 			// Initialize some JavaScript option attributes.
 			$onclick  = !empty($option->onclick) ? 'onclick="' . $option->onclick . '"' : '';
@@ -89,12 +85,13 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 			$value      = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
 			$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
 		?>
-		<dd>
-		<label for="<?php echo $oid; ?>" class="checkbox">
-			<?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
-		<?php echo $option->text; ?></label>
-		<?php endforeach; ?>
+		<dd class="form-check"
+			<label for="<?php echo $oid; ?>" class="form-check-label">
+				<?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
+				<?php echo $option->text; ?>
+			</label>
 		</dd>
+		<?php endforeach; ?>
 	<?php endforeach; ?>
 
 	</dl>

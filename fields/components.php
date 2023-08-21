@@ -7,9 +7,13 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
+
+namespace Joomla\CMS\Form\Field;
+
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 /**
  * Form Field class for the Joomla Framework.
@@ -18,7 +22,7 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Form
  * @since       11.4
  */
-class JFormFieldComponents extends JFormFieldList {
+class ComponentsField extends ListField {
 
     /**
      * The field type.
@@ -36,7 +40,7 @@ class JFormFieldComponents extends JFormFieldList {
      * @since   11.4
      */
     protected function getOptions() {
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
         
         $exclude = array(
             'com_admin',
@@ -66,7 +70,7 @@ class JFormFieldComponents extends JFormFieldList {
         );
         
         // Get list of plugins
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $query = $db->getQuery(true)
                 ->select('element AS value, name AS text')
                 ->from('#__extensions')
@@ -85,7 +89,7 @@ class JFormFieldComponents extends JFormFieldList {
                 // load system language file
                 $language->load($components[$i]->value . '.sys', JPATH_ADMINISTRATOR);
                 // translate name
-                $components[$i]->text = JText::_($components[$i]->text, true);
+                $components[$i]->text = Text::_($components[$i]->text, true);
                 
                 $components[$i]->disable = "";
                 

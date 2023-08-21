@@ -7,9 +7,10 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
-defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('menuitem');
+namespace Joomla\CMS\Form\Field;
+
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Form Field class for the Joomla Framework.
@@ -18,7 +19,7 @@ JFormHelper::loadFieldClass('menuitem');
  * @subpackage  Form
  * @since       11.4
  */
-class JFormFieldMenuItemCheckList extends JFormFieldMenuItem {
+class MenuItemCheckListField extends MenuitemField {
 
     /**
      * The field type.

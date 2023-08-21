@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="plugin" group="system" method="upgrade">
+<extension version="3.6" type="plugin" group="system" method="upgrade">
     <name>plg_system_jcemediabox</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
@@ -11,6 +11,8 @@
     <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
 
     <config>
+        <inlinehelp button="show"/>
+        
         <fields name="params">
             <fieldset name="options" group="options" addfieldpath="/plugins/system/jcemediabox/fields">
                 <field name="theme" type="list" default="standard" label="PLG_SYSTEM_JCEMEDIABOX_THEME" description="PLG_SYSTEM_JCEMEDIABOX_THEME_DESC">
@@ -56,9 +58,9 @@
 
                 <field name="components" type="components" multiple="true" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" layout="joomla.form.field.list-fancy-select" />
 
-                <field name="menu" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" />
+                <field name="menu" type="menuitemchecklist" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" />
 
-                <field name="menu_exclude" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" />
+                <field name="menu_exclude" type="menuitemchecklist" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" />
 
                 <field name="dynamic_themes" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES" description="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>

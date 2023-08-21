@@ -777,7 +777,7 @@ if (window.jQuery === "undefined") {
 
                 // Add close function to frame on click
                 if (s.close === 2) {
-                    $('.wf-mediabox-frame').on('click', function (e) {
+                    $('.wf-mediabox-frame').on('click', function (e) {                        
                         if (e.target && e.target === this) {
                             self.close();
                         }
@@ -1454,6 +1454,16 @@ if (window.jQuery === "undefined") {
                     popup.width = cw;
                     // store height
                     popup.height = ch;
+
+                    $(this).on('click', function () {
+                        if ($('.wf-mediabox-frame').hasClass('wf-mediabox-fullscreen')) {
+                            self.updateBodyWidth(popup);
+                        } else {
+                            $('.wf-mediabox-body').css('max-width', this.naturalWidth + 'px');
+                        }
+                        
+                        $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
+                    });
                 } else {
                     if (this.nodeName === "VIDEO") {
                         cw = cw || this.videoWidth || 0;

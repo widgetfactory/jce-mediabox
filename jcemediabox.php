@@ -21,7 +21,12 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.plugin.plugin');
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE MediaBox Plugin
@@ -29,7 +34,7 @@ jimport('joomla.plugin.plugin');
  * @package         JCE MediaBox
  * @subpackage    System
  */
-class plgSystemJCEMediabox extends JPlugin
+class plgSystemJCEMediabox extends CMSPlugin
 {
     protected $version = '@@version@@';
     
@@ -39,14 +44,14 @@ class plgSystemJCEMediabox extends JPlugin
      */
     protected function getLabels()
     {
-        JPlugin::loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
+        $this->loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers', 'numbers_count', 'download');
 
         $v = array();
 
         foreach ($words as $word) {
-            $v[$word] = htmlspecialchars(JText::_('PLG_SYSTEM_JCEMEDIABOX_LABEL_' . strtoupper($word)));
+            $v[$word] = htmlspecialchars(Text::_('PLG_SYSTEM_JCEMEDIABOX_LABEL_' . strtoupper($word)));
         }
 
         return $v;
@@ -56,7 +61,7 @@ class plgSystemJCEMediabox extends JPlugin
     {
         $hash = '?' . md5($this->version);
 
-        return JURI::base(true) . '/plugins/system/jcemediabox/' . $relative . $hash;
+        return Uri::base(true) . '/plugins/system/jcemediabox/' . $relative . $hash;
     }
 
     /**
@@ -65,14 +70,14 @@ class plgSystemJCEMediabox extends JPlugin
      */
     public function onAfterDispatch()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // only in "site"
         if ($app->getClientId() !== 0) {
             return;
         }
 
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
         $docType = $document->getType();
 
         // only in html pages
@@ -80,7 +85,7 @@ class plgSystemJCEMediabox extends JPlugin
             return;
         }
 
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         // Causes issue in Safari??
         $pop = $app->input->getInt('pop');
@@ -147,7 +152,7 @@ class plgSystemJCEMediabox extends JPlugin
         }
 
         $config = array(
-            'base' => JURI::base(true) . '/',
+            'base' => Uri::base(true) . '/',
             'theme' => $theme,
             //'mediafallback' => (int) $params->get('mediafallback', 0),
             //'mediaselector' => $params->get('mediaselector', 'audio,video'),
@@ -168,15 +173,13 @@ class plgSystemJCEMediabox extends JPlugin
 
         if ($this->params->get('jquery', 1)) {
             // Include jQuery
-            JHtml::_('jquery.framework');
+            HTMLHelper::_('jquery.framework');
         }
 
         $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
         $document->addScriptDeclaration('jQuery(document).ready(function(){WfMediabox.init(' . json_encode($config) . ');});');
-
-        return true;
     }
 
     public function onExtensionAfterInstall($installer, $eid)
@@ -193,14 +196,12 @@ class plgSystemJCEMediabox extends JPlugin
                 return;
             }
 
-            jimport('joomla.filesystem.folder');
-
             // cleanup legacy folders
             $folders = array('fonts', 'mediaplayer');
 
             foreach ($folders as $folder) {
                 if (is_dir($path . '/' . $folder)) {
-                    @JFolder::delete($path . '/' . $folder);
+                    @Folder::delete($path . '/' . $folder);
                 }
             }
         }

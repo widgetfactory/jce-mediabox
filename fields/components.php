@@ -22,7 +22,7 @@ use Joomla\CMS\Language\Text;
  * @subpackage  Form
  * @since       11.4
  */
-class ComponentsField extends ListField {
+class ComponentsField extends \JFormFieldList {
 
     /**
      * The field type.

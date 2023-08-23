@@ -46,7 +46,7 @@
                     <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_SCROLL</option>
                 </field>
 
-                <field name="swipe" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SWIPE" description="PLG_SYSTEM_JCEMEDIABOX_SWIPE_DESC" class="btn-group btn-group-yesno">
+                <field name="swipe" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_SWIPE" description="PLG_SYSTEM_JCEMEDIABOX_SWIPE_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
@@ -93,12 +93,9 @@
         <folder>fields</folder>
         <folder>img</folder>
         <folder>js</folder>
+        <folder>layouts</folder>
+        <folder>language</folder>
     </files>
-
-    <languages folder="plugins/system/jcemediabox/language/en-GB">
-        <language tag="en-GB">en-GB.plg_system_jcemediabox.ini</language>
-        <language tag="en-GB">en-GB.plg_system_jcemediabox.sys.ini</language>
-    </languages>
 
     <updateservers>
         <server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/mediabox/plg_system_jcemediabox.xml]]></server>

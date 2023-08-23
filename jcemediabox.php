@@ -26,6 +26,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
 
@@ -203,6 +204,18 @@ class plgSystemJCEMediabox extends CMSPlugin
             foreach ($folders as $folder) {
                 if (is_dir($path . '/' . $folder)) {
                     @Folder::delete($path . '/' . $folder);
+                }
+            }
+
+            // delete old language files
+            $languages = array(
+                'administrator/language/en-GB/en-GB.plg_system_jcemediabox.ini',
+                'administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini'
+            );
+
+            foreach ($languages as $file) {
+                if (is_file(JPATH_SITE . '/' . $file)) {
+                    @File::delete(JPATH_SITE . '/' . $file);
                 }
             }
         }

@@ -198,12 +198,20 @@ class plgSystemJCEMediabox extends CMSPlugin
                 return;
             }
 
-            // cleanup legacy folders
-            $folders = array('fonts', 'mediaplayer');
+            // cleanup folders
+            $folders = array('fonts', 'mediaplayer', 'layouts');
 
             foreach ($folders as $folder) {
                 if (is_dir($path . '/' . $folder)) {
                     @Folder::delete($path . '/' . $folder);
+                }
+            }
+
+            $files = array('fields/menuitemchecklist.php');
+
+            foreach ($files as $file) {
+                if (is_file($path . '/' . $file)) {
+                    @File::delete($path . '/' . $file);
                 }
             }
 

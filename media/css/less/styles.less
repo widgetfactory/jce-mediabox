@@ -1,0 +1,259 @@
+.wf-mediabox-frame {
+    padding: 0.5em;
+}
+
+.wf-mediabox-container {
+    background-color: #fff;
+    border-radius: 0.25em;
+    padding: 0.5em;
+}
+
+.wf-mediabox-body:after {
+    border-radius: 0.25em;
+}
+
+.wf-mediabox-info-bottom {
+    padding: 0.5em 0 0;
+}
+
+.wf-mediabox-nav {
+    background-color: #ffffff;
+    padding: 1em;
+}
+
+.wf-mediabox-close,
+.wf-mediabox-prev,
+.wf-mediabox-next {
+    /*background-color: #444;
+    border-radius: 100%;*/
+    display: block;
+    height: 2em;
+    left: auto;
+    position: absolute;
+    width: 2em;
+    z-index: 1;
+    color: #444;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 2em;
+
+    >svg {
+        fill: #444;
+        vertical-align: middle;
+    }
+
+    &:after {
+        font-size: 1.5em;
+    }
+
+    &:before {
+        line-height: inherit;
+    }
+
+    &:focus,
+    &:hover {
+        color: #888;
+        text-decoration: none;
+        outline: none;
+
+        >svg {
+            fill: #888;
+        }
+    }
+}
+
+.wf-mediabox-close {
+    top: 0;
+    right: 0;
+}
+
+.wf-mediabox-prev {
+    left: 0;
+    top: 2em;
+}
+
+.wf-mediabox-next {
+    right: 0;
+    top: 2em;
+    left: auto;
+}
+
+.wf-mediabox-numbers {
+    text-align: center;
+    display: block;
+    line-height: 2em;
+    top: 1em;
+
+    ol {
+        text-align: center;
+    }
+
+    button {
+        border: none;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+        font-size: 14px !important;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+            font-weight: bold;
+            text-decoration: none;
+            color: inherit;
+            background-color: transparent;
+            background-image: none;
+        }
+
+        &.active {
+            cursor: default;
+            background: #444;
+            color: #fff;
+            font-weight: bold;
+            border: 6px solid #fff;
+        }
+
+        &:focus {
+            background-color: #444;
+            color: #fff;
+        }
+    }
+}
+
+.wf-mediabox-caption {
+    padding: 0.5em 0 0.25em 0;
+    background-color: #ffffff;
+
+    :empty {
+        display: none;
+    }
+
+    h4 {
+        font-size: 1.2em;
+        line-height: 1.2;
+    }
+
+    h4,
+    p {
+        a {
+            color: #444;
+            font-weight: bold;
+            text-decoration: none;
+
+            &:visited,
+            &:hover {
+                color: #444;
+                font-weight: bold;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.wf-mediabox-numbers {
+    >ol {
+        li {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 2em;
+            height: 2em;
+            vertical-align: middle;
+            line-height: 1.75;
+        }
+    }
+}
+
+.wf-mediabox-content {
+    a[download] {
+        padding: 0.5em 0;
+        display: block;
+        text-align: right;
+        text-decoration: none;
+        color: #444;
+
+        &:active,
+        &:visited {
+            text-decoration: none;
+            color: #444;
+        }
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.wf-mediabox-broken-image  {
+    img {
+        display: none;
+    }
+
+    .wf-mediabox-content-image {
+        &:before {
+            position: absolute;
+            font-size: 100px;
+            height: auto;
+            width: 100%;
+            text-align: center;
+            left: 0;
+            top: 50%;
+            margin-top: -50px;
+            opacity: 0.5;
+        }
+    }
+
+    .wf-icon-404 {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    
+        display: flex;
+        align-content: center;
+        text-align: center;
+
+        &:after {
+            font-size: 5em;
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            line-height: 1.75;
+        }
+    }
+}
+
+.wf-mediabox-thumbnails {
+    display: flex;
+    max-height: 4rem;
+    align-content: center;
+    justify-content: center;
+    flex-flow: row nowrap;
+    gap: 1%;
+    z-index: 10;
+    margin-top: -4em;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5em;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out 0s;
+    opacity: 0;
+
+    img {
+        cursor: pointer;
+        object-fit: contain;
+        max-height: 4rem;
+        min-width: 1rem;
+        max-width: 4rem;
+        height: auto;
+
+        .active {
+            outline: 1px solid #fff;
+        }
+    }
+}
+
+.wf-mediabox-container:hover .wf-mediabox-thumbnails {
+    opacity: 1;
+}

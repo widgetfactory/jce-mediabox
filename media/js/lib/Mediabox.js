@@ -1142,7 +1142,7 @@ if (window.jQuery === "undefined") {
                     text = $.trim(parts[1]);
                 }
 
-                if (title) {
+                if (title) {  
                     h += '<h4 id="wf-mediabox-modal-title">' + title + '</h4>';
                     // update aria-labelledby 
                     $('.wf-mediabox').attr('aria-labelledby', 'wf-mediabox-modal-title');

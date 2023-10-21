@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>plg_system_jcemediabox</name>
+    <author>Ryan Demmer</author>
+    <creationDate>@@date@@</creationDate>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
+    <authorEmail>@@email@@</authorEmail>
+    <authorUrl>www.joomlacontenteditor.net</authorUrl>
+    <version>@@version@@</version>
+    <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
+
+    <scriptfile>script.php</scriptfile>
+
+    <config>
+        <inlinehelp button="show"/>
+        
+        <fields name="params">
+            <fieldset name="options" group="options" addfieldpath="/plugins/system/jcemediabox/fields">
+                <field name="theme" type="list" default="standard" label="PLG_SYSTEM_JCEMEDIABOX_THEME" description="PLG_SYSTEM_JCEMEDIABOX_THEME_DESC">
+                    <option value="standard">PLG_SYSTEM_JCEMEDIABOX_THEME_STANDARD</option>
+                    <option value="light">PLG_SYSTEM_JCEMEDIABOX_THEME_LIGHT</option>
+                    <option value="shadow">PLG_SYSTEM_JCEMEDIABOX_THEME_SHADOW</option>
+                    <option value="squeeze">PLG_SYSTEM_JCEMEDIABOX_THEME_SQUEEZE</option>
+                    <!--option value="bootstrap">PLG_SYSTEM_JCEMEDIABOX_THEME_BOOTSTRAP</option>
+                  <option value="uikit">PLG_SYSTEM_JCEMEDIABOX_THEME_UIKIT</option-->
+                </field>
+
+                <field name="transitionspeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED" description="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED_DESC"/>
+
+                <field name="overlay" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAY" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAY_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="overlayopacity" type="number" default="" step="0.1" min="0" max="1" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAYOPACITY" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAYOPACITY_DESC" />
+                <field name="overlaycolor" type="color" default="" class="color" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAYCOLOR" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAYCOLOR_DESC" />
+
+                <field name="width" type="text" default="" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_WIDTH" description="PLG_SYSTEM_JCEMEDIABOX_WIDTH_DESC" />
+                <field name="height" type="text" default="" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_HEIGHT" description="PLG_SYSTEM_JCEMEDIABOX_HEIGHT_DESC" />
+
+                <field name="close" type="list" default="2" label="PLG_SYSTEM_JCEMEDIABOX_CLOSE_ACTION" description="PLG_SYSTEM_JCEMEDIABOX_CLOSE_ACTION_DESC">
+                    <option value="1">PLG_SYSTEM_JCEMEDIABOX_CLOSE_BUTTON</option>
+                    <option value="2">PLG_SYSTEM_JCEMEDIABOX_CLOSE_BUTTON_OVERLAY</option>
+                </field>
+
+                <field name="scrolling" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLING" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLING_DESC">
+                    <option value="fixed">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_FIXED</option>
+                    <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_SCROLL</option>
+                </field>
+
+                <field name="swipe" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_SWIPE" description="PLG_SYSTEM_JCEMEDIABOX_SWIPE_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="icons" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_ICONS" description="PLG_SYSTEM_JCEMEDIABOX_ICONS_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="components" type="components" multiple="true" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" layout="joomla.form.field.list-fancy-select" />
+
+                <field name="menu" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" layout="joomla.form.field.groupedlist-fancy-select" />
+
+                <field name="menu_exclude" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" layout="joomla.form.field.groupedlist-fancy-select" />
+
+                <field name="dynamic_themes" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES" description="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="lightbox" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX" description="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="shadowbox" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SHADOWBOX" description="PLG_SYSTEM_JCEMEDIABOX_SHADOWBOX_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <!--field name="mediafallback" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK" class="btn-group btn-group-yesno" description="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field-->
+
+                <!--field name="mediaselector" type="text" size="50" default="audio,video" label="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR" description="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR_DESC"/-->
+            </fieldset>
+        </fields>
+    </config>
+
+    <files folder="plugins/system/jcemediabox">
+        <file plugin="jcemediabox">jcemediabox.php</file>
+        <folder>language</folder>
+    </files>
+    
+    <media folder="media" destintation="plg_system_jcemediabox">
+    	<folder>css</folder>
+        <folder>fields</folder>
+        <folder>img</folder>
+        <folder>js</folder>
+        <folder>themes</folder>
+    </media>
+
+    <updateservers>
+        <server type="extension" priority="1" name="JCE MediaBox Updates"><![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/mediabox/plg_system_jcemediabox.xml]]></server>
+    </updateservers>
+</extension>

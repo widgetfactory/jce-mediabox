@@ -47,6 +47,7 @@ class plgSystemJCEMediabox extends CMSPlugin
     protected function getLabels()
     {
         $this->loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
+        $this->loadLanguage('plg_system_jcemediabox', __DIR__);
 
         $words = array('close', 'next', 'previous', 'cancel', 'numbers', 'numbers_count', 'download');
 
@@ -63,7 +64,7 @@ class plgSystemJCEMediabox extends CMSPlugin
     {
         $hash = '?' . md5($this->version);
 
-        return Uri::base(true) . '/plugins/system/jcemediabox/' . $relative . $hash;
+        return Uri::base(true) . '/media/plg_system_jcemediabox/' . $relative . $hash;
     }
 
     /**
@@ -182,50 +183,5 @@ class plgSystemJCEMediabox extends CMSPlugin
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
         $document->addScriptDeclaration('jQuery(document).ready(function(){WfMediabox.init(' . json_encode($config) . ');});');
-    }
-
-    public function onExtensionAfterInstall($installer, $eid)
-    {
-        if ($eid) {
-            // extension path
-            $path = $installer->getPath('extension_root');
-
-            // extension name
-            $name = basename($path);
-
-            // bail if not jcemediabox
-            if ($name !== 'jcemediabox') {
-                return;
-            }
-
-            // cleanup folders
-            $folders = array('fonts', 'mediaplayer', 'layouts');
-
-            foreach ($folders as $folder) {
-                if (is_dir($path . '/' . $folder)) {
-                    @Folder::delete($path . '/' . $folder);
-                }
-            }
-
-            $files = array('fields/menuitemchecklist.php');
-
-            foreach ($files as $file) {
-                if (is_file($path . '/' . $file)) {
-                    @File::delete($path . '/' . $file);
-                }
-            }
-
-            // delete old language files
-            $languages = array(
-                'administrator/language/en-GB/en-GB.plg_system_jcemediabox.ini',
-                'administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini'
-            );
-
-            foreach ($languages as $file) {
-                if (is_file(JPATH_SITE . '/' . $file)) {
-                    @File::delete(JPATH_SITE . '/' . $file);
-                }
-            }
-        }
     }
 }

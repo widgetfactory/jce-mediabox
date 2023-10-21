@@ -12,6 +12,12 @@
  *
  */
 (function ($, WfMediabox) {
+    function stripHtml(html) {
+        let tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
+    
     function isBool(attr) {
         var map = ['async', 'checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected', 'autoplay', 'loop', 'controls', 'itemscope', 'playsinline', 'contenteditable', 'spellcheck', 'contextmenu', 'draggable', 'hidden'];
         return $.inArray(attr, map) !== -1;
@@ -513,7 +519,12 @@
 
         // create image html (leave src blank)
         this.html = function (data) {
-            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
+            // get alt value from title or passed in alt variable
+            var alt = decodeURIComponent(data.alt || data.title || "");
+            // remove HTML
+            alt = stripHtml(alt);
+            
+            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + alt + '" tabindex="0" />');
 
             if (data.params) {
                 $.each(data.params, function (name, value) {

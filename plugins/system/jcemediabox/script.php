@@ -48,10 +48,8 @@ class PlgSystemJcemediaboxInstallerScript
         };
 
         foreach ($folders as $folder) {
-            $root = $path . '/' . $folder;
-
-            if (is_dir($path)) {
-                Folder::delete($path);
+            if (is_dir($root . '/' . $folder)) {
+                Folder::delete($root . '/' . $folder);
             }
         }
 

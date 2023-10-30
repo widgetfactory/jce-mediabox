@@ -91,12 +91,12 @@
 
     <files folder="plugins/system/jcemediabox">
         <file plugin="jcemediabox">jcemediabox.php</file>
+        <folder>fields</folder>
         <folder>language</folder>
     </files>
     
-    <media folder="media" destintation="plg_system_jcemediabox">
+    <media folder="media" destination="plg_system_jcemediabox">
     	<folder>css</folder>
-        <folder>fields</folder>
         <folder>img</folder>
         <folder>js</folder>
         <folder>themes</folder>

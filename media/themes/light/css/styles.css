@@ -1,6 +1,4 @@
 /**
- * Light Template
- * @version		$Id: style.css 890 2010-10-15 17:11:16Z happynoodleboy $
  * @package		JCE MediaBox
  * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
  * @license		GNU/GPL
@@ -10,16 +8,9 @@
  * other free or open source software licenses.
  */
 
-.wf-mediabox-theme-light .wf-mediabox-frame {}
-
-.wf-mediabox-theme-light .wf-mediabox-loader {}
-
 .wf-mediabox-theme-light .wf-mediabox-container {
 	border-radius: 0;
 }
-
-.wf-mediabox-theme-light .wf-mediabox-content {}
-
 .wf-mediabox-theme-light .wf-mediabox-close::before {
 	content: "×";
 	font-size: 1.5em;
@@ -46,8 +37,6 @@
 	line-height: 1;
 	top: 0;
 }
-
-.wf-mediabox-theme-light .wf-mediabox-nav {}
 
 .wf-mediabox-theme-light .wf-mediabox-caption:empty+.wf-mediabox-nav {
 	padding: 1.5em 0;

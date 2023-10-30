@@ -1,3 +1,13 @@
+/**
+ * @package		JCE MediaBox
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
 .wf-mediabox-theme-uikit .uk-modal-dialog {
   opacity: 1;
   width: auto;
@@ -42,8 +52,6 @@
   bottom: inherit;
   margin: inherit;
 }
-
-/*.uk-modal-dialog .wf-mediabox-caption:empty {display: none;}*/
 
 .wf-mediabox-theme-uikit .wf-mediabox-content nav {
   position: absolute;

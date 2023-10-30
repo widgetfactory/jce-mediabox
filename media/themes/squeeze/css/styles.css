@@ -1,7 +1,6 @@
 /**
- * Squeeze Template
  * @package		JCE MediaBox
- * @copyright	Copyright (C) 2009 - 2020 Ryan Demmer. All rights reserved.
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
  * @license		GNU/GPL
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -16,14 +15,6 @@
 .wf-mediabox-theme-squeeze .wf-mediabox-container {
 	overflow: inherit;
 }
-
-.wf-mediabox-theme-squeeze .wf-mediabox-info-bottom {}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-loader {}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-nav {}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-caption {}
 
 .wf-mediabox-theme-squeeze .wf-mediabox-close,
 .wf-mediabox-theme-squeeze .wf-mediabox-prev,
@@ -60,12 +51,6 @@
 .wf-mediabox-theme-squeeze .wf-mediabox-prev > svg {
 	fill: #fff;
 }
-
-.wf-mediabox-theme-squeeze .wf-mediabox-prev {}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-next {}
-
-.wf-mediabox-theme-squeeze .wf-mediabox-numbers {}
 
 .wf-mediabox-theme-squeeze .wf-mediabox-numbers button.active {
 	background-color: #000;

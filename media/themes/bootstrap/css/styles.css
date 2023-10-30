@@ -1,3 +1,13 @@
+/**
+ * @package		JCE MediaBox
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
 .wf-mediabox-theme-bootstrap {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -63,9 +73,6 @@
   top: 0;
   background: none;
   padding: 0;
-}
-
-.wf-mediabox-theme-bootstrap .wf-mediabox-nav .carousel-control {
 }
 
 .wf-mediabox-theme-bootstrap .wf-mediabox-prev::after,

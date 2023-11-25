@@ -17,8 +17,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Form\FormHelper;
 
 if (version_compare(JVERSION, '4.0', 'lt')) {
-    FormHelper::loadFieldClass('list');
-    class_alias('JFormFieldList', '\\Joomla\\CMS\\Form\\Field\\ListField');
+    if (!class_exists('\\Joomla\\CMS\\Form\\Field\\ListField')) {
+        FormHelper::loadFieldClass('list');
+        class_alias('JFormFieldList', '\\Joomla\\CMS\\Form\\Field\\ListField');
+    }
 }
 
 /**

@@ -2,7 +2,7 @@
 
 /**
  * @package     JCE MediaBox
- * 
+ *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @copyright   Copyright (C) 2023 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
@@ -13,8 +13,8 @@ namespace Joomla\CMS\Form\Field;
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
 
 if (version_compare(JVERSION, '4.0', 'lt')) {
     if (!class_exists('\\Joomla\\CMS\\Form\\Field\\ListField')) {
@@ -30,8 +30,8 @@ if (version_compare(JVERSION, '4.0', 'lt')) {
  * @subpackage  Form
  * @since       11.4
  */
-class ComponentsField extends ListField {
-
+class ComponentsField extends ListField
+{
     /**
      * The field type.
      *
@@ -43,13 +43,14 @@ class ComponentsField extends ListField {
     /**
      * Method to get a list of options for a list input.
      *
-     * @return	array  An array of JHtml options.
+     * @return    array  An array of JHtml options.
      *
      * @since   11.4
      */
-    protected function getOptions() {
+    protected function getOptions()
+    {
         $language = Factory::getLanguage();
-        
+
         $exclude = array(
             'com_admin',
             'com_cache',
@@ -74,21 +75,21 @@ class ComponentsField extends ListField {
             'com_wrapper',
             'com_search',
             'com_user',
-            'com_updates'
+            'com_updates',
         );
-        
+
         // Get list of plugins
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-                ->select('element AS value, name AS text')
-                ->from('#__extensions')
-                ->where('type = ' . $db->quote('component'))
-                ->where('enabled = 1')
-                ->order('ordering, name');
+            ->select('element AS value, name AS text')
+            ->from('#__extensions')
+            ->where('type = ' . $db->quote('component'))
+            ->where('enabled = 1')
+            ->order('ordering, name');
         $db->setQuery($query);
 
         $components = $db->loadObjectList();
-        
+
         $options = array();
 
         // load component languages
@@ -98,9 +99,9 @@ class ComponentsField extends ListField {
                 $language->load($components[$i]->value . '.sys', JPATH_ADMINISTRATOR);
                 // translate name
                 $components[$i]->text = Text::_($components[$i]->text, true);
-                
+
                 $components[$i]->disable = "";
-                
+
                 $options[] = $components[$i];
             }
         }
@@ -108,5 +109,4 @@ class ComponentsField extends ListField {
         // Merge any additional options in the XML definition.
         return array_merge(parent::getOptions(), $options);
     }
-
 }

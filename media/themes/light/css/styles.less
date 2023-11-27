@@ -1,0 +1,153 @@
+// out: styles.css, sourcemap: false, compress: false
+
+/**
+ * @package		JCE MediaBox
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.wf-mediabox-theme-light {
+    .wf-mediabox-container {
+        border-radius: 0;
+    }
+
+    .wf-mediabox-close {
+        border: medium none;
+        color: #666;
+        display: block;
+        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: 1em;
+        left: auto;
+        min-height: 2em;
+        position: absolute;
+        right: 0;
+        text-transform: uppercase;
+        z-index: 1;
+        background-color: transparent;
+        width: auto;
+        line-height: 1;
+        top: 0;
+
+        &::before {
+            content: "×";
+            font-size: 1.5em;
+            font-weight: bold;
+            vertical-align: middle;
+            display: inline-block;
+            margin-bottom: 0.25em;
+        }
+
+        &:hover,
+        &:visited,
+        &:focus {
+            text-decoration: none;
+            color: inherit;
+            outline: none;
+            background-color: transparent;
+        }
+    }
+
+    .wf-mediabox-caption {
+        &:empty+.wf-mediabox-nav {
+            padding: 1.5em 0;
+        }
+
+        &+.wf-mediabox-nav>* {
+            top: 1em;
+        }
+
+        margin: 0;
+
+        h4,
+        p {
+            color: #666666;
+
+            a {
+                color: #666666;
+                font-weight: bold;
+                text-decoration: none;
+
+                &:active,
+                &:hover,
+                &:visited {
+                    color: #666666;
+                }
+            }
+        }
+    }
+
+    .wf-mediabox-prev,
+    .wf-mediabox-next {
+        width: 25%;
+        height: 100%;
+        background-color: transparent;
+        z-index: 10003;
+        position: absolute;
+        top: 0;
+        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        outline: none;
+
+        &:hover,
+        &:focus {
+            background-color: transparent;
+        }
+
+        &:hover:after {
+            display: block;
+        }
+
+        &::after {
+            background-color: #fff;
+            content: "\00ab";
+            display: none;
+            position: absolute;
+            top: 50%;
+            color: #666;
+            line-height: 1.25em;
+            text-align: center;
+            margin-top: -1em;
+            padding: 0.25em 1em;
+            font-weight: bold;
+        }
+
+        &.wf-mediabox-prev {
+            left: 0;
+
+            &::after {
+                box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 2px;
+                left: 0;
+            }
+        }
+
+        &.wf-mediabox-next {
+            right: 0;
+            left: auto;
+
+            &::after {
+                content: "\00bb";
+                right: -1px;
+                left: auto;
+                box-shadow: rgba(0, 0, 0, 0.3) -2px 2px 2px;
+            }
+        }
+    }
+
+    .wf-mediabox-numbers {
+        color: #666666;
+        display: block;
+        padding: 0;
+        text-align: left;
+        line-height: 2em;
+        top: 0;
+        position: absolute;
+    }
+
+    // IPhone / IPad Specific Styles
+    .wf-mediabox-page.idevice .wf-mediabox-container {
+        margin-bottom: -1px;
+    }
+}

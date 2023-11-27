@@ -1,3 +1,7 @@
+.wf-mediabox {
+    
+}
+
 .wf-mediabox-frame {
     padding: 0.5em;
 }
@@ -86,6 +90,15 @@
 
     ol {
         text-align: center;
+        
+        li {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 2em;
+            height: 2em;
+            vertical-align: middle;
+            line-height: 1.75;
+        }
     }
 
     button {
@@ -125,7 +138,7 @@
     padding: 0.5em 0 0.25em 0;
     background-color: #ffffff;
 
-    :empty {
+    &:empty {
         display: none;
     }
 
@@ -147,19 +160,6 @@
                 font-weight: bold;
                 text-decoration: none;
             }
-        }
-    }
-}
-
-.wf-mediabox-numbers {
-    >ol {
-        li {
-            display: inline-block;
-            box-sizing: border-box;
-            width: 2em;
-            height: 2em;
-            vertical-align: middle;
-            line-height: 1.75;
         }
     }
 }

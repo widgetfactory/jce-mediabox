@@ -7,85 +7,89 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
-
-/* Shadow Template */
 .wf-mediabox-theme-shadow .wf-mediabox-body {
   box-shadow: none;
 }
-
 .wf-mediabox-theme-shadow .wf-mediabox-body:after {
   background-color: #000;
 }
-
 .wf-mediabox-theme-shadow .wf-mediabox-container {
   border: 1px solid #666666;
   border-radius: 0;
   padding: 0;
 }
-
 .wf-mediabox-theme-shadow .wf-mediabox-container.wf-mediabox-loading {
   background-color: #000000;
 }
-
 .wf-mediabox-theme-shadow .wf-mediabox-loader {
   text-align: center;
   z-index: auto;
 }
-
 .wf-mediabox-theme-shadow .wf-mediabox-close {
   border-radius: 0;
   background-color: transparent;
   top: 0;
 }
-
+.wf-mediabox-theme-shadow .wf-mediabox-close:after {
+  content: "\00d7";
+  line-height: 1;
+  font-size: 1.75em;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-close:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-close:focus {
+  background-color: transparent;
+  color: #fff;
+}
 .wf-mediabox-theme-shadow .wf-mediabox-cancel {
   cursor: pointer;
   color: #ffffff;
   z-index: 1;
-
   top: calc(50% - 3rem);
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-info-bottom {
-  padding: 0;
+.wf-mediabox-theme-shadow .wf-mediabox-cancel:hover {
+  color: #fff;
+  text-decoration: underline;
 }
-
+.wf-mediabox-theme-shadow .wf-mediabox-cancel:active,
+.wf-mediabox-theme-shadow .wf-mediabox-cancel:visited {
+  text-decoration: none;
+  color: #ffffff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-info-bottom,
 .wf-mediabox-theme-shadow .wf-mediabox-nav {
   padding: 0;
   background-color: transparent;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-close,
 .wf-mediabox-theme-shadow .wf-mediabox-prev,
 .wf-mediabox-theme-shadow .wf-mediabox-next {
   display: block;
-  left: auto;
   z-index: 1;
   float: right;
   position: relative;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-prev>svg,
-.wf-mediabox-theme-shadow .wf-mediabox-next>svg {
-  width: 1em;
-  height: 1em;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-prev,
-.wf-mediabox-theme-shadow .wf-mediabox-next {
   border: none;
   border-radius: 0;
   background-color: transparent;
   left: auto;
   top: 0;
+  color: #fff;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-close:after,
-.wf-mediabox-theme-shadow .wf-mediabox-prev:after,
-.wf-mediabox-theme-shadow .wf-mediabox-next:after {
+.wf-mediabox-theme-shadow .wf-mediabox-prev:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-next:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-prev:focus,
+.wf-mediabox-theme-shadow .wf-mediabox-next:focus {
+  background-color: transparent;
+  color: #fff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-prev > svg,
+.wf-mediabox-theme-shadow .wf-mediabox-next > svg {
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  margin-bottom: 2px;
+  fill: #fff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-prev::after,
+.wf-mediabox-theme-shadow .wf-mediabox-next::after {
   color: #fff;
   display: block;
   font-family: Arial;
@@ -94,43 +98,6 @@
   text-align: center;
   text-decoration: none;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-prev>svg,
-.wf-mediabox-theme-shadow .wf-mediabox-next>svg {
-  fill: #fff;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-close:after {
-  content: "\00d7";
-  line-height: 1;
-  font-size: 1.75em;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-numbers button {
-  color: #fff;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-numbers button.active {
-  border: 0 none;
-  background: transparent;
-  text-decoration: underline;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-prev,
-.wf-mediabox-theme-shadow .wf-mediabox-next {
-  color: #fff;
-}
-
-.wf-mediabox-theme-shadow .wf-mediabox-close:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-next:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-prev:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-close:focus,
-.wf-mediabox-theme-shadow .wf-mediabox-next:focus,
-.wf-mediabox-theme-shadow .wf-mediabox-prev:focus {
-  background-color: transparent;
-  color: #fff;
-}
-
 .wf-mediabox-theme-shadow .wf-mediabox-numbers {
   text-align: left;
   display: block;
@@ -141,9 +108,18 @@
   top: 0;
   margin-top: 0;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-cancel:active,
-.wf-mediabox-theme-shadow .wf-mediabox-cancel:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-numbers button {
+  color: #fff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-numbers button.active {
+  border: 0 none;
+  background: transparent;
+  text-decoration: underline;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-numbers a {
+  text-decoration: none;
+  color: #ffffff;
+}
 .wf-mediabox-theme-shadow .wf-mediabox-numbers a:active,
 .wf-mediabox-theme-shadow .wf-mediabox-numbers a:visited,
 .wf-mediabox-theme-shadow .wf-mediabox-numbers a:link,
@@ -151,39 +127,31 @@
   text-decoration: none;
   color: #ffffff;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-cancel:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
 .wf-mediabox-theme-shadow .wf-mediabox-caption {
   padding: 0px;
   min-height: 2em;
   background-color: transparent;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-content-ajax {
-  margin: 0.5em;
-}
-
 .wf-mediabox-theme-shadow .wf-mediabox-caption h4,
 .wf-mediabox-theme-shadow .wf-mediabox-caption p {
   color: #ffffff;
 }
-
-.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:active,
-.wf-mediabox-theme-shadow .wf-mediabox-caption p a:active,
-.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-caption p a:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:visited,
-.wf-mediabox-theme-shadow .wf-mediabox-caption p a:visited,
 .wf-mediabox-theme-shadow .wf-mediabox-caption h4 a,
 .wf-mediabox-theme-shadow .wf-mediabox-caption p a {
   color: #ffffff;
   text-decoration: underline;
 }
-
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:active,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:active,
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-caption h4 a:visited,
+.wf-mediabox-theme-shadow .wf-mediabox-caption p a:visited {
+  color: #ffffff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-content-ajax {
+  margin: 0.5em;
+}
 .wf-mediabox-theme-shadow .wf-mediabox-content a[download] {
   position: fixed;
   top: 0;

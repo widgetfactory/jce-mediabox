@@ -7,51 +7,44 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
 .wf-mediabox-theme-squeeze .wf-mediabox-frame {
-	padding: 1em;
+  padding: 1em;
 }
-
 .wf-mediabox-theme-squeeze .wf-mediabox-container {
-	overflow: inherit;
+  overflow: inherit;
 }
-
 .wf-mediabox-theme-squeeze .wf-mediabox-close,
 .wf-mediabox-theme-squeeze .wf-mediabox-prev,
 .wf-mediabox-theme-squeeze .wf-mediabox-next {
-	line-height: 1em;
-	position: absolute;
-	text-align: center;
-	color: #fff;
+  line-height: 1em;
+  position: absolute;
+  text-align: center;
+  color: #fff;
 }
-
 .wf-mediabox-theme-squeeze .wf-mediabox-close:before,
 .wf-mediabox-theme-squeeze .wf-mediabox-prev:before,
 .wf-mediabox-theme-squeeze .wf-mediabox-next:before {
-	content: "";
-	border-radius: 100%;
-	box-shadow: 1px 1px 0.25em #000;
-	background-color: #000;
-	width: 1.2em;
-	height: 1.2em;
-	position: absolute;
-	z-index: -1;
-	left: 0.4em;
-	top: 0.3em;
-	box-sizing: border-box;
+  content: "";
+  border-radius: 100%;
+  box-shadow: 1px 1px 0.25em #000;
+  background-color: #000;
+  width: 1.2em;
+  height: 1.2em;
+  position: absolute;
+  z-index: -1;
+  left: 0.4em;
+  top: 0.3em;
+  box-sizing: border-box;
 }
-
-.wf-mediabox-theme-squeeze .wf-mediabox-close {
-	right: -1em;
-	top: -1em;
-}
-
 .wf-mediabox-theme-squeeze .wf-mediabox-close > svg,
-.wf-mediabox-theme-squeeze .wf-mediabox-next > svg,
-.wf-mediabox-theme-squeeze .wf-mediabox-prev > svg {
-	fill: #fff;
+.wf-mediabox-theme-squeeze .wf-mediabox-prev > svg,
+.wf-mediabox-theme-squeeze .wf-mediabox-next > svg {
+  fill: #fff;
 }
-
+.wf-mediabox-theme-squeeze .wf-mediabox-close {
+  right: -1em;
+  top: -1em;
+}
 .wf-mediabox-theme-squeeze .wf-mediabox-numbers button.active {
-	background-color: #000;
+  background-color: #000;
 }

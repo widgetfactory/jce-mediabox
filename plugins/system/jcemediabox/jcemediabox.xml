@@ -22,7 +22,6 @@
                     <option value="light">PLG_SYSTEM_JCEMEDIABOX_THEME_LIGHT</option>
                     <option value="shadow">PLG_SYSTEM_JCEMEDIABOX_THEME_SHADOW</option>
                     <option value="squeeze">PLG_SYSTEM_JCEMEDIABOX_THEME_SQUEEZE</option>
-                    <!--option value="bootstrap">PLG_SYSTEM_JCEMEDIABOX_THEME_BOOTSTRAP</option>
                 </field>
 
                 <field name="transitionspeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED" description="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED_DESC"/>

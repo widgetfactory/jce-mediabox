@@ -5,18 +5,19 @@ WfMediabox.Theme.add("bootstrap", function () {
             "content": [
                 {
                     "div": {
-                        "class": "modal-header",
+                        "class": "modal-header p-2",
                         "content": [
                             {
                                 "button": {
                                     "type": "button",
-                                    "class": "close wf-mediabox-close",
+                                    "class": "close btn-close position-relative top-0 end-0 wf-mediabox-close",
                                     "title": "{{close}}",
                                     "aria-label": "{{close}}",
                                     "content": [
                                         {
                                             "span": {
                                                 "aria-hidden": "true",
+                                                "class": "invisible",
                                                 "text": "&times;"
                                             }
                                         }

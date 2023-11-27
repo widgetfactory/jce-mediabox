@@ -1,0 +1,104 @@
+// out: styles.css, sourcemap: false, compress: false
+
+/**
+ * @package		JCE MediaBox
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.wf-mediabox-theme-bootstrap {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+
+  &.wf-mediabox {
+    button {
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    
+    .modal {
+      width: auto;
+      margin: inherit;
+      padding: 0;
+      position: relative;
+      left: inherit;
+
+      &-header {
+        min-height: 30px;
+        padding: 9px 30px 9px 15px;
+
+        h4 {
+          font-size: 18px;
+          font-weight: 500;
+          line-height: 2;
+        }
+
+        .close {
+          margin-top: 0;
+        }
+      }
+
+      &-body {
+        padding: 5px;
+        width: auto;
+        max-height: inherit;
+      }
+    }
+  }
+
+  .carousel {
+    margin-bottom: inherit;
+  }
+
+  .wf-mediabox-caption {
+    padding: 0;
+    background-color: inherit;
+  }
+
+  .wf-mediabox-close {
+    float: none;
+    left: auto;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    z-index: 1;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .wf-mediabox-nav {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: none;
+    padding: 0;
+  }
+
+  .wf-mediabox-prev::after,
+  .wf-mediabox-next::after {
+    content: "";
+  }
+
+  .wf-mediabox-content-image,
+  .wf-mediabox-content-audio {
+    padding: 10px;
+    width: auto;
+  }
+}
+
+.glyphicon-chevron-left:before {
+  content: "\2039";
+}
+
+.glyphicon-chevron-right:before {
+  content: "\203A";
+}

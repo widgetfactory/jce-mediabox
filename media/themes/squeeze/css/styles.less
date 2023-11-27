@@ -1,0 +1,57 @@
+// out: styles.css, sourcemap: false, compress: false
+
+/**
+ * @package		JCE MediaBox
+ * @copyright	Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.wf-mediabox-theme-squeeze {
+    .wf-mediabox-frame {
+        padding: 1em;
+    }
+
+    .wf-mediabox-container {
+        overflow: inherit;
+    }
+
+    .wf-mediabox-close,
+    .wf-mediabox-prev,
+    .wf-mediabox-next {
+        line-height: 1em;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+
+        &:before {
+            content: "";
+            border-radius: 100%;
+            box-shadow: 1px 1px 0.25em #000;
+            background-color: #000;
+            width: 1.2em;
+            height: 1.2em;
+            position: absolute;
+            z-index: -1;
+            left: 0.4em;
+            top: 0.3em;
+            box-sizing: border-box;
+        }
+
+        >svg {
+            fill: #fff;
+        }
+    }
+
+    .wf-mediabox-close {
+        right: -1em;
+        top: -1em;
+    }
+
+    .wf-mediabox-numbers button.active {
+        background-color: #000;
+    }
+}

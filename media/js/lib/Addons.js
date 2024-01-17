@@ -4,7 +4,7 @@
  * @returns {mediabox/Addons}
  */
 
-(function ($) {
+(function () {
     function Addons() {
         var self = this;
 
@@ -103,7 +103,7 @@
          */
         function createNode(o, el) {
             // process node object
-            $.each(o, function (k, v) {
+            o.forEach(function (v, k) {
                 if (typeof v === "string") {
                     // translate
                     v = translate(v);
@@ -116,13 +116,13 @@
                         $(el).attr(k, v);
                     }
                 } else {
-                    if ($.isArray(v)) {
+                    if (Array.isArray(v)) {
                         createNode(v, el);
                     } else if (typeof k === "string") {
                         // create new node
                         var node = document.createElement(k);
                         // append to parent
-                        $(el).append(node);
+                        el.appendChild(node);
                         // pass back
                         createNode(v, node);
                     } else {

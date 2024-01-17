@@ -1,15 +1,18 @@
-(function($, Parameter) {
+(function(Parameter) {
     var Convert = {
         /**
          * Convert legacy popups to new format
          */
         legacy: function() {
-            $('a[href]').each(function() {
+            const nodes = document.querySelectorAll('a[href]');
 
+            nodes.forEach(function(elm) {
                 // Only JCE Popup links
-                if (/com_jce/.test(this.href)) {
+                if (/com_jce/.test(elm.href)) {
                     var p, s, img;
-                    var oc = $(this).attr('onclick');
+
+                    var oc = elm.getAttribute('onclick');
+
                     if (oc) {
                         s = oc.replace(/&#39;/g, "'").split("'");
                         p = Parameter.parse(s[1]);
@@ -26,13 +29,11 @@
                             img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
                         }
 
-                        $(this).attr({
-                            'href': img,
-                            'title': title.replace(/_/, ' '),
-                            'onclick': ''
-                        });
+                        elm.setAttribute('href', img);
+                        elm.setAttribute('title', title.replace(/_/, ' '));
+                        elm.setAttribute('onclick', '');
 
-                        $(this).addClass('jcepopup');
+                        elm.classList.add('jcepopup');
                     }
                 }
             });
@@ -41,48 +42,45 @@
          * Convert lightbox popups to MediaBox
          */
         lightbox: function() {
-            $('a[rel*=lightbox]').addClass('jcepopup').each(function() {
-                var r = this.rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
+            var nodes = document.querySelectorAll('a[rel*=lightbox]');
+
+            nodes.forEach(function(elm) {
+                elm.classList.add('jcepopup');
+
+                let rel = elm.getAttribute('rel');
+
+                rel = rel.replace(/lightbox\[?([^\]]*)\]?/, function(a, b) {
                     if (b) {
                         return 'group[' + b + ']';
                     }
                     return '';
                 });
 
-                $(this).attr('rel', r);
+                elm.setAttribute('rel', rel);
             });
-
         },
         /**
          * Convert shadowbox popups to MediaBox
          */
         shadowbox: function() {
+            var nodes = document.querySelectorAll('a[rel*=shadowbox]');
 
-            $('a[rel*=shadowbox]').addClass('jcepopup').each(function() {
-                var r = this.rel.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
-                    var attribs = '', group = '';
-                    // group
+            nodes.forEach(function(elm) {
+                elm.classList.add('jcepopup');
+
+                let rel = elm.getAttribute('rel');
+
+                rel = rel.replace(/shadowbox\[?([^\]]*)\]?/, function(a, b) {
                     if (b) {
-                        group = 'group[' + b + ']';
+                        return 'group[' + b + ']';
                     }
-                    // attributes
-                    if (/;=/.test(a)) {
-                        attribs = a.replace(/=([^;"]+)/g, function(x, z) {
-                            return '[' + z + ']';
-                        });
-
-                    }
-                    if (group && attribs) {
-                        return group + ';' + attribs;
-                    }
-                    return group || attribs || '';
+                    return '';
                 });
 
-                $(this).attr('rel', r);
+                elm.setAttribute('rel', rel);
             });
-
         }
     };
 
     window.WfMediabox.Convert = Convert;
-})(jQuery, WfMediabox.Parameter);
+})(WfMediabox.Parameter);

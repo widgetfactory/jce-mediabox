@@ -11,16 +11,16 @@
  * other free or open source software licenses.
  *
  */
-(function ($, WfMediabox) {
+(function (WfMediabox) {
     function stripHtml(html) {
         let tmp = document.createElement("DIV");
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
     }
-    
+
     function isBool(attr) {
         var map = ['async', 'checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected', 'autoplay', 'loop', 'controls', 'itemscope', 'playsinline', 'contenteditable', 'spellcheck', 'contextmenu', 'draggable', 'hidden'];
-        return $.inArray(attr, map) !== -1;
+        return map.includes(attr);
     }
 
     function islocal(s) {
@@ -29,6 +29,14 @@
         }
 
         return true;
+    }
+
+    function createElementFromHTML(htmlString) {
+        var div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+
+        // Change this to div.childNodes to support multiple top-level nodes
+        return div.firstChild;
     }
 
     /**
@@ -40,8 +48,9 @@
 
         url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
 
-        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function (i, v) {
+        ["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"].forEach(function (i, v) {
             var s = url[i];
+
             if (s) {
                 o[v] = s;
             }
@@ -114,7 +123,7 @@
 
         var attribs = ['id', 'name', 'style', 'codebase', 'classid', 'type', 'data'];
 
-        var html = '<object class="wf-mediabox-focus"';
+        let html = '<object class="wf-mediabox-focus"';
         // custom attributes
         for (var n in data) {
             if (attribs.indexOf(n) !== -1 && typeof data[n] === "string") {
@@ -143,14 +152,19 @@
 
             html += '></embed>';
         }
+
         html += '</object>';
 
-        return html;
+        var elm = createElementFromHTML(html);
+
+        return elm;
     }
 
     function createIframe(src, attribs) {
         // create html
-        return '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
+        const html = '<iframe src="' + src + '" frameborder="0" scrolling="0" allowfullscreen="allowfullscreen" />';
+
+        return createElementFromHTML(html);
     }
 
     WfMediabox.Plugin.add('flash', function () {
@@ -199,9 +213,12 @@
             var ext = data.src.split('.').pop();
             var type = WfMediabox.Mimetype.guess(ext) || 'video/mpeg';
 
-            var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function (e) {
-                $(this).attr({ 'width': this.videoWidth || '', 'height': this.videoHeight || '' });
-            }).append('<source src="' + data.src + '" type="' + type + '" />');
+            const video = createElementFromHTML('<video ' + attribs.join(' ') + ' tabindex="0"><source src="' + data.src + '" type="' + type + '" /></video>');
+
+            video.addEventListener('loadedmetadata', function (e) {
+                video.setAttribute('width', video.videoWidth || '');
+                video.setAttribute('height', video.videoHeight || '');
+            });
 
             return video;
         };
@@ -241,7 +258,7 @@
                 attribs.push('controls');
             }
 
-            return $('<audio ' + attribs.join(' ') + ' tabindex="0" />');
+            return createElementFromHTML('<audio ' + attribs.join(' ') + ' tabindex="0"></audio>');
         };
 
         this.is = function (data) {
@@ -281,14 +298,15 @@
         this.type = "iframe";
         // create html
         this.html = function (data) {
-            var ifr = $(createIframe(processURL(data.src)));
+            const ifr = createIframe(processURL(data.src));
 
             // identify as a video to force aspect ratio
-            $(ifr).addClass('wf-mediabox-iframe-video');
+            ifr.classList.add('wf-mediabox-iframe-video');
 
             return ifr;
         };
     });
+
     WfMediabox.Plugin.add('quicktime', function () {
         var n;
 
@@ -297,7 +315,7 @@
             data.classid = "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b";
             data.codebase = "https://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0";
 
-            return $(createObject(data));
+            return createObject(data);
         };
 
         this.type = "object";
@@ -307,21 +325,24 @@
             return /\.(mov)\b/.test(data.src);
         };
     });
+
     WfMediabox.Plugin.add('windowsmedia', function () {
 
         this.type = "object";
+
         this.html = function (data) {
             data.type = "application/x-mplayer2";
             data.classid = "clsid:6bf52a52-394a-11d3-b153-00c04f79faa6";
             data.codebase = "https://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701";
 
-            return $(createObject(data, true));
+            return createObject(data, true);
         };
 
         this.is = function (data) {
             return /\.(wmv|avi)\b/.test(data.src);
         };
     });
+
     /**
      * Youtube - http://www.youtube.com
      * @param {String} v URL
@@ -371,30 +392,31 @@
             if (data.params) {
                 var allow = ['accelerometer', 'encrypted-media', 'gyroscope', 'picture-in-picture', 'allowfullscreen'];
 
-                var params = {};
+                var paramsObj = {};
 
-                $.each(data.params, function (key, value) {
+                for (let [key, value] of Object.entries(data.params)) {
+
                     if (key.indexOf('youtube-') !== -1) {
                         key = key.replace('youtube-', '');
                     }
 
-                    if ($.inArray(props, key) != -1) {
-                        params[key] = value;
+                    if (props.includes(key)) {
+                        paramsObj[key] = value;
 
                         if (key == 'autoplay' && !!value) {
                             allow.push(key);
 
                             // add mute
-                            params.mute = 1;
+                            paramsObj.mute = 1;
                         }
                     }
-                });
+                };
 
                 if (allow.length) {
-                    $(ifr).attr('allow', allow.join(';'));
+                    ifr.setAttribute('allow', allow.join(';'));
                 }
 
-                params = $.param(params);
+                let params = new URLSearchParams(paramsObj).toString();
 
                 if (params) {
                     if (src.indexOf('?') !== -1) {
@@ -403,11 +425,12 @@
                         src += '?' + params;
                     }
 
-                    $(ifr).attr('src', src);
+                    ifr.setAttribute('src', src);
                 }
             }
+
             // identify as a video to force aspect ratio
-            $(ifr).addClass('wf-mediabox-iframe-video');
+            ifr.classList.add('wf-mediabox-iframe-video');
 
             return ifr;
         };
@@ -423,7 +446,7 @@
             if (s.indexOf('player.vimeo.com/video/') == -1) {
                 s = s.replace(/vimeo\.com\/(?:\w+\/){0,3}((?:[0-9]+\b)(?:\/[a-z0-9]+)?)/, function (match, value) {
                     var hash = '', params = value.split('/'), id = params[0];
-                    
+
                     if (params.length == 2) {
                         hash = params[1];
                     }
@@ -445,22 +468,22 @@
 
         // create html
         this.html = function (data) {
-            var src = processURL(data.src), ifr = $(createIframe(src));
+            var src = processURL(data.src), ifr = createIframe(src);
 
             // identify as a video to force aspect ratio
-            $(ifr).addClass('wf-mediabox-iframe-video');
+            ifr.classList.add('wf-mediabox-iframe-video');
 
             if (data.params) {
-                var params = {};
+                var paramsObj = {};
 
-                $.each(data.params, function (key, value) {
+                for (let [key, value] of Object.entries(data.params)) {
                     if (key.indexOf('vimeo-') !== -1) {
                         key = key.replace('vimeo-', '');
-                        params[key] = value;
+                        paramsObj[key] = value;
                     }
-                });
+                };
 
-                params = $.param(params);
+                let params = new URLSearchParams(paramsObj).toString();
 
                 if (params) {
                     if (src.indexOf('?') !== -1) {
@@ -469,7 +492,7 @@
                         src += '?' + params;
                     }
 
-                    $(ifr).attr('src', src);
+                    ifr.setAttribute('src', src);
                 }
             }
 
@@ -487,10 +510,10 @@
         }
 
         if (isImage(data)) {
-            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
+            const img = createElementFromHTML('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + decodeURIComponent(data.alt || data.title || "") + '" tabindex="0" />');
 
             if (data.params) {
-                $.each(data.params, function (name, value) {
+                for (let [name, value] of Object.entries(data.params)) {
                     if (name === "srcset") {
                         value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function (match) {
                             if (islocal(match)) {
@@ -501,11 +524,11 @@
                         });
                     }
 
-                    $img.attr(name, value);
-                });
+                    img.setAttribute(name, value);
+                };
             }
 
-            return $img;
+            return img;
         }
 
         return "";
@@ -523,11 +546,11 @@
             var alt = decodeURIComponent(data.alt || data.title || "");
             // remove HTML
             alt = stripHtml(alt);
-            
-            var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + alt + '" tabindex="0" />');
+
+            const img = createElementFromHTML('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + alt + '" tabindex="0" />');
 
             if (data.params) {
-                $.each(data.params, function (name, value) {
+                for (let [name, value] of Object.entries(data.params)) {
                     if (name === "srcset") {
                         value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function (match) {
                             if (islocal(match)) {
@@ -538,11 +561,11 @@
                         });
                     }
 
-                    $img.attr(name, value);
-                });
+                    img.setAttribute(name, value);
+                };
             }
 
-            return $img;
+            return img;
         };
 
         this.is = function (data) {
@@ -566,20 +589,21 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('mediabox:load', function () {
-                var self = this;
+            const ifr = createElementFromHTML('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '"></iframe>');
 
+            ifr.addEventListener('load', function () {
                 if (WfMediabox.Env.gecko) {
                     return;
                 }
 
                 // small timeout then reset src to reset sizing
-                self.src = '';
+                ifr.src = '';
 
                 setTimeout(function () {
-                    self.src = data.src;
+                    ifr.src = data.src;
                 }, 0);
-            });
+
+            }, { once : true });
         };
 
         this.is = function (data) {
@@ -600,22 +624,24 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            var iframe = $('<iframe src="' + src + '" />').on('mediabox:load', function () {
-                var n = this, $parent = $(this).parent(),
-                    html = this.contentWindow.document.body.innerHTML;
+            const ifr = createIframe(src);
+
+            ifr.addEventListener('load', function () {
+                const parent = ifr.parentNode,
+                    html = ifr.contentWindow.document.body.innerHTML;
 
                 // remove iframe
                 window.setTimeout(function () {
-                    $(n).remove();
+                    ifr.remove();
                 }, 10);
 
-                // append html to created parent
-                $parent.append(html);
+                // append html to parent
+                parent.innerHTML = html;
 
-                var uri = parseURL(this.src);
+                var uri = parseURL(ifr.src);
 
                 if (uri.anchor) {
-                    var elm = $parent.find('#' + uri.anchor).get(0);
+                    var elm = parent.querySelector('#' + uri.anchor);
 
                     if (elm) {
                         elm.scrollIntoView();
@@ -623,31 +649,39 @@
                 }
 
                 // process anchors
-                $parent.find('a[href^="#"]').on('click', function (e) {
-                    e.preventDefault();
+                parent.querySelectorAll('a[href^="#"]').forEach(function (elm) {
+                    elm.addEventListener('click', function (e) {
+                        e.preventDefault();
 
-                    var id = $(this).attr('href'), elm = $parent.find(id).get(0);
+                        var id = elm.getAttribute('href'), elm = parent.querySelector(id);
 
-                    if (elm) {
-                        elm.scrollIntoView();
-                    }
+                        if (elm) {
+                            elm.scrollIntoView();
+                        }
+                    });
                 });
 
-                WfMediabox.create(WfMediabox.getPopups('', $parent));
+                WfMediabox.create(WfMediabox.getPopups('', parent));
 
                 if (data.params) {
                     // add passed in styles
                     if (data.params.style) {
-                        $('<style type="text/css" />').text('.wf-mediabox-content{' + $('<div />').attr('style', data.params.style).get(0).style.cssText + '}').insertBefore($parent);
+                        let style = document.createElement('style');
+
+                        let cssNode = document.createElement('div');
+                        cssNode.setAttribute('style', data.params.style);
+     
+                        style.textContent = '.wf-mediabox-content{' + cssNode.style.cssText + '}';
+                        parent.insertBefore(style, parent.firstChild);
                     }
                 }
             });
-
-            return iframe;
+            
+            return ifr;
         };
 
         this.is = function (data) {
-            return data.type === "ajax" || data.type === "text/html" || $(data.node).hasClass('ajax');
+            return data.type === "ajax" || data.type === "text/html" || data.node.classList.contains('ajax');
         };
     });
     /**
@@ -657,10 +691,10 @@
         this.type = "dom";
 
         this.html = function (data) {
-            var node = $(data.src);
+            var node = createElementFromHTML(data.src);
 
             if (node) {
-                return $(node).get(0).outerHTML;
+                return node.outerHTML;
             }
 
             return "";
@@ -685,13 +719,13 @@
             src = createComponentURL(data.src);
 
             // create iframe markup
-            var ifr = createIframe(src);
+            const ifr = createIframe(src);
 
-            return $(ifr);
+            return ifr
         };
 
         this.is = function (data) {
             return !data.type || data.type === "iframe";
         };
     });
-})(jQuery, WfMediabox);
+})(WfMediabox);

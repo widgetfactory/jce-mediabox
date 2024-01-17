@@ -1,4 +1,4 @@
-(function ($) {
+(function () {
     var Tools = {};
 
     function now() {
@@ -84,7 +84,7 @@
     Tools.parseWidth = function (w) {        
         // calculate width if percentage
         if (/%/.test(w)) {
-            w = Math.floor($(window).width() * parseInt(w) / 100);
+            w = Math.floor(window.innerWidth * parseInt(w) / 100);
         }
         // convert to integer
         if (/\d/.test(w)) {
@@ -97,7 +97,7 @@
     Tools.parseHeight = function (h) {
         // calculate width if percentage
         if (/%/.test(h)) {
-            h = Math.floor($(window).height() * parseInt(h) / 100);
+            h = Math.floor(window.innerHeight * parseInt(h) / 100);
         }
         // convert to integer
         if (/\d/.test(h)) {
@@ -108,4 +108,4 @@
     };
 
     window.WfMediabox.Tools = Tools;
-})(jQuery);
+})();

@@ -1,4 +1,4 @@
-(function ($) {
+(function () {
     var lookup = {};
     var mimes = {};
 
@@ -83,7 +83,9 @@
         "video/x-matroska,mkv"
     );
 
-    $.each(mediaTypes, function (key, value) {
+    for (var key in mediaTypes) {
+        let value = mediaTypes[key];
+        
         value.name = key;
 
         if (value.classid) {
@@ -95,7 +97,7 @@
         }
 
         lookup[key.toLowerCase()] = value;
-    });
+    }
 
     var Mimetype = {
         props: function (value) {
@@ -108,4 +110,4 @@
     };
 
     window.WfMediabox.Mimetype = Mimetype;
-})(jQuery);
+})();

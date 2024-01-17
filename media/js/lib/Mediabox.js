@@ -6,8 +6,17 @@
  * @returns {WFMediaBox.MediaBox}
  */
 
-if (window.jQuery === "undefined") {
-    throw new Error('JQuery is required to run Mediabox!');
+var supportsES6 = (function() {
+    try {
+        new Function('let foo; const bar = 2; (a = 0) => a; `template string`');
+        return true;
+    } catch (e) {
+        return false;
+    }
+})();
+
+if (!supportsES6()) {
+    throw new Error('Mediabox will not work in this browser!');
 }
 
 (function ($) {

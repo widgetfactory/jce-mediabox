@@ -174,14 +174,9 @@ class plgSystemJCEMediabox extends CMSPlugin
             'swipe' => (bool) $params->get('swipe', 1)
         );
 
-        if ($this->params->get('jquery', 1)) {
-            // Include jQuery
-            HTMLHelper::_('jquery.framework');
-        }
-
         $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
-        $document->addScriptDeclaration('jQuery(document).ready(function(){WfMediabox.init(' . json_encode($config) . ');});');
+        $document->addScriptDeclaration('document.addEventListener("DOMContentLoaded",(function(){WfMediabox.init(' . json_encode($config) . ');});');
     }
 }

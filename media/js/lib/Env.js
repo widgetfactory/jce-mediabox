@@ -34,7 +34,18 @@
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
     Android = /Android/.test(userAgent);
-    Mobile = iDevice || Android;
+
+    function isIpad() {
+        // Check for iOS 13+ iPad
+        var isIOS = /iPad/.test(userAgent);
+        // Additional checks for distinguishing iPads from Macs (thanks apple....)
+        var isTouchEnabled = navigator.maxTouchPoints > 1;
+        var hasMacLikeUserAgent = /Macintosh/.test(userAgent);
+        // Combining checks to improve accuracy
+        return isIOS || (isTouchEnabled && hasMacLikeUserAgent);
+    }
+
+    Mobile = iDevice || Android || isIpad();
 
     /*
      * From Modernizr v2.0.6

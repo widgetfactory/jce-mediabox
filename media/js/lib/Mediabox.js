@@ -360,11 +360,6 @@ if (window.jQuery === "undefined") {
             // get rel attribute value
             var rel = el.rel || '';
 
-            // skip pdf files on iOS
-            if (MediaBox.Env.mobile && (/\.pdf$/i.test(src) || type === 'pdf')) {
-                return;
-            }
-
             // Process and cleanup rel attribute (legacy)
             if (!/\w+\[[^\]]+\]/.test(rel)) {
                 var rx = 'alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|noopener|noreferrer|licence|tag|friend';
@@ -497,14 +492,6 @@ if (window.jQuery === "undefined") {
                     return true;
                 }
 
-                // add to popups array
-                self.popups.push(o);
-
-                // new index if not a pageload
-                if (!pageload) {
-                    i = self.popups.length - 1;
-                }
-
                 // add noopener noreferrer if target="_blank"
                 if ($(this).attr('target') === "_blank") {
                     var rel = $(this).attr('rel') || '';
@@ -598,6 +585,19 @@ if (window.jQuery === "undefined") {
                             return MediaBox.getSVGIcon('link');
                         }).appendTo(this).find('svg').css('fill', $(this).css('color'));
                     }
+                }
+
+                // skip pdf files on iOS
+                if (MediaBox.Env.mobile && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
+                    return;
+                }
+
+                // add to popups array
+                self.popups.push(o);
+
+                // new index if not a pageload
+                if (!pageload) {
+                    i = self.popups.length - 1;
                 }
 
                 // Add click event to link

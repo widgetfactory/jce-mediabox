@@ -45,7 +45,7 @@
         return isIOS || (isTouchEnabled && hasMacLikeUserAgent);
     }
 
-    Mobile = iDevice || Android || isIpad();
+    var Mobile = iDevice || Android || isIpad();
 
     /*
      * From Modernizr v2.0.6

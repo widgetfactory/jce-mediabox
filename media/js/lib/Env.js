@@ -45,7 +45,11 @@
         return isIOS || (isTouchEnabled && hasMacLikeUserAgent);
     }
 
-    var Mobile = iDevice || Android || isIpad();
+    // update iDevice to include iPadOS
+    iDevice = iDevice || isIpad();
+
+    // mobile is true if the device is an iDevice or Android
+    var Mobile = iDevice || Android;
 
     /*
      * From Modernizr v2.0.6
@@ -159,7 +163,7 @@
          * @type Boolean
          * @final
          */
-        iOS: iDevice,
+        ios: iDevice,
         /**
          * Constant that is true if the os is Android.
          *

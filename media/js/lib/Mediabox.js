@@ -588,7 +588,7 @@ if (window.jQuery === "undefined") {
                 }
 
                 // skip pdf files on iOS
-                if (MediaBox.Env.mobile && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
+                if ((MediaBox.Env.ios) && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
                     return;
                 }
 
@@ -747,7 +747,7 @@ if (window.jQuery === "undefined") {
                 }
 
                 // add ios identifier
-                if (MediaBox.Env.iOS) {
+                if (MediaBox.Env.ios) {
                     $page.addClass('ios');
                 }
 
@@ -771,7 +771,7 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-frame').children().hide();
 
                 // add iPad scroll fix
-                if (MediaBox.Env.iOS) {
+                if (MediaBox.Env.ios) {
                     $('.wf-mediabox-content').css({ 'webkitOverflowScrolling': 'touch', 'overflow': 'auto' });
                 }
 

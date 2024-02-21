@@ -25,21 +25,6 @@
   text-align: center;
   z-index: auto;
 }
-.wf-mediabox-theme-shadow .wf-mediabox-close {
-  border-radius: 0;
-  background-color: transparent;
-  top: 0;
-}
-.wf-mediabox-theme-shadow .wf-mediabox-close:after {
-  content: "\00d7";
-  line-height: 1;
-  font-size: 1.75em;
-}
-.wf-mediabox-theme-shadow .wf-mediabox-close:hover,
-.wf-mediabox-theme-shadow .wf-mediabox-close:focus {
-  background-color: transparent;
-  color: #fff;
-}
 .wf-mediabox-theme-shadow .wf-mediabox-cancel {
   cursor: pointer;
   color: #ffffff;
@@ -61,7 +46,8 @@
   background-color: transparent;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-prev,
-.wf-mediabox-theme-shadow .wf-mediabox-next {
+.wf-mediabox-theme-shadow .wf-mediabox-next,
+.wf-mediabox-theme-shadow .wf-mediabox-close {
   display: block;
   z-index: 1;
   float: right;
@@ -75,13 +61,16 @@
 }
 .wf-mediabox-theme-shadow .wf-mediabox-prev:hover,
 .wf-mediabox-theme-shadow .wf-mediabox-next:hover,
+.wf-mediabox-theme-shadow .wf-mediabox-close:hover,
 .wf-mediabox-theme-shadow .wf-mediabox-prev:focus,
-.wf-mediabox-theme-shadow .wf-mediabox-next:focus {
+.wf-mediabox-theme-shadow .wf-mediabox-next:focus,
+.wf-mediabox-theme-shadow .wf-mediabox-close:focus {
   background-color: transparent;
   color: #fff;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-prev > svg,
-.wf-mediabox-theme-shadow .wf-mediabox-next > svg {
+.wf-mediabox-theme-shadow .wf-mediabox-next > svg,
+.wf-mediabox-theme-shadow .wf-mediabox-close > svg {
   width: 1em;
   height: 1em;
   line-height: 1;
@@ -89,7 +78,8 @@
   fill: #fff;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-prev::after,
-.wf-mediabox-theme-shadow .wf-mediabox-next::after {
+.wf-mediabox-theme-shadow .wf-mediabox-next::after,
+.wf-mediabox-theme-shadow .wf-mediabox-close::after {
   color: #fff;
   display: block;
   font-family: Arial;
@@ -97,6 +87,11 @@
   line-height: 2;
   text-align: center;
   text-decoration: none;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-close:after {
+  content: "\00d7";
+  line-height: 1;
+  font-size: 1.75em;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-numbers {
   text-align: left;

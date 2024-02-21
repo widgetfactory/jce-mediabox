@@ -33,24 +33,7 @@
       text-align: center;
       z-index: auto;
     }
-  
-    .wf-mediabox-close {
-      border-radius: 0;
-      background-color: transparent;
-      top: 0;
-  
-      &:after {
-        content: "\00d7";
-        line-height: 1;
-        font-size: 1.75em;
-      }
-  
-      &:hover, &:focus {
-        background-color: transparent;
-        color: #fff;
-      }
-    }
-  
+
     .wf-mediabox-cancel {
       cursor: pointer;
       color: #ffffff;
@@ -73,7 +56,9 @@
       background-color: transparent;
     }
   
-    .wf-mediabox-prev, .wf-mediabox-next {
+    .wf-mediabox-prev, 
+    .wf-mediabox-next,
+    .wf-mediabox-close {
       display: block;
       left: auto;
       z-index: 1;
@@ -107,6 +92,14 @@
         line-height: 2;
         text-align: center;
         text-decoration: none;
+      }
+    }
+
+    .wf-mediabox-close {
+      &:after {
+        content: "\00d7";
+        line-height: 1;
+        font-size: 1.75em;
       }
     }
   

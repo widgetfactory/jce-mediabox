@@ -587,8 +587,8 @@ if (window.jQuery === "undefined") {
                     }
                 }
 
-                // skip pdf files on iOS and Android except Firefox
-                if ((MediaBox.Env.ios || (MediaBox.Env.android && !MediaBox.Env.gecko)) && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
+                // skip pdf files on iOS
+                if ((MediaBox.Env.ios) && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
                     $(this).attr({'target' : '_blank', 'rel' : 'noopener noreferrer', 'type' : 'application/pdf'});
                     return;
                 }

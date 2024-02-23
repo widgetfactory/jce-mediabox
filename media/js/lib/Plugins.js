@@ -557,7 +557,7 @@
      * PDF
      */
     WfMediabox.Plugin.add('pdf', function () {
-        this.type = "object";
+        this.type = "iframe";
 
         // create html
         this.html = function (data) {
@@ -566,7 +566,7 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            return $('<object data="' + data.src + '" type="application/pdf" aria-label="' + label + '" />').one('mediabox:load', function () {
+            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('mediabox:load', function () {
                 var self = this;
 
                 if (WfMediabox.Env.gecko) {
@@ -574,10 +574,10 @@
                 }
 
                 // small timeout then reset src to reset sizing
-                self.data = '';
+                self.src = '';
 
                 setTimeout(function () {
-                    self.data = data.src;
+                    self.src = data.src;
                 }, 0);
             });
         };

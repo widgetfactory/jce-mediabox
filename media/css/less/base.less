@@ -673,17 +673,41 @@ a.wfpopup {
 .wf-mediabox-fullscreen {
 
     .wf-mediabox-body {
+        height: 100%;
+
         .wf-mediabox-container {
             padding: 0;
+            height: 100%;
+
+            .wf-mediabox-content {
+                height: 100%;
+            }
 
             .wf-mediabox-content-item {
                 cursor: zoom-out;
+            }
+
+            .wf-mediabox-content-item {
+                cursor: zoom-out;
+                
+                height: 100%;
+                overflow: scroll;
+
+                .wf-mediabox-img {
+                    width: auto;
+                    height: auto;
+                }
             }
 
             .wf-mediabox-caption,
             .wf-mediabox-nav {
                 display: none;
             }
+        }
+
+        .wf-mediabox-info-bottom,
+        .wf-mediabox-info-top {
+            display: none;
         }
     }
 }

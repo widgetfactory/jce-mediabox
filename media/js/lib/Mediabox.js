@@ -539,6 +539,10 @@ if (window.jQuery === "undefined") {
                             $img.css('float', '');
 
                             $(this).addClass('wf-mediabox-has-float');
+
+                            if ($img.attr('width') && /%/.test($img.attr('width'))) {
+                                $img.attr('width', $img.width());
+                            }
                         }
 
                         // Transfer margin, padding and border
@@ -1457,13 +1461,11 @@ if (window.jQuery === "undefined") {
                     popup.height = ch;
 
                     $(this).on('click', function () {
-                        if ($('.wf-mediabox-frame').hasClass('wf-mediabox-fullscreen')) {
-                            self.updateBodyWidth(popup);
-                        } else {
-                            $('.wf-mediabox-body').css('max-width', this.naturalWidth + 'px');
-                        }
+                        $('.wf-mediabox-body', '.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', this.naturalWidth + 'px');
                         
                         $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
+
+                        self.updateBodyWidth(popup);
                     });
                 } else {
                     if (this.nodeName === "VIDEO") {

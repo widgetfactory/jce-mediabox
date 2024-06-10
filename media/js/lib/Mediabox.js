@@ -252,10 +252,19 @@ if (window.jQuery === "undefined") {
                         // create cookie with base64 key
                         if (!cookie) {
                             MediaBox.Storage.set('wf_mediabox_' + key + '_' + i, 1);
-                            self.start(el);
+
+                            // delay popup
+                            setTimeout(function () {
+                                // start popup
+                                self.start(el);
+                            }, el.delay);
                         }
                     } else if (el.auto == 'multiple') {
-                        self.start(el);
+                        // delay popup
+                        setTimeout(function () {
+                            // start popup
+                            self.start(el);
+                        }, el.delay);
                     }
                 }
             });
@@ -328,7 +337,8 @@ if (window.jQuery === "undefined") {
                 o = {},
                 group = '',
                 auto = false,
-                match;
+                match,
+                delay = 0;
 
             // get src value from href attribute
             var src = el.getAttribute('href');
@@ -392,6 +402,15 @@ if (window.jQuery === "undefined") {
             // use data-mediabox-autopopup attribute if set
             auto = auto || data.autopopup || "";
 
+            // get a delay value if any
+            delay = data.delay || 0;
+
+            // convert to integer
+            delay = parseInt(delay);
+
+            // convert to ms
+            delay = delay * 1000;
+
             // get group
             if ($(el).hasClass('nogroup')) {
                 group = "";
@@ -430,7 +449,8 @@ if (window.jQuery === "undefined") {
                 height: height,
                 params: data,
                 auto: auto,
-                type: type
+                type: type,
+                delay: delay
             });
 
             // Remove type and update href
@@ -593,7 +613,7 @@ if (window.jQuery === "undefined") {
 
                 // skip pdf files on iOS
                 if ((MediaBox.Env.ios) && (/\.pdf$/i.test(o.src) || o.type === 'pdf')) {
-                    $(this).attr({'target' : '_blank', 'rel' : 'noopener noreferrer', 'type' : 'application/pdf'});
+                    $(this).attr({ 'target': '_blank', 'rel': 'noopener noreferrer', 'type': 'application/pdf' });
                     return;
                 }
 
@@ -782,7 +802,7 @@ if (window.jQuery === "undefined") {
 
                 // Add close function to frame on click
                 if (s.close === 2) {
-                    $('.wf-mediabox-frame').on('click', function (e) {                        
+                    $('.wf-mediabox-frame').on('click', function (e) {
                         if (e.target && e.target === this) {
                             self.close();
                         }
@@ -1147,7 +1167,7 @@ if (window.jQuery === "undefined") {
                     text = $.trim(parts[1]);
                 }
 
-                if (title) {  
+                if (title) {
                     h += '<h4 id="wf-mediabox-modal-title">' + title + '</h4>';
                     // update aria-labelledby 
                     $('.wf-mediabox').attr('aria-labelledby', 'wf-mediabox-modal-title');
@@ -1462,7 +1482,7 @@ if (window.jQuery === "undefined") {
 
                     $(this).on('click', function () {
                         $('.wf-mediabox-body', '.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', this.naturalWidth + 'px');
-                        
+
                         $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
 
                         self.updateBodyWidth(popup);

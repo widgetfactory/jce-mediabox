@@ -34,6 +34,7 @@
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
     Android = /Android/.test(userAgent);
+    Safari = /AppleWebKit/.test(userAgent) && /Safari/.test(userAgent);
 
     function isIpad() {
         // Check for iOS 13+ iPad
@@ -196,7 +197,15 @@
          * @type Boolean
          * @final
          */
-        mobile: Mobile
+        mobile: Mobile,
+
+        /**
+         * Constant that is true if the browser is Safari.
+         * @property safari
+         * @type Boolean
+         * @final
+         */
+        safari: Safari
     };
 
     window.WfMediabox.Env = Env;

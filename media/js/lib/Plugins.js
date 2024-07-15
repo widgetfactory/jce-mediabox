@@ -566,12 +566,13 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
+            // check if Safari
+            if (WfMediabox.Env.safari || WfMediabox.Env.gecko) {
+                return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />');
+            }
+
             return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('mediabox:load', function () {
                 var self = this;
-
-                if (WfMediabox.Env.gecko) {
-                    return;
-                }
 
                 // small timeout then reset src to reset sizing
                 self.src = '';

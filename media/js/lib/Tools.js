@@ -5,7 +5,7 @@
         return new Date().getTime();
     }
 
-    /* A selection of functions from Underscore.js to expand tinymec.util.Tools
+    /* A selection of functions from Underscore.js
      * http://underscorejs.org
      * (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
      * Underscore may be freely distributed under the MIT license.
@@ -25,10 +25,13 @@
                 timeout = setTimeout(later, wait - last);
             } else {
                 timeout = null;
+                
                 if (!immediate) {
                     result = func.apply(context, args);
-                    if (!timeout)
+
+                    if (!timeout) {
                         context = args = null;
+                    }
                 }
             }
         };
@@ -38,8 +41,11 @@
             args = arguments;
             timestamp = now();
             var callNow = immediate && !timeout;
-            if (!timeout)
+
+            if (!timeout) {
                 timeout = setTimeout(later, wait);
+            }
+
             if (callNow) {
                 result = func.apply(context, args);
                 context = args = null;
@@ -81,7 +87,7 @@
         };
     };
 
-    Tools.parseWidth = function (w) {        
+    Tools.parseWidth = function (w) {
         // calculate width if percentage
         if (/%/.test(w)) {
             w = Math.floor($(window).width() * parseInt(w) / 100);

@@ -1443,9 +1443,6 @@ if (window.jQuery === "undefined") {
             }
 
             function itemLoaded() {
-                // remove loader cache
-                $cache.empty().remove();
-
                 // append media element to popup content if it isn't an iframe (iframe will reload if appended)
                 if (this.nodeName !== "IFRAME") {
                     $('.wf-mediabox-content-item').html(popup.html);
@@ -1559,6 +1556,9 @@ if (window.jQuery === "undefined") {
 
                 // trigger custom load event
                 $(this).trigger('mediabox:load');
+
+                // remove loader cache
+                $cache.empty().remove();
             }
 
             function itemError(e) {

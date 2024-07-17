@@ -31,6 +31,17 @@
         return true;
     }
 
+    function basename(path) {
+        return path.replace(/^.*[\/\\]/g, '');
+    }
+
+    function appendTimestampToUrl(url) {
+        var timestamp = Date.now();
+        var separator = url.includes('?') ? '&' : '?';
+
+        return url + separator + 'ts=' + timestamp;
+    }
+
     /**
      * Parse the URI into component parts
      * https://github.com/tinymce/tinymce/blob/master/js/tinymce/classes/util/URI.js
@@ -557,30 +568,29 @@
      * PDF
      */
     WfMediabox.Plugin.add('pdf', function () {
-        this.type = "iframe";
+        this.type = "object";
 
         // create html
         this.html = function (data) {
-            var label = data.title || 'PDF Iframe';
+            // get the "basename" of the file
+            var name = basename(data.src);
+            
+            // set the label to the title or a default
+            var label = data.title || 'PDF display of ' + name;
 
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            // check if Safari
-            if (WfMediabox.Env.safari || WfMediabox.Env.gecko) {
-                return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />');
+            if (WfMediabox.Env.safari) {            
+                // load with transparent src
+                return $('<object data="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" aria-label="' + label + '" />').on('mediabox:load', function () {
+                    // replace src with timestamped pdf url
+                    var src = appendTimestampToUrl(data.src);
+                    $(this).attr({ 'data': src, 'type': 'application/pdf' });
+                });
             }
 
-            return $('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '" />').one('mediabox:load', function () {
-                var self = this;
-
-                // small timeout then reset src to reset sizing
-                self.src = '';
-
-                setTimeout(function () {
-                    self.src = data.src;
-                }, 0);
-            });
+            return $('<object data="' + data.src + '" type="application/pdf" aria-label="' + label + '" />');
         };
 
         this.is = function (data) {

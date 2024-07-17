@@ -34,7 +34,7 @@
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
     Android = /Android/.test(userAgent);
-    Safari = /AppleWebKit/.test(userAgent) && /Safari/.test(userAgent);
+    Safari = /AppleWebKit/.test(userAgent) && /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
 
     function isIpad() {
         // Check for iOS 13+ iPad

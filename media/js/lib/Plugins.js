@@ -553,6 +553,22 @@
                 });
             }
 
+            $img.on('mediabox:load', function () {
+                var cw = this.clientWidth, ch = this.clientHeight, nw = this.naturalWidth, nh = this.naturalHeight;
+                
+                if (nw > cw || nh > ch) {
+                    // fullscreen zoom
+                    $(this).on('click', function () {
+                        $('.wf-mediabox-body', '.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', nw + 'px');
+
+                        $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
+
+                        $(this).trigger('mediabox:resize');
+
+                    }).parent().addClass('wf-mediabox-content-item-expand');
+                }
+            });
+
             return $img;
         };
 

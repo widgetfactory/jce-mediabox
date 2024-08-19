@@ -1476,14 +1476,6 @@ if (window.jQuery === "undefined") {
                     popup.width = cw;
                     // store height
                     popup.height = ch;
-
-                    $(this).on('click', function () {
-                        $('.wf-mediabox-body', '.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', this.naturalWidth + 'px');
-
-                        $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
-
-                        self.updateBodyWidth(popup);
-                    });
                 } else {
                     if (this.nodeName === "VIDEO") {
                         cw = cw || this.videoWidth || 0;
@@ -1556,6 +1548,11 @@ if (window.jQuery === "undefined") {
 
                 // trigger custom load event
                 $(this).trigger('mediabox:load');
+
+                // update body width on resize event
+                $(this).on('mediabox:resize', function () {
+                    self.updateBodyWidth(popup);
+                });
 
                 // remove loader cache
                 $cache.empty().remove();

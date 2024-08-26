@@ -67,6 +67,11 @@
                     <option value="0">JNO</option>
                 </field>
 
+                <field name="expand_on_click" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK" description="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
                 <field name="lightbox" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX" description="PLG_SYSTEM_JCEMEDIABOX_LIGHTBOX_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

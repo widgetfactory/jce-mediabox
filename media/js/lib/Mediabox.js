@@ -46,7 +46,8 @@ if (window.jQuery === "undefined") {
                 "previous": "Previous"
             },
             convert_local_url: true,
-            autoplay: 0
+            autoplay: 0,
+            expand_on_click: true
         },
         // array of popup links / objects
         popups: [],

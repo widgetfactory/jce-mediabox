@@ -555,6 +555,10 @@
 
             $img.on('mediabox:load', function () {
                 var cw = this.clientWidth, ch = this.clientHeight, nw = this.naturalWidth, nh = this.naturalHeight;
+
+                if (WfMediabox.settings.expand_on_click === false) {
+                    return;
+                }
                 
                 if (nw > cw || nh > ch) {
                     // fullscreen zoom

@@ -127,7 +127,7 @@
   box-shadow: rgba(0, 0, 0, 0.3) -2px 2px 2px;
 }
 .wf-mediabox-theme-light .wf-mediabox-numbers {
-  color: #666666;
+  color: #666;
   display: block;
   padding: 0;
   text-align: left;
@@ -137,4 +137,7 @@
 }
 .wf-mediabox-theme-light .wf-mediabox-page.idevice .wf-mediabox-container {
   margin-bottom: -1px;
+}
+.wf-mediabox-theme-light .wf-mediabox-content img.wf-mediabox-focus {
+  border: 2px solid #666;
 }

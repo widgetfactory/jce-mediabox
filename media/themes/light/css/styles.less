@@ -137,7 +137,7 @@
     }
 
     .wf-mediabox-numbers {
-        color: #666666;
+        color: #666;
         display: block;
         padding: 0;
         text-align: left;
@@ -149,5 +149,13 @@
     // IPhone / IPad Specific Styles
     .wf-mediabox-page.idevice .wf-mediabox-container {
         margin-bottom: -1px;
+    }
+
+    .wf-mediabox-content {
+        img {
+            &.wf-mediabox-focus {
+                border: 2px solid #666;
+            }
+        }
     }
 }

@@ -51,7 +51,21 @@
         top: -1em;
     }
 
-    .wf-mediabox-numbers button.active {
-        background-color: #000;
+    .wf-mediabox-numbers {
+        button.active {
+            background-color: #000;
+        }
+
+        button:focus {
+            background-color: #888;
+        }
+    }
+
+    .wf-mediabox-content {
+        img {
+            &.wf-mediabox-focus {
+                border: 2px solid #000;
+            }
+        }
     }
 }

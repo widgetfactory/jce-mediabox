@@ -66,7 +66,15 @@
 .wf-mediabox-theme-shadow .wf-mediabox-next:focus,
 .wf-mediabox-theme-shadow .wf-mediabox-close:focus {
   background-color: transparent;
-  color: #fff;
+  color: #888;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-prev:hover svg,
+.wf-mediabox-theme-shadow .wf-mediabox-next:hover svg,
+.wf-mediabox-theme-shadow .wf-mediabox-close:hover svg,
+.wf-mediabox-theme-shadow .wf-mediabox-prev:focus svg,
+.wf-mediabox-theme-shadow .wf-mediabox-next:focus svg,
+.wf-mediabox-theme-shadow .wf-mediabox-close:focus svg {
+  fill: #888;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-prev > svg,
 .wf-mediabox-theme-shadow .wf-mediabox-next > svg,
@@ -87,6 +95,11 @@
   line-height: 2;
   text-align: center;
   text-decoration: none;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-prev:focus::after,
+.wf-mediabox-theme-shadow .wf-mediabox-next:focus::after,
+.wf-mediabox-theme-shadow .wf-mediabox-close:focus::after {
+  color: #888;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-close:after {
   content: "\00d7";
@@ -110,6 +123,12 @@
   border: 0 none;
   background: transparent;
   text-decoration: underline;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-numbers button:focus {
+  color: #888;
+  text-decoration: underline;
+  border: 0 none;
+  background: transparent;
 }
 .wf-mediabox-theme-shadow .wf-mediabox-numbers a {
   text-decoration: none;
@@ -152,4 +171,7 @@
   top: 0;
   right: 0;
   color: #fff;
+}
+.wf-mediabox-theme-shadow .wf-mediabox-content img.wf-mediabox-focus {
+  border: 2px solid #fff;
 }

@@ -1,6 +1,4 @@
-.wf-mediabox {
-    
-}
+.wf-mediabox {}
 
 .wf-mediabox-frame {
     padding: 0.5em;
@@ -90,7 +88,7 @@
 
     ol {
         text-align: center;
-        
+
         li {
             display: inline-block;
             box-sizing: border-box;
@@ -127,8 +125,9 @@
             border: 6px solid #fff;
         }
 
-        &:focus {
-            background-color: #444;
+        &.wf-mediabox-focus {
+            background-color: #888;
+            border: 6px solid #fff;
             color: #fff;
         }
     }
@@ -182,9 +181,15 @@
             text-decoration: underline;
         }
     }
+
+    img {
+        &.wf-mediabox-focus {
+            border: 2px solid #444;
+        }
+    }
 }
 
-.wf-mediabox-broken-image  {
+.wf-mediabox-broken-image {
     img {
         display: none;
     }
@@ -209,7 +214,7 @@
         top: 0;
         right: 0;
         bottom: 0;
-    
+
         display: flex;
         align-content: center;
         text-align: center;

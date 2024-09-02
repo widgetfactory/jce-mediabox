@@ -1556,7 +1556,7 @@ if (window.jQuery === "undefined") {
                 });
 
                 // remove loader cache
-                $cache.empty().remove();
+                //$cache.empty().remove();
             }
 
             function itemError(e) {
@@ -1584,14 +1584,34 @@ if (window.jQuery === "undefined") {
                 });
             }
 
-            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').one('load loadedmetadata', function (e) {
+            $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').each(function () {
                 var node = this;
+                var hasTriggered = false;
 
+                // Function to handle the itemLoaded logic
+                function triggerItemLoaded() {
+                    if (!hasTriggered) {
+                        hasTriggered = true; // Mark as triggered
+                        itemLoaded.apply(node);
+                    }
+                }
+
+                // Attempt to trigger itemLoaded on load, loadedmetadata, or handle error event
+                $(node).one('load loadedmetadata error', function (e) {
+                    if (e.type === 'error') {
+                        hasTriggered = true;
+                        itemError.apply(node);
+                    } else {
+                        triggerItemLoaded();
+                    }
+                });
+
+                // Fallback: Trigger itemLoaded after 5 seconds if not triggered by event
                 setTimeout(function () {
-                    itemLoaded.apply(node);
-                }, 300);
+                    triggerItemLoaded();
+                }, 5000);
 
-            }).on('error', itemError);
+            });
 
             //$('.wf-mediabox.wf-mediabox-transition-slide-in').removeClass('wf-mediabox-transition-slide-in').addClass('wf-mediabox-transition-slide-out');
         },

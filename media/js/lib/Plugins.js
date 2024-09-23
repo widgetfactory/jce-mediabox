@@ -556,6 +556,10 @@
             $img.on('mediabox:load', function () {
                 var cw = this.clientWidth, ch = this.clientHeight, nw = this.naturalWidth, nh = this.naturalHeight;
 
+                if ($('body').hasClass('wf-mediabox-scrolling')) {
+                    return;
+                }
+
                 if (WfMediabox.settings.expand_on_click === false) {
                     return;
                 }

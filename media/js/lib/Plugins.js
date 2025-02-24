@@ -212,7 +212,12 @@
 
             var video = $('<video ' + attribs.join(' ') + ' tabindex="0" />').on('loadedmetadata', function (e) {
                 $(this).attr({ 'width': this.videoWidth || '', 'height': this.videoHeight || '' });
-            }).append('<source src="' + data.src + '" type="' + type + '" />');
+            }).attr({
+                'src': data.src,
+                'type': type
+            });
+            
+            //.append('<source src="' + data.src + '" type="' + type + '" />');
 
             return video;
         };

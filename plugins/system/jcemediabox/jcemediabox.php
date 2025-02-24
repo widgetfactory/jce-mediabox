@@ -167,7 +167,7 @@ class plgSystemJCEMediabox extends CMSPlugin
             'overlay' => (int) $params->get('overlay', 1),
             'overlay_opacity' => (float) $params->get('overlayopacity'),
             'overlay_color' => $params->get('overlaycolor', ''),
-            'transition_speed' => (int) $params->get('transition_speed', $params->get('scalespeed', 300)),
+            'transition_speed' => (int) $params->get('transitionspeed', $params->get('scalespeed', 300)),
             'close' => (int) $params->get('close', 2),
             //'scrolling' => (string) $params->get('scrolling', 'fixed'),
             'labels' => $this->getLabels(),

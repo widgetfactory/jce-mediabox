@@ -570,9 +570,11 @@
                 }
                 
                 if (nw > cw || nh > ch) {
+                    var $body = $('.wf-mediabox-body');
+
                     // fullscreen zoom
-                    $(this).on('click', function () {
-                        $('.wf-mediabox-body', '.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', nw + 'px');
+                    $(this).add('.wf-mediabox-expand', $body).on('click', function () {
+                        $body.add('.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', nw + 'px');
 
                         $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
 

@@ -840,6 +840,13 @@ if (window.jQuery === "undefined") {
                     }
                 });
 
+                // Setup Expand / Collapse icon
+                $('.wf-mediabox-expand').attr('tabindex', 0).attr('svg-icon', function (i, val) {
+                    if (val) {
+                        $(this).append(MediaBox.getSVGIcon(val));
+                    }
+                });
+
                 // store html
                 $('.wf-mediabox-numbers').data('html', $('.wf-mediabox-numbers').html()).attr('aria-hidden', true);
 

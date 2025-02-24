@@ -1356,7 +1356,7 @@ if (window.jQuery === "undefined") {
         /**
          * Pre-animation setup. Resize images, set width / height
          */
-        setup: function () {
+        setup: function () {            
             // Setup info
             this.info();
 
@@ -1440,6 +1440,8 @@ if (window.jQuery === "undefined") {
 
             // create loader cache
             var $cache = $('<div class="wf-mediabox-cache" />');
+
+            var loadTime = new Date().getTime(), speed = s.transition_speed;
 
             if (popup.type == 'iframe' || popup.type == 'ajax') {
                 $('.wf-mediabox-content-item').html(popup.html);
@@ -1599,12 +1601,18 @@ if (window.jQuery === "undefined") {
 
                 // Attempt to trigger itemLoaded on load, loadedmetadata, or handle error event
                 $(node).one('load loadedmetadata error', function (e) {
-                    if (e.type === 'error') {
-                        hasTriggered = true;
-                        itemError.apply(node);
-                    } else {
-                        triggerItemLoaded();
-                    }
+                        
+                    loadTime = new Date().getTime() - loadTime;
+
+                    // force a minimum delay to allow for transition effects
+                    setTimeout(function () {
+                        if (e.type === 'error') {
+                            hasTriggered = true;
+                            itemError.apply(node);
+                        } else {
+                            triggerItemLoaded();
+                        }
+                    }, Math.max(0, speed - loadTime)); // must be 0 or more
                 });
 
                 // Fallback: Trigger itemLoaded after 5 seconds if not triggered by event

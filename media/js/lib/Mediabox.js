@@ -31,7 +31,7 @@ if (window.jQuery === "undefined") {
         var boxCenter = $(el).offset().top + $(el).outerHeight(true) / 2;
         var windowCenter = window.innerHeight / 2;
 
-       window.scrollTo(0, boxCenter - windowCenter);
+        window.scrollTo(0, boxCenter - windowCenter);
 
     }
 
@@ -974,83 +974,58 @@ if (window.jQuery === "undefined") {
         },
 
         updateBodyWidth: function (popup) {
-            var w, h, ratio, m = 0, ww = $(window).width(), wh = $(window).height();
+            var ww = $(window).width();
+            var wh = window.visualViewport ? window.visualViewport.height : $(window).height(); // can't rely on $(window).height() as it doesn't work in iOS Safari
 
-            var fw = $('.wf-mediabox-frame').width();
-            var fh = $('.wf-mediabox-frame').height();
+            var iosBuffer = MediaBox.Env.ios ? 40 : 0; // iOS Safari has a bug where the height is not correct when the address bar is visible
 
-            if (this.settings.scrolling === "scroll") {
-                var framePaddingLeft = $('.wf-mediabox-frame').css('padding-left'), framePaddingTop = $('.wf-mediabox-frame').css('padding-top');
+            var $frame = $('.wf-mediabox-frame');
 
-                fw = ww - parseInt(framePaddingLeft) * 2;
-                fh = wh - parseInt(framePaddingTop) * 2;
-            }
+            var pl = parseInt($frame.css('padding-left'), 10) || 0;
+            var pt = parseInt($frame.css('padding-top'), 10) || 0;
 
-            w = MediaBox.Tools.parseWidth(popup.width);
-            h = MediaBox.Tools.parseHeight(popup.height || fh);
+            // frame width - padding on both sides. Calculated from window dimensions due to iOS viewport bug
+            var fw = ww - pl * 2; // frame width - window width - padding
+            var fh = wh - pt * 2; // frame height - window height - padding
 
-            if ($('.wf-mediabox-content').hasClass('wf-mediabox-content-ratio-flex')) {
-                // get size of border padding and info box
-                //var modw = $('.wf-mediabox-body').width() - $('.wf-mediabox-content').width();
-                var modh = $('.wf-mediabox-body').height() - $('.wf-mediabox-content').height();
+            var w = MediaBox.Tools.parseWidth(popup.width);
+            var h = MediaBox.Tools.parseHeight(popup.height || fh);
 
-                /*
-                // remove from frame width
-                w = w - modw;
-                // remove from frame height
-                h = h - modh;
+            var $body = $('.wf-mediabox-body');
+            var $content = $('.wf-mediabox-content');
 
-                // get proportional percentage
-                var pct = Math.floor(h / w * 100);*/
-
-                // clamp height
+            if ($content.hasClass('wf-mediabox-content-ratio-flex')) {
+                var modh = $body.height() - $content.height();
                 h = Math.min(h, fh);
+                var totalModH = modh + (wh - h) + iosBuffer;
+                $('.wf-mediabox-content-item').css('height', (wh - totalModH) + 'px');
+            }            
 
-                // border padding + info box + frame padding
-                modh = modh + (wh - h);
+            var dim = MediaBox.Tools.resize(w, h, fw, fh);
+            var bw = dim.width;
+            $body.css('max-width', bw);
 
-                //$('.wf-mediabox-content-item').css('padding-bottom', pct + '%');
-                $('.wf-mediabox-content-item').css('height', 'calc(100vh - ' + modh + 'px)');
-            }
+            var bh = $body.height();
+            var ratio;
 
-            // clamp window height and width (iPhone 6 375px - 20px)
-            //fh = Math.max(fh, 355);
-            //fw = Math.max(fw, 355);
-
-            var dim = MediaBox.Tools.resize(w, h, fw, fh), bw = dim.width;
-
-            // set the width as calculated
-            $('.wf-mediabox-body').css('max-width', bw);
-
-            // get the resultant height
-            var bh = $('.wf-mediabox-body').height();
-
-            // find ratio
             if (fw > fh) {
                 ratio = (bw / bh).toFixed(1);
-
                 if (bh > fh) {
-                    bw = ratio * (fh - 16) - 32;
-                    $('.wf-mediabox-body').css('max-width', bw);
+                    bw = ratio * (fh - 2 * pt) - 32;
+                    $body.css('max-width', bw);
                 }
-
             } else {
                 ratio = (bh / bw).toFixed(1);
 
                 if (bh > fh) {
-                    // find ratio
-                    if (bw > bh) {
-                        ratio = (bh / bw).toFixed(1);
-                    } else {
-                        ratio = (bw / bh).toFixed(1);
-                    }
+                    ratio = (bw > bh) ? (bh / bw).toFixed(1) : (bw / bh).toFixed(1);
 
-                    while (bh > fh) {
-                        bw = Math.max(260, bw);
+                    while (bh > fh && bw > 260) {
                         bh = ratio * bw;
+                        bw = bw - 1;
                     }
 
-                    $('.wf-mediabox-body').css('max-width', bw - 16);
+                    $body.css('max-width', bw - 2 * pl);
                 }
             }
 
@@ -1363,7 +1338,7 @@ if (window.jQuery === "undefined") {
         /**
          * Pre-animation setup. Resize images, set width / height
          */
-        setup: function () {            
+        setup: function () {
             // Setup info
             this.info();
 
@@ -1608,7 +1583,7 @@ if (window.jQuery === "undefined") {
 
                 // Attempt to trigger itemLoaded on load, loadedmetadata, or handle error event
                 $(node).one('load loadedmetadata error', function (e) {
-                        
+
                     loadTime = new Date().getTime() - loadTime;
 
                     // force a minimum delay to allow for transition effects

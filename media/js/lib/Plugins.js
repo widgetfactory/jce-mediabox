@@ -11,13 +11,16 @@
  * other free or open source software licenses.
  *
  */
+
+/* global jQuery, WfMediabox */
+
 (function ($, WfMediabox) {
     function stripHtml(html) {
         let tmp = document.createElement("DIV");
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
     }
-    
+
     function isBool(attr) {
         var map = ['async', 'checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected', 'autoplay', 'loop', 'controls', 'itemscope', 'playsinline', 'contenteditable', 'spellcheck', 'contextmenu', 'draggable', 'hidden'];
         return $.inArray(attr, map) !== -1;
@@ -44,22 +47,35 @@
 
     /**
      * Parse the URI into component parts
-     * https://github.com/tinymce/tinymce/blob/master/js/tinymce/classes/util/URI.js
+     * url[, base]) -> { query: "", anchor: "" }
      */
     function parseURL(url) {
-        var o = {};
+        var href = String(url || '');
+        var out = { query: '', anchor: '' };
+        var base = WfMediabox.site;
 
-        url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
+        // Handle protocol-relative URLs like //example.com/path
+        if (/^\/\//.test(href)) {
+            var proto = (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'http:';
+            href = proto + href;
+        }
 
-        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function (i, v) {
-            var s = url[i];
-            if (s) {
-                o[v] = s;
-            }
-        });
+        try {
+            // Use base for relative URLs
+            var u = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) ? new URL(href) : new URL(href, base);
 
-        return o;
+            // query without '?'
+            out.query = u.search ? u.search.slice(1) : '';
+
+            // anchor without '#'
+            out.anchor = u.hash ? u.hash.slice(1) : '';
+        } catch (e) {
+            // Invalid URL → return empty strings
+        }
+
+        return out;
     }
+
 
     function buildURL(o) {
         var url = '';
@@ -216,7 +232,7 @@
                 'src': data.src,
                 'type': type
             });
-            
+
             //.append('<source src="' + data.src + '" type="' + type + '" />');
 
             return video;
@@ -306,8 +322,6 @@
         };
     });
     WfMediabox.Plugin.add('quicktime', function () {
-        var n;
-
         this.html = function (data) {
             data.type = "video/quicktime";
             data.classid = "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b";
@@ -343,7 +357,7 @@
      * @param {String} v URL
      */
     WfMediabox.Plugin.add('youtube', function () {
-        var self = this, props = ['autoplay', 'cc_lang_pref', 'cc_load_policy', 'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy', 'list', 'listType', 'loop', 'modestbranding', 'origin', 'playlist', 'playsinline', 'rel', 'start', 'widget_referrer'];
+        var props = ['autoplay', 'cc_lang_pref', 'cc_load_policy', 'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy', 'list', 'listType', 'loop', 'modestbranding', 'origin', 'playlist', 'playsinline', 'rel', 'start', 'widget_referrer'];
 
         this.is = function (data) {
             return /youtu(\.)?be([^\/]+)?\/(.+)/.test(data.src);
@@ -361,6 +375,11 @@
                 if (d.indexOf('?') === -1) {
                     d = d.replace(/&/, '?');
                 }
+
+                // convert "t" key to "start" if it exists, removing the "s" unit if present
+                d = d.replace(/([?&])t=([0-9]+)(s)?/, function (match, prefix, value) {
+                    return prefix + 'start=' + value;
+                });
 
                 return 'youtube' + c + '/embed/' + d;
             });
@@ -439,7 +458,7 @@
             if (s.indexOf('player.vimeo.com/video/') == -1) {
                 s = s.replace(/vimeo\.com\/(?:\w+\/){0,3}((?:[0-9]+\b)(?:\/[a-z0-9]+)?)/, function (match, value) {
                     var hash = '', params = value.split('/'), id = params[0];
-                    
+
                     if (params.length == 2) {
                         hash = params[1];
                     }
@@ -539,7 +558,7 @@
             var alt = decodeURIComponent(data.alt || data.title || "");
             // remove HTML
             alt = stripHtml(alt);
-            
+
             var $img = $('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + alt + '" tabindex="0" />');
 
             if (data.params) {
@@ -568,7 +587,7 @@
                 if (WfMediabox.settings.expand_on_click === false) {
                     return;
                 }
-                
+
                 if (nw > cw || nh > ch) {
                     var $body = $('.wf-mediabox-body');
 
@@ -605,14 +624,14 @@
         this.html = function (data) {
             // get the "basename" of the file
             var name = basename(data.src);
-            
+
             // set the label to the title or a default
             var label = data.title || 'PDF display of ' + name;
 
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            if (WfMediabox.Env.safari) {            
+            if (WfMediabox.Env.safari) {
                 // load with transparent src
                 return $('<object data="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" aria-label="' + label + '" />').on('mediabox:load', function () {
                     // replace src with timestamped pdf url
@@ -637,12 +656,13 @@
 
         this.html = function (data) {
             // create component src
-            src = createComponentURL(data.src);
+            var src = createComponentURL(data.src);
 
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
             var iframe = $('<iframe src="' + src + '" />').on('mediabox:load', function () {
+                // eslint-disable-next-line consistent-this
                 var n = this, $parent = $(this).parent(),
                     html = this.contentWindow.document.body.innerHTML;
 
@@ -655,6 +675,8 @@
                 $parent.append(html);
 
                 var uri = parseURL(this.src);
+
+                console.log(uri);
 
                 if (uri.anchor) {
                     var elm = $parent.find('#' + uri.anchor).get(0);
@@ -724,7 +746,7 @@
             data.height = data.height || '100%';
 
             // create component src
-            src = createComponentURL(data.src);
+            var src = createComponentURL(data.src);
 
             // create iframe markup
             var ifr = createIframe(src);

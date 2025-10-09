@@ -46,64 +46,137 @@
     }
 
     /**
-     * Parse the URI into component parts
-     * url[, base]) -> { query: "", anchor: "" }
+     * ---------------------------------------------------------------------
+     * parseURL
+     * ---------------------------------------------------------------------
+     * Parse a URL string into component parts using the native URL API.
+     *
+     * @param   {string}  url   The URL string to parse. May be absolute or relative.
+     * @returns {Object}         An object with the following keys:
+     *                           {
+     *                             protocol : string,   // eg. "https"
+     *                             userInfo : string,   // eg. "user:pass"
+     *                             hostname : string,   // eg. "example.com"
+     *                             port     : string,   // eg. "8080"
+     *                             pathname : string,   // eg. "/path/to/file"
+     *                             query    : string,   // eg. "a=1&b=2"
+     *                             anchor   : string    // eg. "section"
+     *                           }
+     *
+     * Notes:
+     * - Automatically resolves relative URLs against WfMediabox.site or window.location.href.
+     * - Handles protocol-relative URLs (starting with //).
+     * - Returns empty strings for invalid URLs.
+     * ---------------------------------------------------------------------
      */
     function parseURL(url) {
         var href = String(url || '');
-        var out = { query: '', anchor: '' };
         var base = WfMediabox.site;
 
-        // Handle protocol-relative URLs like //example.com/path
+        // Handle protocol-relative URLs (eg. //example.com/path)
         if (/^\/\//.test(href)) {
-            var proto = (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'http:';
+            var proto = (typeof window !== 'undefined' && window.location && window.location.protocol)
+                ? window.location.protocol
+                : 'https:';
             href = proto + href;
         }
 
+        var out = {
+            protocol: '',
+            userInfo: '',
+            hostname: '',
+            port: '',
+            pathname: '',
+            query: '',
+            anchor: ''
+        };
+
         try {
-            // Use base for relative URLs
+            // Use base for relative URLs, otherwise parse directly
             var u = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) ? new URL(href) : new URL(href, base);
 
-            // query without '?'
-            out.query = u.search ? u.search.slice(1) : '';
+            // Protocol (remove trailing colon)
+            out.protocol = u.protocol.replace(/:$/, '');
 
-            // anchor without '#'
+            // Compose userInfo from username[:password]
+            var ui = u.username || '';
+            if (u.password) {
+                ui += (ui ? ':' : '') + u.password;
+            }
+            out.userInfo = ui;
+
+            // Hostname, port, pathname
+            out.hostname = u.hostname;
+            out.port = u.port;
+            out.pathname = u.pathname || '';
+
+            // Query and anchor without ? or #
+            out.query = u.search ? u.search.slice(1) : '';
             out.anchor = u.hash ? u.hash.slice(1) : '';
-        } catch (e) {
-            // Invalid URL → return empty strings
+        }
+        catch (e) {
+            // Invalid URL → return defaults (empty strings)
         }
 
         return out;
     }
 
-
+    /**
+     * ---------------------------------------------------------------------
+     * buildURL
+     * ---------------------------------------------------------------------
+     * Reconstruct a full URL string from the component parts created by parseURL().
+     *
+     * @param   {Object}  o  URL parts object, eg. { protocol, userInfo, hostname, port, pathname, query, anchor }
+     * @returns {string}     A complete, properly formatted URL.
+     *
+     * Notes:
+     * - Automatically inserts // after the protocol if hostname or userInfo is present.
+     * - Avoids duplicate ports when o.host already includes it.
+     * ---------------------------------------------------------------------
+     */
     function buildURL(o) {
+        o = o || {};
         var url = '';
 
+        // Protocol
         if (o.protocol) {
-            url += o.protocol + '://';
+            url += o.protocol + ':';
         }
 
+        // Add authority section (//...)
+        var haveAuthority = o.hostname || o.host || o.userInfo || o.port;
+
+        if (haveAuthority) {
+            url += '//';
+        }
+
+        // User info (username[:password]@)
         if (o.userInfo) {
             url += o.userInfo + '@';
         }
 
-        if (o.host) {
-            url += o.host;
-        }
+        // Hostname (or host)
+        var authorityHost = o.hostname || o.host || '';
 
-        if (o.port) {
+        url += authorityHost;
+
+        // Port (only if not already part of host)
+        if (o.port && o.hostname) {
             url += ':' + o.port;
         }
 
-        if (o.path) {
-            url += o.path;
+        // Path
+        if (o.pathname) {
+            url += o.pathname;
         }
 
+        // Query
         if (o.query) {
             url += '?' + o.query;
         }
 
+        // Anchor
         if (o.anchor) {
             url += '#' + o.anchor;
         }
@@ -675,8 +748,6 @@
                 $parent.append(html);
 
                 var uri = parseURL(this.src);
-
-                console.log(uri);
 
                 if (uri.anchor) {
                     var elm = $parent.find('#' + uri.anchor).get(0);

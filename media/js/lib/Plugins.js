@@ -728,8 +728,13 @@
         this.type = "ajax";
 
         this.html = function (data) {
-            // create component src
-            var src = createComponentURL(data.src);
+
+            var src = data.src;
+
+            // create component src for local urls
+            if (islocal(src)) {
+                src = createComponentURL(src);
+            }
 
             data.width = data.width || '100%';
             data.height = data.height || '100%';
@@ -747,13 +752,16 @@
                 // append html to created parent
                 $parent.append(html);
 
-                var uri = parseURL(this.src);
+                // if the src has an anchor, scroll to it
+                if (this.src.indexOf('#') !== -1) {
+                    var uri = parseURL(this.src);
 
-                if (uri.anchor) {
-                    var elm = $parent.find('#' + uri.anchor).get(0);
+                    if (uri.anchor) {
+                        var elm = $parent.find('#' + uri.anchor).get(0);
 
-                    if (elm) {
-                        elm.scrollIntoView();
+                        if (elm) {
+                            elm.scrollIntoView();
+                        }
                     }
                 }
 
@@ -816,8 +824,12 @@
             data.width = data.width || '100%';
             data.height = data.height || '100%';
 
-            // create component src
-            var src = createComponentURL(data.src);
+            var src = data.src;
+
+            // create component src for local urls
+            if (islocal(src)) {
+                src = createComponentURL(src);
+            }
 
             // create iframe markup
             var ifr = createIframe(src);

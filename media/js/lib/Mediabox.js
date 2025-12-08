@@ -543,7 +543,8 @@ if (window.jQuery === "undefined") {
                 if (s.icons === 1 && !$(this).hasClass('noicon')) {
                     var $img = $('img:first', this);
 
-                    if ($img.length) {
+                    // check for thumbnail image and ensure this is not a File Manager file link
+                    if ($img.length && !$(this).hasClass('wf_file')) {
                         var styles = {};
 
                         // add zoom image icon
@@ -949,17 +950,24 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox').off('keydown.wf-mediabox');
             }
 
+            var lastLayoutWidth = window.innerWidth;
+
             var resize = MediaBox.Tools.debounce(function () {
-                // get existing width
-                var popup = self.items[self.index];
+                var currentLayoutWidth = window.innerWidth;
 
-                if (!popup) {
-                    return;
+                // Ignore pinch-zoom (which changes visualViewport but NOT innerWidth)
+                if (currentLayoutWidth !== lastLayoutWidth) {
+                    lastLayoutWidth = currentLayoutWidth;
+
+                    var popup = self.items[self.index];
+
+                    if (!popup) {
+                        return;
+                    }
+
+                    self.updateBodyWidth(popup);
                 }
-
-                self.updateBodyWidth(popup);
-
-            }, 300);
+            }, 150);
 
             $(window).on('resize.wf-mediabox, orientationchange.wf-mediabox', resize);
 
@@ -999,7 +1007,7 @@ if (window.jQuery === "undefined") {
                 h = Math.min(h, fh);
                 var totalModH = modh + (wh - h) + iosBuffer;
                 $('.wf-mediabox-content-item').css('height', (wh - totalModH) + 'px');
-            }            
+            }
 
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
             var bw = dim.width;

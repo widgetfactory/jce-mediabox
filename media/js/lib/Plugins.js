@@ -800,17 +800,34 @@
         this.type = "dom";
 
         this.html = function (data) {
-            var node = $(data.src);
+            var params = data.params || {};
+            
+            var src = params.content || data.src;
+
+            // empty or an anchor tag
+            if (!src || src === '#') {
+                return "";
+            }
+
+            // the src value should be an id selector or class selector, eg: #foo or .foo
+            if (src.charAt(0) !== '#' && src.charAt(0) !== '.') {
+                src = '#' + src;
+            }
+
+            // set node as the first available element if any
+            var node = $(src).get(0);
 
             if (node) {
-                return $(node).get(0).outerHTML;
+                return node.outerHTML;
             }
 
             return "";
         };
 
         this.is = function (data) {
-            return data.type === "dom";
+            var params = data.params || {};
+            
+            return data.type === "dom" || params.content;
         };
     });
     /**

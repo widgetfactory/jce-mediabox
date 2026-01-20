@@ -162,7 +162,7 @@ if (window.jQuery === "undefined") {
         getPopups: function (s, p) {
             var selector = s || this.settings.selector;
 
-            return $(selector, p).filter('a[href], area[href]');
+            return $(selector, p).filter('a[href], area[href], a[data-mediabox-content]');
         },
 
         /**
@@ -342,10 +342,10 @@ if (window.jQuery === "undefined") {
                 delay = 0;
 
             // get src value from href attribute
-            var src = el.getAttribute('href');
+            var src = el.getAttribute('href') || '';
 
             // not a popup link
-            if (!src) {
+            if (!src && !el.hasAttribute('data-mediabox-content')) {
                 return;
             }
 
@@ -1433,7 +1433,7 @@ if (window.jQuery === "undefined") {
 
             var loadTime = new Date().getTime(), speed = s.transition_speed;
 
-            if (popup.type == 'iframe' || popup.type == 'ajax') {
+            if (popup.type == 'iframe' || popup.type == 'ajax' || popup.type == 'dom') {
                 $('.wf-mediabox-content-item').html(popup.html);
             } else {
                 $cache.html(popup.html).appendTo('.wf-mediabox');
@@ -1575,6 +1575,15 @@ if (window.jQuery === "undefined") {
                 $('.wf-mediabox-content > div').addClass('wf-icon-404').html(function () {
                     return MediaBox.getSVGIcon('404');
                 });
+            }
+
+            if (popup.type == 'dom') {
+                // Fallback: Trigger itemLoaded after 5 seconds if not triggered by event
+                setTimeout(function () {
+                    itemLoaded();
+                }, 0);
+
+                return;
             }
 
             $('img, video, audio, object, embed', $cache).add('iframe', '.wf-mediabox-content').each(function () {

@@ -1,74 +1,68 @@
-/**
- * Addons
- * @param {Object} JSON mediabox/util/JSON
- * @param {Object} Entities mediabox/util/Entities
- * @returns {mediabox/Addons}
- */
-(function (Entities) {
-    var Parameter = {
-        parse: function (s) {
-            var a = [],
-                x = [];
+import Entities from './Entities.js';
 
-            if (typeof s === 'string') {
-                // if a JSON string return the object
-                if (/^\{[\w\W]+\}$/.test(s)) {
-                    return JSON.parse(s);
-                }
+var Parameter = {
+    parse: function (s) {
+        var a = [],
+            x = [];
 
-                // JCE MediaBox parameter format eg: title[title]
-                if (/\w+\[[^\]]+\]/.test(s)) {                    
-                    
-                    var items = [], arr = s.split(';');
-
-                    arr.forEach(function(i, item) {
-                        var matches = item.match(/([\w]+)\[([^\]]+)\]/);
-
-                        if (matches && matches.length == 3) {
-                            items.push('"' + matches[1] + '":"' + matches[2] + '"');
-                        }
-                    });                   
-
-                    return JSON.parse('{' + items.join(',') + '}');
-                }
-
-                if (s.indexOf('=') !== -1) {
-                    // if url
-                    if (s.indexOf('&') !== -1) {
-                        x = s.split(/&(amp;)?/g);
-                    } else {
-                        x.push(s);
-                    }
-                }
+        if (typeof s === 'string') {
+            // if a JSON string return the object
+            if (/^\{[\w\W]+\}$/.test(s)) {
+                return JSON.parse(s);
             }
 
-            // if array
-            if (Array.isArray(s)) {
-                x = s;
+            // JCE MediaBox parameter format eg: title[title]
+            if (/\w+\[[^\]]+\]/.test(s)) {
+
+                var items = [], arr = s.split(';');
+
+                arr.forEach(function (i, item) {
+                    var matches = item.match(/([\w]+)\[([^\]]+)\]/);
+
+                    if (matches && matches.length == 3) {
+                        items.push('"' + matches[1] + '":"' + matches[2] + '"');
+                    }
+                });
+
+                return JSON.parse('{' + items.join(',') + '}');
             }
 
-            x.forEach(function (i, n) {
-                if (n) {
-                    n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function (a, b, c, d) {
-                        if (d) {
-                            if (!/[^0-9]/.test(d)) {
-                                return '"' + b + '":' + parseInt(d);
-                            }
-
-                            return '"' + b + '":"' + Entities.encode(d.trim()) + '"';
-                        }
-                        return '';
-                    });
-
-                    if (n) {
-                        a.push(n);
-                    }
+            if (s.indexOf('=') !== -1) {
+                // if url
+                if (s.indexOf('&') !== -1) {
+                    x = s.split(/&(amp;)?/g);
+                } else {
+                    x.push(s);
                 }
-            });
-
-            return JSON.parse('{' + a.join(',') + '}');
+            }
         }
-    };
 
-    window.WfMediabox.Parameter = Parameter;
-})(WfMediabox.Entities);
+        // if array
+        if (Array.isArray(s)) {
+            x = s;
+        }
+
+        x.forEach(function (i, n) {
+            if (n) {
+                n = n.replace(/^([^\[]+)(\[|=|:)([^\]]*)(\]?)$/, function (a, b, c, d) {
+                    if (d) {
+                        if (!/[^0-9]/.test(d)) {
+                            return '"' + b + '":' + parseInt(d);
+                        }
+
+                        return '"' + b + '":"' + Entities.encode(d.trim()) + '"';
+                    }
+                    return '';
+                });
+
+                if (n) {
+                    a.push(n);
+                }
+            }
+        });
+
+        return JSON.parse('{' + a.join(',') + '}');
+    }
+};
+
+export default Parameter;

@@ -11,13 +11,7 @@
  * other free or open source software licenses.
  *
  */
-import Addons from "./Addons";
-import Parameter from "./Parameter";
-import Tools from "./Tools";
-import Storage from "./Storage";
 import Env from "./Env";
-import Mime from "./Mime";
-import Entities from "./Entities";
 
 function stripHtml(html) {
     let tmp = document.createElement("DIV");
@@ -174,7 +168,23 @@ function createIframe(src, attribs) {
     return createElementFromHTML(html);
 }
 
-Addons.Plugin.add('flash', function () {
+const plugins = {};
+
+const addPlugin = function (name, plugin) {
+    if (typeof plugin === 'function') {
+        plugins[name] = plugin;
+    }
+}
+
+const getPlugin = function (name) {
+    if (typeof plugins[name] === 'function') {
+        return plugins[name]();
+    }
+
+    return null;
+};
+
+addPlugin('flash', function () {
     this.type = "object";
     this.html = function (data) {
         data.type = "application/x-shockwave-flash";
@@ -191,7 +201,7 @@ Addons.Plugin.add('flash', function () {
 /**
  * HTML5 Video
  */
-Addons.Plugin.add('video', function () {
+addPlugin('video', function () {
     this.type = "video";
 
     // create image html (leave src blank)
@@ -243,7 +253,7 @@ Addons.Plugin.add('video', function () {
 /**
  * HTML5 Audio
  */
-Addons.Plugin.add('audio', function () {
+addPlugin('audio', function () {
     this.type = "audio";
 
     // create image html (leave src blank)
@@ -282,7 +292,7 @@ Addons.Plugin.add('audio', function () {
  * Daily Motion - http://www.dailymotion.com
  * @param {String} v URL
  */
-Addons.Plugin.add('dailymotion', function () {
+addPlugin('dailymotion', function () {
     this.is = function (data) {
         return /dai\.?ly(motion)/.test(data.src);
     };
@@ -314,7 +324,7 @@ Addons.Plugin.add('dailymotion', function () {
     };
 });
 
-Addons.Plugin.add('quicktime', function () {
+addPlugin('quicktime', function () {
     var n;
 
     this.html = function (data) {
@@ -333,7 +343,7 @@ Addons.Plugin.add('quicktime', function () {
     };
 });
 
-Addons.Plugin.add('windowsmedia', function () {
+addPlugin('windowsmedia', function () {
 
     this.type = "object";
 
@@ -354,7 +364,7 @@ Addons.Plugin.add('windowsmedia', function () {
  * Youtube - http://www.youtube.com
  * @param {String} v URL
  */
-Addons.Plugin.add('youtube', function () {
+addPlugin('youtube', function () {
     var self = this, props = ['autoplay', 'cc_lang_pref', 'cc_load_policy', 'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy', 'list', 'listType', 'loop', 'modestbranding', 'origin', 'playlist', 'playsinline', 'rel', 'start', 'widget_referrer'];
 
     this.is = function (data) {
@@ -443,7 +453,7 @@ Addons.Plugin.add('youtube', function () {
     };
 });
 
-Addons.Plugin.add('vimeo', function () {
+addPlugin('vimeo', function () {
 
     this.is = function (data) {
         return /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.test(data.src);
@@ -544,11 +554,9 @@ $('.wf-mediabox').on('WfMediabox:plugin', function (e, data) {
 /**
  * Image
  */
-Addons.Plugin.add('image', function () {
-    this.type = "image";
-
+addPlugin('image', function () {
     // create image html (leave src blank)
-    this.html = function (data) {
+    const html = function (data) {
         // get alt value from title or passed in alt variable
         var alt = decodeURIComponent(data.alt || data.title || "");
         // remove HTML
@@ -557,7 +565,9 @@ Addons.Plugin.add('image', function () {
         const img = createElementFromHTML('<img src="' + data.src + '" class="wf-mediabox-img" alt="' + alt + '" tabindex="0" />');
 
         if (data.params) {
-            for (let [name, value] of Object.entries(data.params)) {
+            let entries = Object.entries(data.params);
+            
+            for (let [name, value] of entries) {
                 if (name === "srcset") {
                     value = value.replace(/(?:[^\s]+)\s*(?:[\d\.]+[wx])?(?:\,\s*)?/gi, function (match) {
                         if (islocal(match)) {
@@ -575,22 +585,24 @@ Addons.Plugin.add('image', function () {
         return img;
     };
 
-    this.is = function (data) {
-        var src = data.src;
-        // remove query to test extension
-        src = src.split('?')[0];
-        return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
+    return {
+        type: "image",
+        html: html,
+        is: function (data) {
+            var src = data.src;
+            // remove query to test extension
+            src = src.split('?')[0];
+            return /image\/?/.test(data.type) || /\.(jpg|jpeg|png|gif|bmp|tif|webp)$/i.test(src);
+        }
     };
 });
 
 /**
  * PDF
  */
-WfMediabox.Plugin.add('pdf', function () {
-    this.type = "iframe";
-
+addPlugin('pdf', function () {
     // create html
-    this.html = function (data) {
+    const html = function (data) {
         var label = data.title || 'PDF Iframe';
 
         data.width = data.width || '100%';
@@ -599,7 +611,7 @@ WfMediabox.Plugin.add('pdf', function () {
         const ifr = createElementFromHTML('<iframe src="' + data.src + '" frameborder="0" aria-label="' + label + '"></iframe>');
 
         ifr.addEventListener('load', function () {
-            if (WfMediabox.Env.gecko) {
+            if (Env.gecko) {
                 return;
             }
 
@@ -613,18 +625,21 @@ WfMediabox.Plugin.add('pdf', function () {
         }, { once: true });
     };
 
-    this.is = function (data) {
-        return data.type === "pdf" || /application\/(x-)?pdf/.test(data.type) || /\.pdf$/i.test(data.src);
+    return {
+        type: "iframe",
+        html: html,
+        is: function (data) {
+            return data.type === "pdf" || /application\/(x-)?pdf/.test(data.type) || /\.pdf$/i.test(data.src);
+        }
     };
 });
 
 /**
  * Ajax / Internal Content
  */
-WfMediabox.Plugin.add('content', function () {
-    this.type = "ajax";
+addPlugin('content', function () {
 
-    this.html = function (data) {
+    const html = function (data) {
         // create component src
         src = createComponentURL(data.src);
 
@@ -668,6 +683,7 @@ WfMediabox.Plugin.add('content', function () {
                 });
             });
 
+            // TODO
             WfMediabox.create(WfMediabox.getPopups('', parent));
 
             if (data.params) {
@@ -687,51 +703,53 @@ WfMediabox.Plugin.add('content', function () {
         return ifr;
     };
 
-    this.is = function (data) {
-        return data.type === "ajax" || data.type === "text/html" || data.node.classList.contains('ajax');
+    return {
+        type: "iframe",
+        html: html,
+        is: function (data) {
+            return data.type === "ajax" || data.type === "text/html" || data.node.classList.contains('ajax');
+        }
     };
 });
 /**
  * Dom Element
  */
-WfMediabox.Plugin.add('dom', function () {
-    this.type = "dom";
+addPlugin('dom', function () {
 
-    this.html = function (data) {
-        var node = createElementFromHTML(data.src);
+    return {
+        type: "dom",
+        html: function (data) {
+            var node = createElementFromHTML(data.src);
 
-        if (node) {
-            return node.outerHTML;
+            if (node) {
+                return node.outerHTML;
+            }
+
+            return "";
+        },
+        is: function (data) {
+            return data.type === "dom";
         }
-
-        return "";
-    };
-
-    this.is = function (data) {
-        return data.type === "dom";
     };
 });
+
 /**
  * IFrame
  */
-Addons.Plugin.add('iframe', function () {
-
-    this.type = "iframe";
-
-    this.html = function (data) {
-        data.width = data.width || '100%';
-        data.height = data.height || '100%';
-
-        // create component src
-        src = createComponentURL(data.src);
-
-        // create iframe markup
-        const ifr = createIframe(src);
-
-        return ifr
-    };
-
-    this.is = function (data) {
-        return !data.type || data.type === "iframe";
+addPlugin('iframe', function () {
+    return {
+        type: "iframe",
+        html: function (data) {
+            data.width = data.width || '100%';
+            data.height = data.height || '100%';
+        },
+        is: function (data) {
+            return !data.type || data.type === "iframe";
+        }
     };
 });
+
+export default {
+    get: getPlugin,
+    add: addPlugin
+};

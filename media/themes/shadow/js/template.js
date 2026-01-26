@@ -1,4 +1,4 @@
-WfMediabox.Theme.add("shadow", function () {
+WfMediabox.addTheme("shadow", function () {
     return [
         {
             "div": {

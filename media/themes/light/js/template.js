@@ -1,4 +1,4 @@
-WfMediabox.Theme.add("light", function () {
+WfMediabox.addTheme("light", function () {
     return [
         {
             "div": {

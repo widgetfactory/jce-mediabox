@@ -1,32 +1,33 @@
-(function () {
-    var entities = {
-        '\"': '&quot;',
-        "'": '&#39;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '&': '&amp;'
-    };
+var entities = {
+    '\"': '&quot;',
+    "'": '&#39;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;'
+};
 
-    var Entities = {
-        encode: function (str) {
-            return ('' + str).replace(/[<>&\"\']/g, function (c) {
-                return entities[c] || c;
-            });
-        },
-        decode: function (str) {
-            var el;
+const encode = function (str) {
+    return ('' + str).replace(/[<>&\"\']/g, function (c) {
+        return entities[c] || c;
+    });
+};
 
-            // try decode encoded URI
-            try {
-                str = decodeURIComponent(str);
-            } catch (e) {}
+const decode = function (str) {
+    var el;
 
-            el = document.createElement("div");
-            el.innerHTML = str;
+    // try decode encoded URI
+    try {
+        str = decodeURIComponent(str);
+    } catch (e) { }
 
-            return el.innerHTML || str;
-        }
-    };
+    el = document.createElement("div");
+    el.innerHTML = str;
 
-    window.WfMediabox.Entities = Entities;
-})();
+    return el.innerHTML || str;
+}
+
+
+export default {
+    encode,
+    decode
+};

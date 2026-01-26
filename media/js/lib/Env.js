@@ -1,188 +1,85 @@
 /**
- * Env.js
+ * Copyright (c) Moxiecode Systems AB
+ * Copyright (c) 1999–2017 Ephox Corporation. All rights reserved.
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Copyright (c) 2009 - 2026 Ryan Demmer. All rights reserved.
  *
- * Copyright, Moxiecode Systems AB
- * Released under LGPL License.
+ * @note Forked from or includes code from TinyMCE 4.x/5.x (originally LGPL v2.1),
+ * TinyMCE 6.x (MIT), and TinyMCE 7.x (GPL v2.0 or later).
  *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
+ * Code originally under LGPL v2.1 is relicensed under GPL v2.0 or later
+ * as permitted by Section 3 of the LGPL v2.1.
+ * Code originally under MIT is incorporated under its permissive terms.
+ * Code originally under GPL v2.0 or later remains under GPL v2.0 or later.
+ *
+ * Licensed under the GNU General Public License v2.0 or later (GPL v2+):
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 /**
- * This class contains various environment constrants like browser versions etc.
+ * This class contains various environment constants like browser versions etc.
  * Normally you don't want to sniff specific browser versions but sometimes you have
  * to when it's impossible to feature detect. So use this with care.
  *
- * @class tinymce.Env
+ * @class wren.Env
  * @static
  */
-(function() {
 
-    var nav = navigator, userAgent = nav.userAgent;
-    var opera, webkit, ie, ie6, gecko, mac, iDevice, Android, video, audio;
-    opera = window.opera && window.opera.buildNumber;
-    android = /Android/.test(userAgent);
-    webkit = /WebKit/.test(userAgent);
-    ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
-    ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
-    ie = ie && !webkit;
-    ie6 = ie && !window.XMLHttpRequest;
-    ie11 = userAgent.indexOf('Trident/') != -1 && (userAgent.indexOf('rv:') != -1 || nav.appName.indexOf('Netscape') != -1) ? 11 : false;
-    ie = ie || ie11;
+var nav = navigator,
+    userAgent = nav.userAgent;
+var opera, webkit, ie, gecko, iDevice, android, fileApi, phone, tablet, windowsPhone;
 
-    gecko = !webkit && !ie && /Gecko/.test(userAgent);
-    mac = userAgent.indexOf('Mac') != -1;
-    iDevice = /(iPad|iPhone)/.test(userAgent);
-    Android = /Android/.test(userAgent);
-    Mobile = iDevice || Android;
+function matchMediaQuery(query) {
+    return "matchMedia" in window ? matchMedia(query).matches : false;
+}
 
-    /*
-     * From Modernizr v2.0.6
-     * http://www.modernizr.com
-     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
-     */
-    video = (function() {
-        var el = document.createElement('video'), o = {};
-        // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
-        try {
+opera = window.opera && window.opera.buildNumber;
+android = /Android/.test(userAgent);
+webkit = /WebKit/.test(userAgent);
+ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
+ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
+ie = ie && !webkit;
+gecko = !webkit && !ie && /Gecko/.test(userAgent);
+iDevice = /(iPad|iPhone)/.test(userAgent);
+phone = matchMediaQuery("only screen and (max-device-width: 480px)") && (android || iDevice);
+tablet = matchMediaQuery("only screen and (min-width: 800px)") && (android || iDevice);
+windowsPhone = userAgent.indexOf('Windows Phone') != -1;
 
-            if (!!el.canPlayType) {
-                o.ogg = el.canPlayType('video/ogg; codecs="theora"');
+// Is a iPad/iPhone and not on iOS5 sniff the WebKit version since older iOS WebKit versions
+// says it has contentEditable support but there is no visible caret.
+var contentEditable = !iDevice || fileApi || userAgent.match(/AppleWebKit\/(\d*)/)[1] >= 534;
 
-                // Workaround required for IE9, which doesn't report video support without audio codec specified.
-                //   bug 599718 @ msft connect
-                var h264 = 'video/mp4; codecs="avc1.42E01E';
-                o.mp4 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
+export default {
 
-                o.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
+    chrome: webkit && !ie && !opera,
+    edge: ie && parseInt(ie, 10) >= 12,
+    firefox: gecko,
+    ie: ie,
+    opera: opera,
+    safari: webkit && !ie && !opera,
 
-                return o;
-            }
+    android: function () {
+        return /Android/.test(userAgent);
+    },
 
-        } catch (e) {
-        }
+    ios: function () {
+        return /(iPad|iPhone)/.test(userAgent) && !windowsPhone;
+    },
 
-        return false;
-    })();
+    chromeOs: function () {
+        return /CrOS/.test(userAgent);
+    },
 
-    /*
-     * From Modernizr v2.0.6
-     * http://www.modernizr.com
-     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
-     */
-    audio = (function() {
-        var el = document.createElement('audio'), o = {};
-        try {
-            if (!!el.canPlayType) {
-                o.ogg = el.canPlayType('audio/ogg; codecs="vorbis"');
-                o.mp3 = el.canPlayType('audio/mpeg;');
+    macOs: function () {
+        return userAgent.indexOf('Mac') != -1;
+    },
 
-                // Mimetypes accepted:
-                //   https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
-                //   http://bit.ly/iphoneoscodecs
-                o.wav = el.canPlayType('audio/wav; codecs="1"');
-                o.m4a = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
-                o.webm = el.canPlayType('audio/webm; codecs="vp8, vorbis"');
+    desktop: !phone && !tablet,
+    windowsPhone: windowsPhone,
 
-                return o;
-            }
-        } catch (e) {
-        }
+    webkit: webkit,
 
-        return false;
-    })();
+    gecko: gecko,
 
-    var Env = {
-        /**
-         * Constant that is true if the browser is Opera.
-         *
-         * @property opera
-         * @type Boolean
-         * @final
-         */
-        opera: opera,
-        /**
-         * Constant that is true if the browser is WebKit (Safari/Chrome).
-         *
-         * @property webKit
-         * @type Boolean
-         * @final
-         */
-        webkit: webkit,
-        /**
-         * Constant that is more than zero if the browser is IE6.
-         *
-         * @property ie6
-         * @type Boolean
-         * @final
-         */
-        ie6: ie6,
-        /**
-         * Constant that is more than zero if the browser is IE.
-         *
-         * @property ie
-         * @type Boolean
-         * @final
-         */
-        ie: ie,
-        /**
-         * Constant that is true if the browser is Gecko.
-         *
-         * @property gecko
-         * @type Boolean
-         * @final
-         */
-        gecko: gecko,
-        /**
-         * Constant that is true if the os is Mac OS.
-         *
-         * @property mac
-         * @type Boolean
-         * @final
-         */
-        mac: mac,
-        /**
-         * Constant that is true if the os is iOS.
-         *
-         * @property iOS
-         * @type Boolean
-         * @final
-         */
-        iOS: iDevice,
-        /**
-         * Constant that is true if the os is Android.
-         *
-         * @property Android
-         * @type Boolean
-         * @final
-         */
-        android: Android,
-        /**
-         * Object showing browser support for HTML5 video.
-         *
-         * @property video
-         * @type Object
-         * @final
-         */
-        video: video,
-        /**
-         * Object showing browser support for HTML5 audio.
-         *
-         * @property audio
-         * @type Object
-         * @final
-         */
-        audio: audio,
-
-        /**
-        * Constant that is true if the os is Mobile.
-         *
-         * @property mobile
-         * @type Boolean
-         * @final
-         */
-        mobile: Mobile
-    };
-
-    window.WfMediabox.Env = Env;
-})();
+    mobile: phone || tablet
+};

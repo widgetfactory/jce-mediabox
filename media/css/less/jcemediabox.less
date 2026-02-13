@@ -7,3 +7,66 @@
 @import url('../../themes/light/css/styles.less');
 @import url('../../themes/shadow/css/styles.less');
 @import url('../../themes/squeeze/css/styles.less');
+
+/* Make the overlay truly viewport-based (prevents body taller than viewport) */
+.wf-mediabox-scrolling {
+    &.wf-mediabox-frame {
+        position: fixed;
+        inset: 0;
+        height: 100vh;
+        width: 100vw;
+        box-sizing: border-box;
+        padding: .5em;
+    }
+
+    /* Scroll mode: constrain popup height */
+    .wf-mediabox-body {
+        max-height: calc(100vh - 1em);
+        /* frame padding top+bottom */
+        overflow: hidden;
+        /* nothing outside should scroll */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /*
+    Container holds:
+    - .wf-mediabox-content  (scrollable region)
+    - caption + nav etc     (non-scrolling)
+    */
+    .wf-mediabox-container {
+        flex: 1 1 auto;
+        min-height: 0;
+        /* critical: allow children to shrink */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        /* prevent container scrolling */
+        height: auto;
+        /* override your height:100% */
+    }
+
+    /* The ONLY scroll area */
+    .wf-mediabox-content {
+        flex: 1 1 auto;
+        min-height: 0;
+        /* critical for overflow to work */
+        overflow: auto;
+        /* scrolling happens here */
+    }
+
+    /* In scroll mode, don’t force 100% heights that prevent overflow */
+    .wf-mediabox-content-image,
+    .wf-mediabox-content-item {
+        height: auto;
+    }
+
+    /* If you want the image to be able to exceed the viewport and therefore scroll: */
+    .wf-mediabox-content-image img {
+        width: auto;
+        max-width: none;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+}

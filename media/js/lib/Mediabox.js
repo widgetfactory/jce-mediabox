@@ -47,7 +47,8 @@ if (window.jQuery === "undefined") {
             },
             convert_local_url: true,
             autoplay: 0,
-            expand_on_click: true
+            expand_on_click: true,
+            display_mode: 'fit', // 'fit' or 'scroll'
         },
         // array of popup links / objects
         popups: [],
@@ -982,6 +983,8 @@ if (window.jQuery === "undefined") {
         },
 
         updateBodyWidth: function (popup) {
+            var settings = this.settings;
+
             var ww = $(window).width();
             var wh = window.visualViewport ? window.visualViewport.height : $(window).height(); // can't rely on $(window).height() as it doesn't work in iOS Safari
 
@@ -1002,11 +1005,23 @@ if (window.jQuery === "undefined") {
             var $body = $('.wf-mediabox-body');
             var $content = $('.wf-mediabox-content');
 
+            var $contentItem = $('.wf-mediabox-content-item');
+
+            if (settings.display_mode == 'scroll' && $contentItem.height() > fh && w) {
+                $frame.addClass('wf-mediabox-scrolling');
+
+                $body.css('max-width', Math.min(w, fw));
+            }
+
+            if ($frame.hasClass('wf-mediabox-scrolling')) {
+                return;
+            }
+
             if ($content.hasClass('wf-mediabox-content-ratio-flex')) {
                 var modh = $body.height() - $content.height();
                 h = Math.min(h, fh);
                 var totalModH = modh + (wh - h) + iosBuffer;
-                $('.wf-mediabox-content-item').css('height', (wh - totalModH) + 'px');
+                $contentItem.css('height', (wh - totalModH) + 'px');
             }
 
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
@@ -1513,11 +1528,6 @@ if (window.jQuery === "undefined") {
 
                 // update popup width
                 self.updateBodyWidth(popup);
-
-                // Changes if scroll popup
-                if (s.scrolling === 'scroll') {
-                    $('body').addClass('wf-mediabox-scrolling');
-                }
 
                 $('.wf-mediabox-body').addClass('wf-mediabox-transition').attr('aria-hidden', false);
 

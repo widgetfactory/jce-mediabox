@@ -67,7 +67,12 @@
                     <option value="0">JNO</option>
                 </field>
 
-                <field name="expand_on_click" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK" description="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK_DESC" class="btn-group btn-group-yesno">
+                <field name="display_mode" type="radio" default="fit" label="PLG_SYSTEM_JCEMEDIABOX_DISPLAY_MODE" description="PLG_SYSTEM_JCEMEDIABOX_DISPLAY_MODE_DESC" class="btn-group">
+                    <option value="fit">PLG_SYSTEM_JCEMEDIABOX_DISPLAY_FIT</option>
+                    <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_DISPLAY_SCROLL</option>
+                </field>
+
+                <field name="expand_on_click" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK" description="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK_DESC" class="btn-group btn-group-yesno" showon="display_mode:fit">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>

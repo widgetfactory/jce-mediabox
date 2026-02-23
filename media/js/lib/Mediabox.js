@@ -13,6 +13,33 @@ if (window.jQuery === "undefined") {
 (function ($) {
     var autoplayInterval;
 
+    function stopEvents(e) {
+        if (e.target && e.target.closest) {
+            
+            if (e.target.closest('.wf-mediabox')) {
+                return;
+            }
+        }
+        
+        e.stopPropagation();
+    }
+
+    // Workaround for Gantry menu weirdness that captures click / touch events which cancel the menu
+    function bindStopEvents(el, on) {
+        if (!el) {
+            return;
+        }
+
+        var types = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
+
+        types.forEach(function (type) {
+            if (on) {
+                el.addEventListener(type, stopEvents, true); // capture
+            } else {
+                el.removeEventListener(type, stopEvents, true);
+            }
+        });
+    }
 
     function scrollIntoView(el, pos) {
         var supported = 'scrollBehavior' in document.documentElement.style;
@@ -897,6 +924,8 @@ if (window.jQuery === "undefined") {
                 s = this.settings;
 
             if (open) {
+                bindStopEvents($('.wf-mediabox').get(0), true);
+
                 $(document).on('keydown.wf-mediabox', function (e) {
                     self.addListener(e);
                 });
@@ -945,10 +974,15 @@ if (window.jQuery === "undefined") {
                     });
                 }
             } else {
+                bindStopEvents($('.wf-mediabox').get(0));
+
                 $(document).off('keydown.wf-mediabox');
 
                 // remove events
                 $('.wf-mediabox').off('keydown.wf-mediabox');
+
+                $(window).off('resize.wf-mediabox orientationchange.wf-mediabox');
+                $('.wf-mediabox-body').off('touchstart touchmove');
             }
 
             var lastLayoutWidth = window.innerWidth;

@@ -1026,11 +1026,18 @@ if (window.jQuery === "undefined") {
 
             var $frame = $('.wf-mediabox-frame');
 
+            if ($frame.hasClass('wf-mediabox-fullscreen')) {
+                return;
+            }
+
             var pl = parseInt($frame.css('padding-left'), 10) || 0;
             var pt = parseInt($frame.css('padding-top'), 10) || 0;
 
+            var $container = $('.wf-mediabox-container');
+            var cInset = (parseInt($container.css('padding-left'), 10) || 0) + (parseInt($container.css('border-left-width'), 10) || 0);
+
             // frame width - padding on both sides. Calculated from window dimensions due to iOS viewport bug
-            var fw = ww - pl * 2; // frame width - window width - padding
+            var fw = ww - pl * 2 - cInset * 2; // frame width minus frame and container padding/border
             var fh = wh - pt * 2; // frame height - window height - padding
 
             var w = MediaBox.Tools.parseWidth(popup.width);
@@ -1059,7 +1066,7 @@ if (window.jQuery === "undefined") {
             }
 
             var dim = MediaBox.Tools.resize(w, h, fw, fh);
-            var bw = dim.width;
+            var bw = dim.width + cInset * 2; // body width = image content width + container padding/border on each side
             $body.css('max-width', bw);
 
             var bh = $body.height();
@@ -1067,8 +1074,9 @@ if (window.jQuery === "undefined") {
 
             if (fw > fh) {
                 ratio = (bw / bh).toFixed(1);
+                
                 if (bh > fh) {
-                    bw = ratio * (fh - 2 * pt) - 32;
+                    bw = ratio * fh - 32;
                     $body.css('max-width', bw);
                 }
             } else {
@@ -1082,7 +1090,7 @@ if (window.jQuery === "undefined") {
                         bw = bw - 1;
                     }
 
-                    $body.css('max-width', bw - 2 * pl);
+                    $body.css('max-width', bw);
                 }
             }
 

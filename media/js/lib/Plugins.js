@@ -661,16 +661,41 @@
                     return;
                 }
 
+                $(this).parent().removeClass('wf-mediabox-content-item-expand');
+
                 if (nw > cw || nh > ch) {
                     var $body = $('.wf-mediabox-body');
 
                     // fullscreen zoom
                     $(this).add('.wf-mediabox-expand', $body).on('click', function () {
-                        $body.add('.wf-mediabox-frame:not(.wf-mediabox-fullscreen)').css('max-width', nw + 'px');
 
-                        $('.wf-mediabox-frame').toggleClass('wf-mediabox-fullscreen');
+                        if ($('.wf-mediabox-frame').hasClass('wf-mediabox-fullscreen')) {
+                            $('.wf-mediabox-frame').removeClass('wf-mediabox-fullscreen');
 
-                        $(this).trigger('mediabox:resize');
+                            $body.css({
+                                'width': '',
+                                'max-height': ''
+                            });
+
+                            $img.trigger('mediabox:resize');
+                        } else {
+                            $('.wf-mediabox-frame').addClass('wf-mediabox-fullscreen');
+
+                            $body.css({
+                                'max-width': '',
+                                'max-height': nh + 15, // natural height + scrollbar height
+                                'width': nw
+                            });
+
+                            requestAnimationFrame(function () {
+                                var el = $img.parent().get(0);
+                                
+                                if (el) {
+                                    el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
+                                    el.scrollTop = (el.scrollHeight - el.clientHeight) / 2;
+                                }
+                            });
+                        }
 
                     }).parent().addClass('wf-mediabox-content-item-expand');
                 }
@@ -801,7 +826,7 @@
 
         this.html = function (data) {
             var params = data.params || {};
-            
+
             var src = params.content || data.src;
 
             // empty or an anchor tag
@@ -826,7 +851,7 @@
 
         this.is = function (data) {
             var params = data.params || {};
-            
+
             return data.type === "dom" || params.content;
         };
     });

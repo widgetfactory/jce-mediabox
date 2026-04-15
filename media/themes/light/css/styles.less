@@ -52,12 +52,14 @@
     }
 
     .wf-mediabox-caption {
-        &:empty+.wf-mediabox-nav {
-            padding: 1.5em 0;
-        }
+        &:empty {
+            +.wf-mediabox-nav {
+                padding: 1.5em 0;
 
-        &+.wf-mediabox-nav>* {
-            top: 1em;
+                >* {
+                    top: 1em;
+                }
+            }
         }
 
         margin: 0;

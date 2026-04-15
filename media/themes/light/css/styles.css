@@ -49,7 +49,7 @@
 .wf-mediabox-theme-light .wf-mediabox-caption:empty + .wf-mediabox-nav {
   padding: 1.5em 0;
 }
-.wf-mediabox-theme-light .wf-mediabox-caption + .wf-mediabox-nav > * {
+.wf-mediabox-theme-light .wf-mediabox-caption:empty + .wf-mediabox-nav > * {
   top: 1em;
 }
 .wf-mediabox-theme-light .wf-mediabox-caption h4,

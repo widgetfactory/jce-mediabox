@@ -1655,7 +1655,19 @@ if (window.jQuery === "undefined") {
 
                     loadTime = new Date().getTime() - loadTime;
 
-                    // force a minimum delay to allow for transition effects
+                    // On initial open use transition_speed so the scale/fade-in animation can complete.
+                    // On gallery navigation use the CSS transition duration instead — transition_speed may be
+                    // a user-configured value that is unrelated to the fixed CSS out-transition (0.3s).
+                    var targetDuration;
+                    
+                    if ($('.wf-mediabox').hasClass('wf-mediabox-show')) {
+                        targetDuration = (parseFloat($('.wf-mediabox-body').css('transition-duration')) * 1000) || 300;
+                    } else {
+                        targetDuration = speed;
+                    }
+
+                    var delay = Math.max(0, targetDuration - loadTime);
+
                     setTimeout(function () {
                         if (e.type === 'error') {
                             hasTriggered = true;
@@ -1663,7 +1675,7 @@ if (window.jQuery === "undefined") {
                         } else {
                             triggerItemLoaded();
                         }
-                    }, Math.max(0, speed - loadTime)); // must be 0 or more
+                    }, delay);
                 });
 
                 // Fallback: Trigger itemLoaded after 5 seconds if not triggered by event

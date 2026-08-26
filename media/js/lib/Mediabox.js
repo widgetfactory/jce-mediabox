@@ -74,6 +74,8 @@ if (window.jQuery === "undefined") {
             },
             convert_local_url: true,
             autoplay: 0,
+            // duration in milliseconds of all open / change / close transitions. 0 disables transitions
+            transition_speed: 300,
             expand_on_click: true,
             display_mode: 'fit', // 'fit' or 'scroll'
         },
@@ -150,6 +152,9 @@ if (window.jQuery === "undefined") {
 
             // extend settings with passed in object
             $.extend(this.settings, settings);
+
+            // normalise the transition speed so it is always a positive number of milliseconds
+            this.settings.transition_speed = Math.max(0, parseInt(this.settings.transition_speed, 10) || 0);
 
             // get site url
             this.site = this.getSite();
@@ -745,6 +750,7 @@ if (window.jQuery === "undefined") {
          */
         start: function (p, i) {
             var self = this,
+                s = this.settings,
                 n = 0,
                 items = [],
                 len;
@@ -770,12 +776,10 @@ if (window.jQuery === "undefined") {
                     items.push(p);
                 }
 
-                var overlayDuration = $('.wf-mediabox-overlay').css('transition-duration');
-                overlayDuration = (parseFloat(overlayDuration) * 1000) || 300;
-
+                // wait for the overlay to fade in before displaying the popup
                 window.setTimeout(function () {
                     return self.show(items, n);
-                }, overlayDuration);
+                }, s.transition_speed);
 
                 return true;
             }
@@ -795,6 +799,10 @@ if (window.jQuery === "undefined") {
 
                 // add the tranistion class
                 $page.addClass('wf-mediabox-overlay-transition');
+
+                // expose the transition speed and overlay opacity to the stylesheet
+                $page.get(0).style.setProperty('--wf-mediabox-transition-speed', s.transition_speed + 'ms');
+                $page.get(0).style.setProperty('--wf-mediabox-overlay-opacity', parseFloat(s.overlay_opacity) || 0.8);
 
                 // add ie6 identifier
                 if (MediaBox.Env.ie6) {
@@ -879,11 +887,11 @@ if (window.jQuery === "undefined") {
                 // store html
                 $('.wf-mediabox-numbers').data('html', $('.wf-mediabox-numbers').html()).attr('aria-hidden', true);
 
-                // add transition class
-                $page.addClass('wf-mediabox-open');
+                // force a reflow so the overlay transitions from opacity 0 rather than jumping to the target opacity
+                $page.get(0).offsetHeight;
 
-                // update opacity
-                $('.wf-mediabox-overlay').css('opacity', s.overlayopacity || 0.8);
+                // add transition class, fading the overlay in to --wf-mediabox-overlay-opacity
+                $page.addClass('wf-mediabox-open');
             }
 
             return true;
@@ -894,21 +902,11 @@ if (window.jQuery === "undefined") {
          * @param {Int} n Index of current popup
          */
         show: function (items, n) {
-            var top = 0,
-                s = this.settings;
-
             this.items = items;
             this.bind(true);
 
             // Show popup
             $('.wf-mediabox-body').show();
-
-            // Fade in overlay
-            if (s.overlay === 1 && $('.wf-mediabox-overlay').length && s.overlay_opacity) {
-                $('.wf-mediabox-overlay').css('opacity', 0).animate({
-                    'opacity': parseFloat(s.overlay_opacity)
-                }, s.transition_speed);
-            }
 
             $('.wf-mediabox').addClass('wf-mediabox-transition-scale');
 
@@ -1655,18 +1653,9 @@ if (window.jQuery === "undefined") {
 
                     loadTime = new Date().getTime() - loadTime;
 
-                    // On initial open use transition_speed so the scale/fade-in animation can complete.
-                    // On gallery navigation use the CSS transition duration instead — transition_speed may be
-                    // a user-configured value that is unrelated to the fixed CSS out-transition (0.3s).
-                    var targetDuration;
-                    
-                    if ($('.wf-mediabox').hasClass('wf-mediabox-show')) {
-                        targetDuration = (parseFloat($('.wf-mediabox-body').css('transition-duration')) * 1000) || 300;
-                    } else {
-                        targetDuration = speed;
-                    }
-
-                    var delay = Math.max(0, targetDuration - loadTime);
+                    // Wait out the remainder of the out-transition (the overlay fade on open, the body fade
+                    // on gallery navigation) before revealing the item. With transition_speed 0 this is 0.
+                    var delay = Math.max(0, speed - loadTime);
 
                     setTimeout(function () {
                         if (e.type === 'error') {
@@ -1691,10 +1680,10 @@ if (window.jQuery === "undefined") {
          * Close the popup window. Destroy all objects
          */
         close: function (keepopen) {
-            var self = this;
+            var self = this,
+                s = this.settings;
 
-            var transitionDuration = $('.wf-mediabox-container').css('transition-duration');
-            transitionDuration = (parseFloat(transitionDuration) * 1000) || 300;
+            var transitionDuration = s.transition_speed;
 
             //$('.wf-mediabox').removeClass('wf-mediabox-transition-slide-in, wf-mediabox-transition-slide-out').addClass('wf-mediabox-transition-scale');
 
@@ -1717,13 +1706,10 @@ if (window.jQuery === "undefined") {
 
                     $('.wf-mediabox-frame').remove();
 
-                    var overlayDuration = $('.wf-mediabox-overlay').css('transition-duration');
-                    overlayDuration = (parseFloat(overlayDuration) * 1000) || 300;
+                    var overlayDuration = s.transition_speed;
 
+                    // fade the overlay back out to opacity 0
                     $('.wf-mediabox').removeClass('wf-mediabox-open wf-mediabox-show');
-
-                    // sert overlay opacity
-                    $('.wf-mediabox-overlay').css('opacity', 0);
 
                     var overlayTimer = setTimeout(function () {
                         $('.wf-mediabox').remove();

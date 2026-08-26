@@ -154,6 +154,13 @@ class plgSystemJCEMediabox extends CMSPlugin
             $theme = $app->input->getWord('theme', $theme);
         }
 
+        // transition speed in milliseconds, 0 disables transitions. An empty value falls back to the default
+        $transitionSpeed = $params->get('transitionspeed', $params->get('scalespeed', 300));
+
+        if ($transitionSpeed === '' || $transitionSpeed === null) {
+            $transitionSpeed = 300;
+        }
+
         $config = array(
             'base' => Uri::base(true) . '/',
             'theme' => $theme,
@@ -167,7 +174,7 @@ class plgSystemJCEMediabox extends CMSPlugin
             'overlay' => (int) $params->get('overlay', 1),
             'overlay_opacity' => (float) $params->get('overlayopacity'),
             'overlay_color' => $params->get('overlaycolor', ''),
-            'transition_speed' => (int) $params->get('transitionspeed', $params->get('scalespeed', 300)),
+            'transition_speed' => max(0, (int) $transitionSpeed),
             'close' => (int) $params->get('close', 2),
             //'scrolling' => (string) $params->get('scrolling', 'fixed'),
             'labels' => $this->getLabels(),

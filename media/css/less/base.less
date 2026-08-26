@@ -60,11 +60,11 @@
 
 .wf-mediabox-overlay-transition .wf-mediabox-overlay {
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity var(--wf-mediabox-transition-speed, 300ms) ease-in-out;
 }
 
 .wf-mediabox-open .wf-mediabox-overlay {
-    opacity: 0.7;
+    opacity: var(--wf-mediabox-overlay-opacity, 0.8);
 }
 
 .wf-mediabox-loader {
@@ -186,7 +186,7 @@
 
 [class*='wf-mediabox-transition-'] .wf-mediabox-body {
     opacity: 0;
-    transition: 0.3s ease-in;
+    transition: var(--wf-mediabox-transition-speed, 300ms) ease-in;
     transition-property: opacity, transform;
 }
 

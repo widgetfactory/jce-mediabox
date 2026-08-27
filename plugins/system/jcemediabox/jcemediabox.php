@@ -25,9 +25,6 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
 
 /**
@@ -183,11 +180,10 @@ class plgSystemJCEMediabox extends CMSPlugin
             'display_mode' => $params->get('display_mode', 'fit'),
         );
 
-        // the bundle is an ES module graph, so it must be loaded as a module
-        $document->addScript($this->getAssetPath('js/jcemediabox.min.js'), [], ['type' => 'module']);
+        // the modules in media/js/lib are bundled by rollup into a single classic script
+        $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
-        // module scripts are deferred, so they always execute before DOMContentLoaded fires
         $document->addScriptDeclaration('document.addEventListener("DOMContentLoaded", function () { WfMediabox.init(' . json_encode($config) . '); });');
     }
 }

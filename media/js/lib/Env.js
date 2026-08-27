@@ -19,9 +19,8 @@
 (function() {
 
     var nav = navigator, userAgent = nav.userAgent;
-    var opera, webkit, ie, ie6, gecko, mac, iDevice, Android, video, audio;
+    var opera, webkit, ie, ie6, ie11, gecko, mac, iDevice, android, safari, video, audio;
     opera = window.opera && window.opera.buildNumber;
-    android = /Android/.test(userAgent);
     webkit = /WebKit/.test(userAgent);
     ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
     ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
@@ -33,8 +32,8 @@
     gecko = !webkit && !ie && /Gecko/.test(userAgent);
     mac = userAgent.indexOf('Mac') != -1;
     iDevice = /(iPad|iPhone)/.test(userAgent);
-    Android = /Android/.test(userAgent);
-    Safari = /AppleWebKit/.test(userAgent) && /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+    android = /Android/.test(userAgent);
+    safari = /AppleWebKit/.test(userAgent) && /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
 
     function isIpad() {
         // Check for iOS 13+ iPad
@@ -50,7 +49,7 @@
     iDevice = iDevice || isIpad();
 
     // mobile is true if the device is an iDevice or Android
-    var Mobile = iDevice || Android;
+    var Mobile = iDevice || android;
 
     /*
      * From Modernizr v2.0.6
@@ -172,7 +171,7 @@
          * @type Boolean
          * @final
          */
-        android: Android,
+        android: android,
         /**
          * Object showing browser support for HTML5 video.
          *
@@ -205,7 +204,7 @@
          * @type Boolean
          * @final
          */
-        safari: Safari
+        safari: safari
     };
 
     window.WfMediabox.Env = Env;

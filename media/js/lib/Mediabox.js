@@ -725,7 +725,7 @@ if (window.jQuery === "undefined") {
 
             // process as an element
             if (typeof (data === 'object') && data.nodeName && (data.nodeName === 'A' || data.nodeName === 'AREA')) {
-                i = $.inArray(this.elements, data);
+                i = $.inArray(data, this.elements);
 
                 if (i >= 0) {
                     o = this.popups[i];

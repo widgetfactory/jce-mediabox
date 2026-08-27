@@ -486,7 +486,7 @@
                         key = key.replace('youtube-', '');
                     }
 
-                    if ($.inArray(props, key) != -1) {
+                    if ($.inArray(key, props) !== -1) {
                         params[key] = value;
 
                         if (key == 'autoplay' && !!value) {

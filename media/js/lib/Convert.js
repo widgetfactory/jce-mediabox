@@ -23,7 +23,7 @@
                             if (img.charAt(0) === '/') {
                                 img = img.substr(1);
                             }
-                            img = JCEMediaBox.site.replace(/http:\/\/([^\/]+)/, '') + img;
+                            img = (WfMediabox.site || '').replace(/http:\/\/([^\/]+)/, '') + img;
                         }
 
                         $(this).attr({

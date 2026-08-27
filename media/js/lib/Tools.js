@@ -1,64 +1,4 @@
 
-function extend(target, source) {
-    if (!source) {
-        return target;
-    }
-
-    for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-        }
-    }
-
-    return target;
-}
-
-/**
- * Iterate over an array, array-like object, or plain object.
- *
- * The callback is invoked with the following arguments:
- *   - value  : The current item value
- *   - key    : The array index or object property name
- *   - source : The original collection being iterated
- *
- * Iteration stops early if the callback explicitly returns false.
- *
- * @param {Array|Object} collection  The collection to iterate over
- * @param {Function}     callback    Function called for each item
- * @param {Object}       scope       Optional scope for callback (this value)
- *
- * @return {Boolean} true if iteration completed, false if aborted early
- */
-function each(collection, callback, scope) {
-    var key, length;
-
-    if (!collection) {
-        return false;
-    }
-
-    scope = scope || collection;
-
-    // Array or array-like (Array, NodeList, arguments, etc.)
-    if (typeof collection.length === 'number') {
-        for (key = 0, length = collection.length; key < length; key++) {
-            if (callback.call(scope, collection[key], key, collection) === false) {
-                return false;
-            }
-        }
-    } else {
-        // Plain object / hashtable
-        for (key in collection) {
-            if (Object.prototype.hasOwnProperty.call(collection, key)) {
-                if (callback.call(scope, collection[key], key, collection) === false) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
 function now() {
     return new Date().getTime();
 }
@@ -171,14 +111,34 @@ const parseHeight = function (h) {
     return h;
 };
 
+/**
+ * Serialise an object to a query string
+ * @param {Object} obj
+ * @return {String}
+ */
+function param(obj) {
+    var search = new URLSearchParams();
+
+    Object.keys(obj || {}).forEach(function (key) {
+        var value = obj[key];
+
+        if (value === null || typeof value === 'undefined') {
+            return;
+        }
+
+        search.append(key, value);
+    });
+
+    return search.toString();
+}
+
 const Tools = {
     debounce: debounce,
     resize: resize,
     parseWidth: parseWidth,
     parseHeight: parseHeight,
     now: now,
-    extend: extend,
-    each: each
+    param: param
 };
 
 export default Tools;

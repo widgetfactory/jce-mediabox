@@ -1,3 +1,5 @@
+import Dom from './Dom.js';
+
 const themes = {};
 
 function add(name, theme) {
@@ -56,23 +58,40 @@ function parse (name, translate, parent) {
     }
 
     /**
+     * Iterate an array by index or an object by key, passing (value, key) so that a
+     * numeric key can be told apart from a tag name.
+     */
+    function eachEntry(obj, callback) {
+        if (Array.isArray(obj)) {
+            obj.forEach(function (val, i) {
+                callback(val, i);
+            });
+
+            return;
+        }
+
+        Object.keys(obj).forEach(function (key) {
+            callback(obj[key], key);
+        });
+    }
+
+    /**
      * Internal function to create or process a node
      * @param o Data object
      * @param el Element
      */
     function createNode(obj, el) {
         // process node object
-        Tools.each(obj, function (val, key) {
+        eachEntry(obj, function (val, key) {
             if (typeof val === "string") {
                 // translate
                 val = translate(val);
 
                 // text node
                 if (key === "text") {
-                    // create text node
-                    var textNode = document.createTextNode(val);
-                    // append to parent
-                    el.appendChild(textNode);
+                    // labels arrive html encoded from the server, so they are set as
+                    // markup rather than as a text node
+                    Dom.setHtml(el, val);
                 // attribute
                 } else {
                     el.setAttribute(key, val);

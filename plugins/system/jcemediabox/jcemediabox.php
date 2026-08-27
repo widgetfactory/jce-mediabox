@@ -154,6 +154,13 @@ class plgSystemJCEMediabox extends CMSPlugin
             $theme = $app->input->getWord('theme', $theme);
         }
 
+        // transition speed in milliseconds, 0 disables transitions. An empty value falls back to the default
+        $transitionSpeed = $params->get('transitionspeed', $params->get('scalespeed', 300));
+
+        if ($transitionSpeed === '' || $transitionSpeed === null) {
+            $transitionSpeed = 300;
+        }
+
         $config = array(
             'base' => Uri::base(true) . '/',
             'theme' => $theme,
@@ -167,16 +174,20 @@ class plgSystemJCEMediabox extends CMSPlugin
             'overlay' => (int) $params->get('overlay', 1),
             'overlay_opacity' => (float) $params->get('overlayopacity'),
             'overlay_color' => $params->get('overlaycolor', ''),
-            'transition_speed' => (int) $params->get('transition_speed', $params->get('scalespeed', 300)),
+            'transition_speed' => max(0, (int) $transitionSpeed),
             'close' => (int) $params->get('close', 2),
-            'scrolling' => (string) $params->get('scrolling', 'fixed'),
+            //'scrolling' => (string) $params->get('scrolling', 'fixed'),
             'labels' => $this->getLabels(),
-            'swipe' => (bool) $params->get('swipe', 1)
+            'swipe' => (bool) $params->get('swipe', 1),
+            'expand_on_click' => (bool) $params->get('expand_on_click', 1),
+            'display_mode' => $params->get('display_mode', 'fit'),
         );
 
-        $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
+        // the bundle is an ES module graph, so it must be loaded as a module
+        $document->addScript($this->getAssetPath('js/jcemediabox.min.js'), [], ['type' => 'module']);
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
-        $document->addScriptDeclaration('document.addEventListener("DOMContentLoaded",(function(){WfMediabox.init(' . json_encode($config) . ');});');
+        // module scripts are deferred, so they always execute before DOMContentLoaded fires
+        $document->addScriptDeclaration('document.addEventListener("DOMContentLoaded", function () { WfMediabox.init(' . json_encode($config) . '); });');
     }
 }

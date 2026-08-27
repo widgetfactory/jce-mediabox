@@ -48,3 +48,9 @@
 .wf-mediabox-theme-squeeze .wf-mediabox-numbers button.active {
   background-color: #000;
 }
+.wf-mediabox-theme-squeeze .wf-mediabox-numbers button:focus {
+  background-color: #888;
+}
+.wf-mediabox-theme-squeeze .wf-mediabox-content img.wf-mediabox-focus {
+  border: 2px solid #000;
+}

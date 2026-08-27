@@ -77,7 +77,7 @@ var mediaTypes = {
     "video/webm,webm," +
     "video/quicktime,qt mov," +
     "video/x-flv,flv," +
-    "video/vnd.rn-realvideo,rv", +
+    "video/vnd.rn-realvideo,rv," +
     "video/3gpp,3gp," +
     "video/x-matroska,mkv"
 );

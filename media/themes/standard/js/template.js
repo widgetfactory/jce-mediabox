@@ -1,9 +1,3 @@
-; (function ($) {
-    $('.wf-mediabox').on('wf-mediabox:template', function () {
-
-    });
-})(jQuery);
-
 WfMediabox.addTheme("standard", function () {
     return [
         {

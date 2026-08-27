@@ -26,12 +26,13 @@ function get (name, attributes) {
     div.innerHTML = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">' +
         '<g stroke="none" stroke-width="1"></g><path></path></svg>';
 
-    // Extract the SVG element from the div
-    const svg = div.firstChild;
+    // Extract the SVG element from the div. Note this must not be named `svg` - that
+    // would shadow the icon map above and every lookup below would return undefined.
+    const el = div.firstChild;
 
     for (var key in attributes) {
         if (attributes.hasOwnProperty(key)) {
-            svg.setAttribute(key, attributes[key]);
+            el.setAttribute(key, attributes[key]);
         }
     }
 
@@ -48,7 +49,7 @@ function get (name, attributes) {
         return '';
     }
 
-    svg.querySelector('path').setAttribute('d', data);
+    el.querySelector('path').setAttribute('d', data);
 
     // Return the HTML of the container
     return div.innerHTML;

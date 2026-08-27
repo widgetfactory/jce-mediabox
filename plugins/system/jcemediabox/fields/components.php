@@ -4,13 +4,13 @@
  * @package     JCE MediaBox
  *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2023 - 2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (C) 2023 - 2026 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 namespace Joomla\CMS\Form\Field;
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;

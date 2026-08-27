@@ -1,3 +1,4 @@
+// out: false
 [class^="wf-mediabox"],
 .wf-mediabox-numbers * {
     left: 0;
@@ -36,18 +37,6 @@
     appearance: none;
 }
 
-.wf-mediabox-scrolling {
-    position: relative;
-
-    .wf-mediabox {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-    }
-}
-
 .wf-mediabox {
     position: fixed;
     z-index: 10000;
@@ -71,11 +60,11 @@
 
 .wf-mediabox-overlay-transition .wf-mediabox-overlay {
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity var(--wf-mediabox-transition-speed, 300ms) ease-in-out;
 }
 
 .wf-mediabox-open .wf-mediabox-overlay {
-    opacity: 0.7;
+    opacity: var(--wf-mediabox-overlay-opacity, 0.8);
 }
 
 .wf-mediabox-loader {
@@ -197,7 +186,7 @@
 
 [class*='wf-mediabox-transition-'] .wf-mediabox-body {
     opacity: 0;
-    transition: 0.3s ease-in;
+    transition: var(--wf-mediabox-transition-speed, 300ms) ease-in;
     transition-property: opacity, transform;
 }
 
@@ -666,24 +655,51 @@ a.wfpopup {
 
 .wf-mediabox-content-image {
     .wf-mediabox-content-item {
-        cursor: zoom-in;
+       &.wf-mediabox-content-item-expand {
+            cursor: zoom-in;
+        }
     }
 }
 
 .wf-mediabox-fullscreen {
 
     .wf-mediabox-body {
+        height: 100%;
+        max-width: 100%;
+
         .wf-mediabox-container {
             padding: 0;
+            height: 100%;
+
+            .wf-mediabox-content {
+                height: 100%;
+            }
 
             .wf-mediabox-content-item {
                 cursor: zoom-out;
+            }
+
+            .wf-mediabox-content-item {
+                cursor: zoom-out;
+                
+                height: 100%;
+                overflow: scroll;
+
+                .wf-mediabox-img {
+                    width: auto;
+                    height: auto;
+                }
             }
 
             .wf-mediabox-caption,
             .wf-mediabox-nav {
                 display: none;
             }
+        }
+
+        .wf-mediabox-info-bottom,
+        .wf-mediabox-info-top {
+            display: none;
         }
     }
 }

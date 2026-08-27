@@ -24,7 +24,7 @@
                     <option value="squeeze">PLG_SYSTEM_JCEMEDIABOX_THEME_SQUEEZE</option>
                 </field>
 
-                <field name="transitionspeed" type="number" default="500" step="50" min="50" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED" description="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED_DESC"/>
+                <field name="transitionspeed" type="number" default="300" step="50" min="0" class="span1" label="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED" description="PLG_SYSTEM_JCEMEDIABOX_TRANSITIONSPEED_DESC"/>
 
                 <field name="overlay" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_OVERLAY" description="PLG_SYSTEM_JCEMEDIABOX_OVERLAY_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
@@ -41,10 +41,10 @@
                     <option value="2">PLG_SYSTEM_JCEMEDIABOX_CLOSE_BUTTON_OVERLAY</option>
                 </field>
 
-                <field name="scrolling" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLING" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLING_DESC">
+                <!--field name="scrolling" type="list" default="0" label="PLG_SYSTEM_JCEMEDIABOX_SCROLLING" description="PLG_SYSTEM_JCEMEDIABOX_SCROLLING_DESC">
                     <option value="fixed">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_FIXED</option>
                     <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_SCROLLING_SCROLL</option>
-                </field>
+                </field-->
 
                 <field name="swipe" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_SWIPE" description="PLG_SYSTEM_JCEMEDIABOX_SWIPE_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
@@ -63,6 +63,16 @@
                 <field name="menu_exclude" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE" description="PLG_SYSTEM_JCEMEDIABOX_MENU_EXCLUDE_DESC" layout="joomla.form.field.groupedlist-fancy-select" />
 
                 <field name="dynamic_themes" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES" description="PLG_SYSTEM_JCEMEDIABOX_DYNAMICTHEMES_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="display_mode" type="radio" default="fit" label="PLG_SYSTEM_JCEMEDIABOX_DISPLAY_MODE" description="PLG_SYSTEM_JCEMEDIABOX_DISPLAY_MODE_DESC" class="btn-group">
+                    <option value="fit">PLG_SYSTEM_JCEMEDIABOX_DISPLAY_FIT</option>
+                    <option value="scroll">PLG_SYSTEM_JCEMEDIABOX_DISPLAY_SCROLL</option>
+                </field>
+
+                <field name="expand_on_click" type="radio" default="1" label="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK" description="PLG_SYSTEM_JCEMEDIABOX_EXPAND_ON_CLICK_DESC" class="btn-group btn-group-yesno" showon="display_mode:fit">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>

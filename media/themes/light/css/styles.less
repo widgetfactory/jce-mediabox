@@ -33,7 +33,7 @@
         top: 0;
 
         &::before {
-            content: "×";
+            content: "\00d7";
             font-size: 1.5em;
             font-weight: bold;
             vertical-align: middle;
@@ -52,12 +52,14 @@
     }
 
     .wf-mediabox-caption {
-        &:empty+.wf-mediabox-nav {
-            padding: 1.5em 0;
-        }
+        &:empty {
+            +.wf-mediabox-nav {
+                padding: 1.5em 0;
 
-        &+.wf-mediabox-nav>* {
-            top: 1em;
+                >* {
+                    top: 1em;
+                }
+            }
         }
 
         margin: 0;
@@ -137,11 +139,11 @@
     }
 
     .wf-mediabox-numbers {
-        color: #666666;
+        color: #666;
         display: block;
         padding: 0;
         text-align: left;
-        line-height: 2em;
+        line-height: 1;
         top: 0;
         position: absolute;
     }
@@ -149,5 +151,13 @@
     // IPhone / IPad Specific Styles
     .wf-mediabox-page.idevice .wf-mediabox-container {
         margin-bottom: -1px;
+    }
+
+    .wf-mediabox-content {
+        img {
+            &.wf-mediabox-focus {
+                border: 2px solid #666;
+            }
+        }
     }
 }

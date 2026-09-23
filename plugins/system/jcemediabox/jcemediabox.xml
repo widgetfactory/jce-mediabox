@@ -10,6 +10,8 @@
     <version>@@version@@</version>
     <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
 
+    <namespace path="src">Joomla\Plugin\System\JceMediabox</namespace>
+
     <scriptfile>script.php</scriptfile>
 
     <config>
@@ -56,6 +58,11 @@
                     <option value="0">JNO</option>
                 </field>
 
+                <field name="load_assets" type="list" default="always" label="PLG_SYSTEM_JCEMEDIABOX_LOAD_ASSETS" description="PLG_SYSTEM_JCEMEDIABOX_LOAD_ASSETS_DESC">
+                    <option value="always">PLG_SYSTEM_JCEMEDIABOX_LOAD_ASSETS_ALWAYS</option>
+                    <option value="auto">PLG_SYSTEM_JCEMEDIABOX_LOAD_ASSETS_AUTO</option>
+                </field>
+
                 <field name="components" type="components" multiple="true" default="" label="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS" description="PLG_SYSTEM_JCEMEDIABOX_COMPONENTS_DESC" layout="joomla.form.field.list-fancy-select" />
 
                 <field name="menu" type="menuitem" state="1" default="" multiple="multiple" size="10" label="PLG_SYSTEM_JCEMEDIABOX_MENU" description="PLG_SYSTEM_JCEMEDIABOX_MENU_DESC" layout="joomla.form.field.groupedlist-fancy-select" />
@@ -87,12 +94,6 @@
                     <option value="0">JNO</option>
                 </field>
 
-                <!--field name="mediafallback" type="radio" default="0" label="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK" class="btn-group btn-group-yesno" description="PLG_SYSTEM_JCEMEDIABOX_MEDIAFALLBACK_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field-->
-
-                <!--field name="mediaselector" type="text" size="50" default="audio,video" label="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR" description="PLG_SYSTEM_JCEMEDIABOX_MEDIASELECTOR_DESC"/-->
             </fieldset>
         </fields>
     </config>
@@ -101,6 +102,8 @@
         <file plugin="jcemediabox">jcemediabox.php</file>
         <folder>fields</folder>
         <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
     </files>
     
     <media folder="media" destination="plg_system_jcemediabox">
@@ -108,6 +111,7 @@
         <folder>img</folder>
         <folder>js</folder>
         <folder>themes</folder>
+        <file>joomla.asset.json</file>
     </media>
 
     <updateservers>

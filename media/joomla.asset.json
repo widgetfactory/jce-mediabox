@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "plg_system_jcemediabox",
+  "version": "3.0.0",
+  "description": "JCE MediaBox",
+  "license": "GPL-2.0-or-later",
+  "assets": [
+    {
+      "name": "plg_system_jcemediabox.script",
+      "description": "MediaBox Javascript",
+      "type": "script",
+      "uri": "plg_system_jcemediabox/jcemediabox.min.js",
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "defer": true
+      }
+    },
+    {
+      "name": "plg_system_jcemediabox.style",
+      "description": "MediaBox CSS",
+      "type": "style",
+      "uri": "plg_system_jcemediabox/jcemediabox.min.css"
+    },
+    {
+      "name": "plg_system_jcemediabox.mediabox",
+      "description": "MediaBox Assets",
+      "type": "preset",
+      "dependencies": [
+        "plg_system_jcemediabox.script",
+        "plg_system_jcemediabox.style"
+      ]
+    }
+  ]
+}

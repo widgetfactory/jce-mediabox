@@ -4,7 +4,7 @@
  * @package JCE MediaBox
  * @copyright @@copyright@@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL 3, see LICENCE
- * 
+ *
  * This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -22,40 +22,40 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Plugin\CMSPlugin;
+JLoader::registerNamespace('Joomla\\Plugin\\System\\JceMediabox', JPATH_PLUGINS . '/system/jcemediabox/src', false, false, 'psr4');
+
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Plugin\System\JceMediabox\PluginTraits\DetectTrait;
+use Joomla\Plugin\System\JceMediabox\PluginTraits\MenuTrait;
+use Joomla\Plugin\System\JceMediabox\PluginTraits\OptionsTrait;
 
 /**
- * JCE MediaBox Plugin
+ * JCE MediaBox plugin for Joomla 3.
+ *
+ * Joomla 4 and later boot the namespaced plugin through services/provider.php
+ * and never load this file. It holds no logic of its own, so it can be deleted
+ * with its manifest entry when Joomla 3 support ends.
  *
  * @package         JCE MediaBox
  * @subpackage    System
  */
 class plgSystemJCEMediabox extends CMSPlugin
 {
+    use MenuTrait;
+    use OptionsTrait;
+    use DetectTrait;
+
     protected $version = '@@version@@';
-    
+
     /**
-     * Create a list of translated labels for popup window
-     * @return Key : Value labels string
+     * Affects constructor behavior. If true, language files will be loaded automatically.
+     *
+     * @var    boolean
      */
-    protected function getLabels()
-    {
-        $this->loadLanguage('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
-        $this->loadLanguage('plg_system_jcemediabox', __DIR__);
-
-        $words = array('close', 'next', 'previous', 'cancel', 'numbers', 'numbers_count', 'download');
-
-        $v = array();
-
-        foreach ($words as $word) {
-            $v[$word] = htmlspecialchars(Text::_('PLG_SYSTEM_JCEMEDIABOX_LABEL_' . strtoupper($word)));
-        }
-
-        return $v;
-    }
+    protected $autoloadLanguage = true;
 
     private function getAssetPath($relative)
     {
@@ -65,125 +65,36 @@ class plgSystemJCEMediabox extends CMSPlugin
     }
 
     /**
-     * OnAfterRoute function
-     * @return Boolean true
+     * Load the assets, unless the page has nothing for them to act on.
+     *
+     * @return void
      */
-    public function onAfterDispatch()
+    public function onBeforeCompileHead()
     {
         $app = Factory::getApplication();
 
-        // only in "site"
-        if ($app->getClientId() !== 0) {
+        if (!$this->isPluginEnabled($app)) {
             return;
         }
 
         $document = Factory::getDocument();
-        $docType = $document->getType();
 
         // only in html pages
-        if ($docType != 'html') {
+        if ($document->getType() != 'html') {
             return;
         }
 
-        $db = Factory::getDBO();
-
-        // Causes issue in Safari??
-        $pop = $app->input->getInt('pop');
-        $print = $app->input->getInt('print');
-        $task = $app->input->getCmd('task');
-        $tmpl = $app->input->getWord('tmpl');
-
-        // don't load mediabox on certain pages
-        if ($pop || $task == 'new' || $task == 'edit') {
+        if (!$this->shouldLoadAssets($document)) {
             return;
         }
 
-        // load in print
-        if ($tmpl == 'component' && !$print) {
-            return;
-        }
-
-        $params = $this->params;
-
-        $components = $params->get('components');
-
-        if (!empty($components)) {
-            if (is_string($components)) {
-                $components = explode(',', $components);
-            }
-
-            $option = $app->input->get('option', '');
-
-            foreach ($components as $component) {
-                if ($option === 'com_' . $component || $option === $component) {
-                    return;
-                }
-            }
-        }
-
-        // get active menu
-        $menus = $app->getMenu();
-        $menu = $menus->getActive();
-
-        // get menu items from parameter
-        $menuitems = (array) $params->get('menu');
-
-        // is there a menu assignment?
-        if (!empty($menuitems) && !empty($menuitems[0])) {
-            if ($menu && !in_array($menu->id, (array) $menuitems)) {
-                return;
-            }
-        }
-
-        // get excluded menu items from parameter
-        $menuitems_exclude = (array) $params->get('menu_exclude');
-
-        // is there a menu exclusion?
-        if (!empty($menuitems_exclude) && !empty($menuitems_exclude[0])) {
-            if ($menu && in_array($menu->id, (array) $menuitems_exclude)) {
-                return;
-            }
-        }
-
-        $theme = $params->get('theme', 'standard');
-
-        if ($params->get('dynamic_themes', 0)) {
-            $theme = $app->input->getWord('theme', $theme);
-        }
-
-        // transition speed in milliseconds, 0 disables transitions. An empty value falls back to the default
-        $transitionSpeed = $params->get('transitionspeed', $params->get('scalespeed', 300));
-
-        if ($transitionSpeed === '' || $transitionSpeed === null) {
-            $transitionSpeed = 300;
-        }
-
-        $config = array(
-            'base' => Uri::base(true) . '/',
-            'theme' => $theme,
-            //'mediafallback' => (int) $params->get('mediafallback', 0),
-            //'mediaselector' => $params->get('mediaselector', 'audio,video'),
-            'width' => $params->get('width', ''),
-            'height' => $params->get('height', ''),
-            'lightbox' => (int) $params->get('lightbox', 0),
-            'shadowbox' => (int) $params->get('shadowbox', 0),
-            'icons' => (int) $params->get('icons', 1),
-            'overlay' => (int) $params->get('overlay', 1),
-            'overlay_opacity' => (float) $params->get('overlayopacity'),
-            'overlay_color' => $params->get('overlaycolor', ''),
-            'transition_speed' => max(0, (int) $transitionSpeed),
-            'close' => (int) $params->get('close', 2),
-            //'scrolling' => (string) $params->get('scrolling', 'fixed'),
-            'labels' => $this->getLabels(),
-            'swipe' => (bool) $params->get('swipe', 1),
-            'expand_on_click' => (bool) $params->get('expand_on_click', 1),
-            'display_mode' => $params->get('display_mode', 'fit'),
-        );
+        // Joomla.getOptions() comes from core.js
+        HTMLHelper::_('behavior.core');
 
         // the modules in media/js/lib are bundled by rollup into a single classic script
         $document->addScript($this->getAssetPath('js/jcemediabox.min.js'));
         $document->addStyleSheet($this->getAssetPath('css/jcemediabox.min.css'));
 
-        $document->addScriptDeclaration('document.addEventListener("DOMContentLoaded", function () { WfMediabox.init(' . json_encode($config) . '); });');
+        $document->addScriptOptions('plg_system_jcemediabox', $this->getOptions($app));
     }
 }

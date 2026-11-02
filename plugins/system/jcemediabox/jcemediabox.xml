@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="system" method="upgrade">
     <name>plg_system_jcemediabox</name>
-    <author>Ryan Demmer</author>
+    <author>@@author@@</author>
     <creationDate>@@date@@</creationDate>
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
     <authorEmail>@@email@@</authorEmail>
-    <authorUrl>www.joomlacontenteditor.net</authorUrl>
+    <authorUrl>https://www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
     <description>PLG_SYSTEM_JCEMEDIABOX_XML_DESC</description>
 
